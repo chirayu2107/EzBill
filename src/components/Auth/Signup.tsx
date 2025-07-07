@@ -165,7 +165,7 @@ const Signup: React.FC = () => {
 
         <div className="mt-6 text-center text-xs text-gray-500">
           Join <span className="text-emerald-400 font-medium">500+</span> successful content creators
-          <div className="flex justify-center gap-4 mt-2 text-emerald-400 text-sm">
+          <div className="flex justify-center gap-4 mt-2 text-emerald-500 text-sm">
             <span>🔒 Bank-level Security</span>
             <span>🧾 GST Compliant</span>
             <span>⚡ Instant Setup</span>
