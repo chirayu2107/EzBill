@@ -42,21 +42,6 @@ const InvoicesPage: React.FC = () => {
     setSelectedInvoice(null);
   };
 
-  const getEmptyMessage = () => {
-    if (invoices.length === 0) {
-      return {
-        title: "No invoices found",
-        subtitle: "Create your first invoice to get started"
-      };
-    } else if (filteredInvoices.length === 0) {
-      return {
-        title: "No invoices found",
-        subtitle: `No ${statusFilter === 'all' ? '' : statusFilter} invoices match your criteria`
-      };
-    }
-    return null;
-  };
-
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -81,7 +66,7 @@ const InvoicesPage: React.FC = () => {
 
   return (
     <motion.div 
-      className="space-y-8 select-none"
+      className="space-y-8"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
@@ -93,8 +78,8 @@ const InvoicesPage: React.FC = () => {
       >
         <div>
           <div className="flex items-center gap-4 mb-2">
-            <div className="p-3 bg-emerald-500/10 rounded-xl">
-              <FileText className="w-8 h-8 text-emerald-500" />
+            <div className="p-3 bg-blue-500/10 rounded-xl">
+              <FileText className="w-8 h-8 text-blue-500" />
             </div>
             <div>
               <h1 className="text-4xl font-bold text-white">All Invoices</h1>
@@ -126,10 +111,10 @@ const InvoicesPage: React.FC = () => {
         {filters.map((filter, index) => (
           <motion.div
             key={filter.value}
-            className={`cursor-pointer transition-all duration-300 ${
+            className={`cursor-pointer transition-all ${
               statusFilter === filter.value
-                ? 'ring-2 ring-emerald-500 bg-emerald-500/10'
-                : 'hover:bg-gray-750'
+                ? 'ring-2 ring-emerald-500'
+                : ''
             }`}
             whileHover={{ scale: 1.02, y: -2 }}
             whileTap={{ scale: 0.98 }}
@@ -138,13 +123,13 @@ const InvoicesPage: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
           >
-            <Card className={`${statusFilter === filter.value ? 'bg-emerald-500/5 border-emerald-500/20' : ''}`}>
+            <Card className="hover:bg-gray-750">
               <div className="text-center">
                 <div className={`text-3xl font-bold mb-2 ${
                   filter.value === 'paid' ? 'text-green-500' :
                   filter.value === 'unpaid' ? 'text-yellow-500' :
                   filter.value === 'overdue' ? 'text-red-500' :
-                  'text-emerald-500'
+                  'text-blue-500'
                 }`}>
                   {filter.count}
                 </div>
@@ -177,7 +162,7 @@ const InvoicesPage: React.FC = () => {
                   <motion.button
                     key={filter.value}
                     onClick={() => setStatusFilter(filter.value as any)}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
+                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                       statusFilter === filter.value
                         ? 'bg-emerald-600 text-white shadow-lg'
                         : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
@@ -219,45 +204,13 @@ const InvoicesPage: React.FC = () => {
         )}
       </motion.div>
 
-      {/* Invoices Table or Empty State */}
+      {/* Invoices Table */}
       <motion.div variants={itemVariants}>
-        {getEmptyMessage() ? (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <Card className="text-center py-16">
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-                className="mb-4"
-              >
-                <div className="w-16 h-16 bg-gray-700 rounded-full flex items-center justify-center mx-auto">
-                  <FileText className="w-8 h-8 text-gray-400" />
-                </div>
-              </motion.div>
-              <h3 className="text-xl font-semibold text-white mb-2">{getEmptyMessage()?.title}</h3>
-              <p className="text-gray-400 mb-6">{getEmptyMessage()?.subtitle}</p>
-              {invoices.length === 0 && (
-                <Button
-                  onClick={() => navigate('/create-invoice')}
-                  icon={Plus}
-                  size="lg"
-                >
-                  Create Your First Invoice
-                </Button>
-              )}
-            </Card>
-          </motion.div>
-        ) : (
-          <InvoiceTable 
-            invoices={filteredInvoices} 
-            onViewInvoice={handleViewInvoice}
-            onEditInvoice={handleEditInvoice}
-          />
-        )}
+        <InvoiceTable 
+          invoices={filteredInvoices} 
+          onViewInvoice={handleViewInvoice}
+          onEditInvoice={handleEditInvoice}
+        />
       </motion.div>
 
       {selectedInvoice && (

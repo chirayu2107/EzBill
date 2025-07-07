@@ -43,21 +43,6 @@ const Dashboard: React.FC = () => {
     setSelectedInvoice(null);
   };
 
-  const getEmptyMessage = () => {
-    if (invoices.length === 0) {
-      return {
-        title: "No invoices found",
-        subtitle: "Create your first invoice to get started"
-      };
-    } else if (recentInvoices.length === 0) {
-      return {
-        title: "No invoices found",
-        subtitle: `No ${statusFilter === 'all' ? '' : statusFilter} invoices available`
-      };
-    }
-    return null;
-  };
-
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -82,7 +67,7 @@ const Dashboard: React.FC = () => {
 
   return (
     <motion.div 
-      className="space-y-8 select-none"
+      className="space-y-8"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
@@ -121,7 +106,8 @@ const Dashboard: React.FC = () => {
               onClick={() => navigate('/create-invoice')}
               icon={Plus}
               size="lg"
-              className="bg-white text-emerald-600 hover:bg-gray-100 hover:text-emerald-600 shadow-lg font-semibold"
+              className="bg-blue text-emerald-600 hover:bg-gray-100 hover:text-emerald-600 shadow-lg font-semibold"
+
             >
               Create Invoice
             </Button>
@@ -215,7 +201,7 @@ const Dashboard: React.FC = () => {
               <motion.button
                 key={filter.value}
                 onClick={() => setStatusFilter(filter.value as any)}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                   statusFilter === filter.value
                     ? 'bg-emerald-600 text-white shadow-lg'
                     : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
@@ -229,59 +215,27 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
 
-        {getEmptyMessage() ? (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <div className="bg-gray-800 rounded-xl border border-gray-700 p-16 text-center">
-              <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-                className="mb-4"
-              >
-                <div className="w-16 h-16 bg-gray-700 rounded-full flex items-center justify-center mx-auto">
-                  <FileText className="w-8 h-8 text-gray-400" />
-                </div>
-              </motion.div>
-              <h3 className="text-xl font-semibold text-white mb-2">{getEmptyMessage()?.title}</h3>
-              <p className="text-gray-400 mb-6">{getEmptyMessage()?.subtitle}</p>
-              {invoices.length === 0 && (
-                <Button
-                  onClick={() => navigate('/create-invoice')}
-                  icon={Plus}
-                  size="lg"
-                >
-                  Create Your First Invoice
-                </Button>
-              )}
-            </div>
-          </motion.div>
-        ) : (
-          <>
-            <InvoiceTable 
-              invoices={recentInvoices} 
-              onViewInvoice={handleViewInvoice}
-              onEditInvoice={handleEditInvoice}
-            />
+        <InvoiceTable 
+          invoices={recentInvoices} 
+          onViewInvoice={handleViewInvoice}
+          onEditInvoice={handleEditInvoice}
+        />
 
-            <motion.div 
-              className="text-center"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.5 }}
+        {recentInvoices.length > 0 && (
+          <motion.div 
+            className="text-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5 }}
+          >
+            <Button
+              onClick={() => navigate('/invoices')}
+              variant="secondary"
+              className="bg-gray-700 hover:bg-gray-600"
             >
-              <Button
-                onClick={() => navigate('/invoices')}
-                variant="secondary"
-                className="bg-gray-700 hover:bg-gray-600"
-              >
-                View All Invoices ({invoices.length})
-              </Button>
-            </motion.div>
-          </>
+              View All Invoices ({invoices.length})
+            </Button>
+          </motion.div>
         )}
       </motion.div>
 
