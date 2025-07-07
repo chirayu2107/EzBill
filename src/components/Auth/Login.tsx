@@ -30,7 +30,56 @@ const Login: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-900 text-white flex flex-col md:flex-row">
-      {/* Left Section: Login Form */}
+      {/* Left Section: Features (was Right) */}
+      <div className="hidden md:flex w-full md:w-1/2 flex-col justify-center px-12 py-12 bg-gray-800 text-white">
+        <h2 className="text-3xl font-bold mb-4">Professional Invoicing Made Simple</h2>
+        <p className="text-gray-400 mb-8">
+          Join thousands of content creators who've streamlined their invoicing process with our GST-compliant solution.
+        </p>
+
+        <div className="space-y-6">
+          <div className="flex items-start gap-4">
+            <CheckCircle className="text-emerald-500 mt-1" />
+            <div>
+              <h4 className="font-semibold">Auto GST Calculation</h4>
+              <p className="text-gray-400 text-sm">Automatically calculates 9% or 18% GST based on state compliance</p>
+            </div>
+          </div>
+
+          <div className="flex items-start gap-4">
+            <User className="text-emerald-500 mt-1" />
+            <div>
+              <h4 className="font-semibold">Brand Management</h4>
+              <p className="text-gray-400 text-sm">Easily manage all your brand clients in one organized place</p>
+            </div>
+          </div>
+
+          <div className="flex items-start gap-4">
+            <FileText className="text-emerald-500 mt-1" />
+            <div>
+              <h4 className="font-semibold">Instant PDF Generation</h4>
+              <p className="text-gray-400 text-sm">Generate professional invoices in seconds with preview</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-10 flex gap-8 text-center">
+          <div>
+            <h3 className="text-2xl font-bold text-emerald-500">1000+</h3>
+            <p className="text-sm text-gray-400">Invoices Generated</p>
+          </div>
+          <div>
+            <h3 className="text-2xl font-bold text-emerald-500">500+</h3>
+            <p className="text-sm text-gray-400">Happy Creators</p>
+          </div>
+          <div>
+            <h3 className="text-2xl font-bold text-emerald-500">₹50L+</h3>
+            <p className="text-sm text-gray-400">Revenue Processed</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Right Section: Login Form (was Left) */}
       <div className="w-full md:w-1/2 flex items-center justify-center px-4 py-12">
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
@@ -113,55 +162,6 @@ const Login: React.FC = () => {
               </div>
             </form>
           </Card>
-        </div>
-      </div>
-
-      {/* Right Section: Features */}
-      <div className="hidden md:flex w-full md:w-1/2 flex-col justify-center px-12 py-12 bg-gray-800 text-white">
-        <h2 className="text-3xl font-bold mb-4">Professional Invoicing Made Simple</h2>
-        <p className="text-gray-400 mb-8">
-          Join thousands of content creators who've streamlined their invoicing process with our GST-compliant solution.
-        </p>
-
-        <div className="space-y-6">
-          <div className="flex items-start gap-4">
-            <CheckCircle className="text-emerald-500 mt-1" />
-            <div>
-              <h4 className="font-semibold">Auto GST Calculation</h4>
-              <p className="text-gray-400 text-sm">Automatically calculates 9% or 18% GST based on state compliance</p>
-            </div>
-          </div>
-
-          <div className="flex items-start gap-4">
-            <User className="text-emerald-500 mt-1" />
-            <div>
-              <h4 className="font-semibold">Brand Management</h4>
-              <p className="text-gray-400 text-sm">Easily manage all your brand clients in one organized place</p>
-            </div>
-          </div>
-
-          <div className="flex items-start gap-4">
-            <FileText className="text-emerald-500 mt-1" />
-            <div>
-              <h4 className="font-semibold">Instant PDF Generation</h4>
-              <p className="text-gray-400 text-sm">Generate professional invoices in seconds with preview</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="mt-10 flex gap-8 text-center">
-          <div>
-            <h3 className="text-2xl font-bold text-emerald-500">1000+</h3>
-            <p className="text-sm text-gray-400">Invoices Generated</p>
-          </div>
-          <div>
-            <h3 className="text-2xl font-bold text-emerald-500">500+</h3>
-            <p className="text-sm text-gray-400">Happy Creators</p>
-          </div>
-          <div>
-            <h3 className="text-2xl font-bold text-emerald-500">₹50L+</h3>
-            <p className="text-sm text-gray-400">Revenue Processed</p>
-          </div>
         </div>
       </div>
     </div>
