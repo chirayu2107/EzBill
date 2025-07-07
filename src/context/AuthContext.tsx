@@ -1,12 +1,13 @@
+// src/context/AuthContext.tsx
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../config/firebase';
-import { 
-  signUpUser, 
-  signInUser, 
-  signOutUser, 
-  getUserData, 
-  updateUserData 
+import {
+  signUpUser,
+  signInUser,
+  signOutUser,
+  getUserData,
+  updateUserData,
 } from '../services/firebaseService';
 import { User, AuthContextType, SignupData } from '../types';
 
@@ -28,11 +29,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
-        // Get additional user data from Firestore
         const result = await getUserData(firebaseUser.uid);
         if (result.success) {
           setUser(result.userData as User);
           setIsAuthenticated(true);
+        } else {
+          console.error('Failed to fetch user data');
         }
       } else {
         setUser(null);
@@ -56,26 +58,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
       }
       return false;
-    } catch (error) {
-      console.error('Login error:', error);
+    } catch (error: any) {
+      console.error('Login error:', error.message || error);
       return false;
     }
   };
 
-  const signup = async (userData: SignupData): Promise<boolean> => {
+  const signup = async (signupData: SignupData): Promise<boolean> => {
     try {
-      const result = await signUpUser(userData);
+      const result = await signUpUser(signupData);
       if (result.success && result.user) {
-        const userDataResult = await getUserData(result.user.uid);
-        if (userDataResult.success) {
-          setUser(userDataResult.userData as User);
+        const userData = await getUserData(result.user.uid);
+        if (userData.success) {
+          setUser(userData.userData as User);
           setIsAuthenticated(true);
           return true;
         }
       }
       return false;
-    } catch (error) {
-      console.error('Signup error:', error);
+    } catch (error: any) {
+      console.error('Signup error:', error.message || error);
       return false;
     }
   };
@@ -85,8 +87,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       await signOutUser();
       setUser(null);
       setIsAuthenticated(false);
-    } catch (error) {
-      console.error('Logout error:', error);
+    } catch (error: any) {
+      console.error('Logout error:', error.message || error);
     }
   };
 
@@ -95,10 +97,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       try {
         const result = await updateUserData(auth.currentUser.uid, userData);
         if (result.success) {
-          setUser({ ...user, ...userData });
+          setUser((prev) => ({ ...prev!, ...userData }));
         }
-      } catch (error) {
-        console.error('Update profile error:', error);
+      } catch (error: any) {
+        console.error('Update profile error:', error.message || error);
       }
     }
   };
