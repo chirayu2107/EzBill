@@ -435,7 +435,21 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({ invoice, onClose, autoD
               </div>
 
               <div className="border border-gray-800 p-3 text-center">
-                <div className="h-16 mb-2"></div>
+                {/* Digital Signature */}
+                {user?.signature ? (
+                  <div className="mb-2">
+                    <img
+                      src={user.signature || "/placeholder.svg"}
+                      alt="Digital Signature"
+                      className="max-h-12 max-w-full object-contain mx-auto mb-1"
+                      style={{ filter: "contrast(1.2)" }}
+                    />
+                  </div>
+                ) : (
+                  <div className="h-12 mb-2 flex items-center justify-center">
+                    <span className="text-xs text-gray-500 italic">Digital Signature</span>
+                  </div>
+                )}
                 <p className="text-sm font-bold">Authorised Signatory For</p>
                 <p className="text-sm font-bold">{user?.fullName || "Your Business"}</p>
               </div>

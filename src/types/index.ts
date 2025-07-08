@@ -54,6 +54,7 @@ export interface User {
   ifscCode?: string
   gstNumber?: string
   invoicePrefix?: string
+  signature?: string // Base64 encoded signature image
   createdAt: Date
 }
 

@@ -7,6 +7,7 @@ import { useToast } from "../../hooks/useToast"
 import { User, Mail, Phone, CreditCard, MapPin, Building, Hash, Save, AlertCircle, RefreshCw } from "lucide-react"
 import Button from "../UI/Button"
 import Card from "../UI/Card"
+import SignatureUpload from "./SignatureUpload"
 
 const Profile: React.FC = () => {
   const { user, updateProfile } = useAuth()
@@ -25,6 +26,7 @@ const Profile: React.FC = () => {
     ifscCode: "",
     gstNumber: "",
     invoicePrefix: "",
+    signature: "",
   })
 
   // Sync form data with user data whenever user changes
@@ -43,6 +45,7 @@ const Profile: React.FC = () => {
         ifscCode: user.ifscCode || "",
         gstNumber: user.gstNumber || "",
         invoicePrefix: user.invoicePrefix || "XUSE",
+        signature: user.signature || "",
       }
 
       console.log("Setting form data:", newFormData)
@@ -57,6 +60,13 @@ const Profile: React.FC = () => {
     setFormData((prev) => ({
       ...prev,
       [field]: value,
+    }))
+  }
+
+  const handleSignatureChange = (signature: string | null) => {
+    setFormData((prev) => ({
+      ...prev,
+      signature: signature || "",
     }))
   }
 
@@ -137,6 +147,7 @@ const Profile: React.FC = () => {
         ifscCode: user.ifscCode || "",
         gstNumber: user.gstNumber || "",
         invoicePrefix: user.invoicePrefix || "XUSE",
+        signature: user.signature || "",
       })
     }
     setIsEditing(false)
@@ -172,7 +183,7 @@ const Profile: React.FC = () => {
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold text-white">Business Profile</h1>
-          <p className="text-gray-400 mt-1">Manage your business information</p>
+          <p className="text-gray-400 mt-1">Manage your business information and digital signature</p>
         </div>
         {!isEditing ? (
           <div className="flex gap-3">
@@ -462,11 +473,27 @@ const Profile: React.FC = () => {
                     {formData.invoicePrefix ? "✓ Set" : "⚠ Not Set"}
                   </span>
                 </div>
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-gray-400">Digital Signature</span>
+                  <span className={`${formData.signature ? "text-green-400" : "text-blue-400"}`}>
+                    {formData.signature ? "✓ Uploaded" : "○ Optional"}
+                  </span>
+                </div>
               </div>
             </div>
           </div>
         </Card>
       </div>
+
+      {/* Digital Signature Section - Full Width */}
+      <Card>
+        <h3 className="text-lg font-semibold text-white mb-4">Digital Signature</h3>
+        <SignatureUpload
+          currentSignature={formData.signature || undefined}
+          onSignatureChange={handleSignatureChange}
+          disabled={!isEditing}
+        />
+      </Card>
     </div>
   )
 }
