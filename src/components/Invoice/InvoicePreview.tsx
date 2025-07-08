@@ -20,6 +20,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({ invoice, onClose, autoD
   const { user } = useAuth()
   const { toast } = useToast()
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false)
+  const [signatureError, setSignatureError] = useState(false)
 
   // Auto-download functionality
   useEffect(() => {
@@ -124,6 +125,41 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({ invoice, onClose, autoD
       .join("")
       .toUpperCase()
       .slice(0, 2)
+  }
+
+  // Handle signature image error
+  const handleSignatureError = () => {
+    console.error("Signature image failed to load")
+    setSignatureError(true)
+  }
+
+  // Check if signature is valid base64
+  const isValidSignature = (signature?: string) => {
+    if (!signature) return false
+
+    // Check if it's a valid base64 data URL
+    const base64Pattern = /^data:image\/(png|jpg|jpeg|gif|webp);base64,/i
+    const isValidBase64 = base64Pattern.test(signature)
+
+    console.log("Signature validation:", {
+      exists: !!signature,
+      length: signature.length,
+      startsWithData: signature.startsWith("data:"),
+      isValidBase64,
+      preview: signature.substring(0, 50) + "...",
+    })
+
+    return isValidBase64
+  }
+
+  // Create signature image style with proper typing
+  const signatureImageStyle: React.CSSProperties = {
+    filter: "contrast(1.2)",
+    imageRendering: "crisp-edges",
+    // Use type assertion for webkit-specific property
+    ...({
+      WebkitImageRendering: "crisp-edges",
+    } as any),
   }
 
   return (
@@ -435,19 +471,31 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({ invoice, onClose, autoD
               </div>
 
               <div className="border border-gray-800 p-3 text-center">
-                {/* Digital Signature */}
-                {user?.signature ? (
+                {/* Digital Signature with Enhanced Error Handling */}
+                {isValidSignature(user?.signature) && !signatureError ? (
                   <div className="mb-2">
                     <img
-                      src={user.signature || "/placeholder.svg"}
+                      src={user?.signature || "/placeholder.svg"}
                       alt="Digital Signature"
                       className="max-h-12 max-w-full object-contain mx-auto mb-1"
-                      style={{ filter: "contrast(1.2)" }}
+                      style={signatureImageStyle}
+                      onError={handleSignatureError}
+                      onLoad={() => {
+                        console.log("Signature loaded successfully in invoice preview")
+                        setSignatureError(false)
+                      }}
+                      crossOrigin="anonymous"
                     />
                   </div>
                 ) : (
                   <div className="h-12 mb-2 flex items-center justify-center">
-                    <span className="text-xs text-gray-500 italic">Digital Signature</span>
+                    {user?.signature && signatureError ? (
+                      <span className="text-xs text-red-500 italic">Signature Error</span>
+                    ) : (
+                      <span className="text-xs text-gray-500 italic">
+                        {user?.signature ? "Loading Signature..." : "Digital Signature"}
+                      </span>
+                    )}
                   </div>
                 )}
                 <p className="text-sm font-bold">Authorised Signatory For</p>
