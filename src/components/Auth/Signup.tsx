@@ -2,15 +2,16 @@
 
 import type React from "react"
 import { useState } from "react"
-import { Link, useNavigate } from "react-router-dom"
+import { Link } from "react-router-dom"
 import { useAuth } from "../../context/AuthContext"
+import { useToast } from "../../hooks/useToast"
 import { Mail, Lock, UserPlus, Receipt, User } from "lucide-react"
 import Button from "../UI/Button"
 import Card from "../UI/Card"
 
 const Signup: React.FC = () => {
   const { signup } = useAuth()
-  const navigate = useNavigate()
+  const { toast } = useToast()
 
   const [email, setEmail] = useState("")
   const [name, setName] = useState("")
@@ -24,12 +25,16 @@ const Signup: React.FC = () => {
     setError("")
 
     if (password !== confirmPassword) {
-      setError("Passwords do not match")
+      const errorMsg = "Passwords do not match"
+      setError(errorMsg)
+      toast.error("Validation Error", errorMsg)
       return
     }
 
     if (password.length < 6) {
-      setError("Password must be at least 6 characters")
+      const errorMsg = "Password must be at least 6 characters"
+      setError(errorMsg)
+      toast.error("Validation Error", errorMsg)
       return
     }
 
@@ -44,12 +49,20 @@ const Signup: React.FC = () => {
 
       const success = await signup(signupData)
       if (success) {
-        navigate("/")
+        toast.success(
+          "Account Created Successfully!",
+          `Welcome to EzBill, ${name}! Your account has been created and you're now signed in.`,
+        )
+        // Don't navigate manually - let the auth context handle it
       } else {
-        setError("Email already exists or signup failed")
+        const errorMsg = "Failed to create account. Please try again."
+        setError(errorMsg)
+        toast.error("Signup Failed", errorMsg)
       }
-    } catch (err) {
-      setError("An error occurred. Please try again.")
+    } catch (err: any) {
+      const errorMsg = "An error occurred. Please try again."
+      setError(errorMsg)
+      toast.error("Signup Error", errorMsg)
     } finally {
       setLoading(false)
     }
@@ -71,7 +84,9 @@ const Signup: React.FC = () => {
         <Card>
           <form onSubmit={handleSubmit} className="space-y-6">
             {error && (
-              <div className="bg-red-500/10 border border-red-500 text-red-500 px-4 py-3 rounded-lg">{error}</div>
+              <div className="bg-red-500/10 border border-red-500 text-red-500 px-4 py-3 rounded-lg animate-pulse">
+                {error}
+              </div>
             )}
 
             <div>
@@ -82,9 +97,10 @@ const Signup: React.FC = () => {
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full pl-10 pr-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  className="w-full pl-10 pr-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all duration-200"
                   placeholder="Your full name"
                   required
+                  disabled={loading}
                 />
               </div>
             </div>
@@ -97,9 +113,10 @@ const Signup: React.FC = () => {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-10 pr-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  className="w-full pl-10 pr-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all duration-200"
                   placeholder="Enter your email"
                   required
+                  disabled={loading}
                 />
               </div>
             </div>
@@ -112,9 +129,10 @@ const Signup: React.FC = () => {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-10 pr-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  className="w-full pl-10 pr-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all duration-200"
                   placeholder="Create a password"
                   required
+                  disabled={loading}
                 />
               </div>
             </div>
@@ -127,9 +145,10 @@ const Signup: React.FC = () => {
                   type="password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="w-full pl-10 pr-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  className="w-full pl-10 pr-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all duration-200"
                   placeholder="Confirm your password"
                   required
+                  disabled={loading}
                 />
               </div>
             </div>
@@ -148,17 +167,24 @@ const Signup: React.FC = () => {
 
             <Button
               type="submit"
-              icon={UserPlus}
+              icon={loading ? undefined : UserPlus}
               disabled={loading}
-              className="w-full bg-emerald-500 hover:bg-emerald-600 transition-colors"
+              className="w-full bg-emerald-500 hover:bg-emerald-600 transition-all duration-200 relative overflow-hidden"
               size="lg"
             >
-              {loading ? "Creating account..." : "Sign Up"}
+              {loading ? (
+                <div className="flex items-center justify-center gap-2">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                  Creating account...
+                </div>
+              ) : (
+                "Sign Up"
+              )}
             </Button>
 
             <div className="text-center text-sm text-gray-400">
               Already have an account?{" "}
-              <Link to="/login" className="text-emerald-500 hover:text-emerald-400">
+              <Link to="/login" className="text-emerald-500 hover:text-emerald-400 transition-colors">
                 Sign in
               </Link>
             </div>

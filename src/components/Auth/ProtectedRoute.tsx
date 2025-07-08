@@ -1,19 +1,19 @@
-import React from 'react';
-import { useAuth } from '../../context/AuthContext';
-import Login from './Login';
+"use client"
+
+import type React from "react"
+import { useAuth } from "../../context/AuthContext"
+import Login from "./Login"
 
 interface ProtectedRouteProps {
-  children: React.ReactNode;
+  children: React.ReactNode
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuth()
 
-  if (!isAuthenticated) {
-    return <Login />;
-  }
+  // Simply return children if authenticated, Login if not
+  // No additional loading states here since AuthContext handles it
+  return isAuthenticated ? <>{children}</> : <Login />
+}
 
-  return <>{children}</>;
-};
-
-export default ProtectedRoute;
+export default ProtectedRoute

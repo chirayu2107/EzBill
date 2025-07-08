@@ -21,6 +21,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<User | null>(null)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [initializing, setInitializing] = useState(true)
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
@@ -58,7 +59,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setUser(null)
         setIsAuthenticated(false)
       }
+
       setLoading(false)
+      setInitializing(false)
     })
 
     return () => unsubscribe()
@@ -71,15 +74,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       console.log("Login result:", result)
 
       if (result.success) {
-        // User data will be loaded by the onAuthStateChanged listener
+        // Don't set loading to false here - let onAuthStateChanged handle it
         return true
+      } else {
+        console.error("Login failed:", result.error)
+        setLoading(false)
+        return false
       }
-      return false
     } catch (error) {
       console.error("Login error:", error)
-      return false
-    } finally {
       setLoading(false)
+      return false
     }
   }
 
@@ -90,28 +95,30 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       console.log("Signup result:", result)
 
       if (result.success) {
-        // Wait a moment for Firestore to save the data
-        await new Promise((resolve) => setTimeout(resolve, 1000))
-
-        // The onAuthStateChanged listener will handle setting the user data
+        // Don't set loading to false here - let onAuthStateChanged handle it
         return true
+      } else {
+        console.error("Signup failed:", result.error)
+        setLoading(false)
+        return false
       }
-      return false
     } catch (error) {
       console.error("Signup error:", error)
-      return false
-    } finally {
       setLoading(false)
+      return false
     }
   }
 
   const logout = async () => {
     try {
+      setLoading(true)
       await signOutUser()
       setUser(null)
       setIsAuthenticated(false)
+      setLoading(false)
     } catch (error) {
       console.error("Logout error:", error)
+      setLoading(false)
     }
   }
 
@@ -128,7 +135,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }
 
-  if (loading) {
+  // Show loading screen during initial auth check
+  if (initializing) {
     return (
       <div className="min-h-screen bg-gray-900 flex items-center justify-center">
         <div className="text-center">

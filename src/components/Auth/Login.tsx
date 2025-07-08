@@ -4,12 +4,14 @@ import type React from "react"
 import { useState } from "react"
 import { Link } from "react-router-dom"
 import { useAuth } from "../../context/AuthContext"
+import { useToast } from "../../hooks/useToast"
 import { Mail, Lock, LogIn, Receipt, CheckCircle, User, FileText } from "lucide-react"
 import Button from "../UI/Button"
 import Card from "../UI/Card"
 
 const Login: React.FC = () => {
   const { login } = useAuth()
+  const { toast } = useToast()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
@@ -22,11 +24,19 @@ const Login: React.FC = () => {
 
     try {
       const success = await login(email, password)
-      if (!success) {
-        setError("Invalid email or password")
+      if (success) {
+        // Show success message
+        toast.success("Welcome back!", "You have been signed in successfully")
+        // Don't navigate manually - let the auth context handle it
+      } else {
+        setError("Invalid email or password. Please check your credentials and try again.")
+        toast.error("Sign In Failed", "Please check your email and password")
       }
-    } catch (err) {
-      setError("Login failed. Please try again.")
+    } catch (err: any) {
+      console.error("Login error:", err)
+      const errorMessage = "Login failed. Please try again."
+      setError(errorMessage)
+      toast.error("Sign In Error", errorMessage)
     } finally {
       setLoading(false)
     }
@@ -99,7 +109,9 @@ const Login: React.FC = () => {
           <Card>
             <form onSubmit={handleSubmit} className="space-y-6">
               {error && (
-                <div className="bg-red-500/10 border border-red-500 text-red-500 px-4 py-3 rounded-lg">{error}</div>
+                <div className="bg-red-500/10 border border-red-500 text-red-500 px-4 py-3 rounded-lg animate-pulse">
+                  {error}
+                </div>
               )}
 
               <div>
@@ -110,9 +122,10 @@ const Login: React.FC = () => {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full pl-10 pr-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                    className="w-full pl-10 pr-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all duration-200"
                     placeholder="Enter your email"
                     required
+                    disabled={loading}
                   />
                 </div>
               </div>
@@ -125,16 +138,17 @@ const Login: React.FC = () => {
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full pl-10 pr-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                    className="w-full pl-10 pr-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all duration-200"
                     placeholder="Enter your password"
                     required
+                    disabled={loading}
                   />
                 </div>
               </div>
 
               <div className="flex items-center justify-between text-sm text-gray-400">
                 <label className="flex items-center gap-2">
-                  <input type="checkbox" className="form-checkbox text-emerald-500" />
+                  <input type="checkbox" className="form-checkbox text-emerald-500" disabled={loading} />
                   Remember me
                 </label>
                 <Link to="/forgot-password" className="text-emerald-500 hover:underline">
@@ -144,17 +158,24 @@ const Login: React.FC = () => {
 
               <Button
                 type="submit"
-                icon={LogIn}
+                icon={loading ? undefined : LogIn}
                 disabled={loading}
-                className="w-full bg-emerald-500 hover:bg-emerald-600 transition-colors"
+                className="w-full bg-emerald-500 hover:bg-emerald-600 transition-all duration-200 relative overflow-hidden"
                 size="lg"
               >
-                {loading ? "Signing in..." : "Sign In"}
+                {loading ? (
+                  <div className="flex items-center justify-center gap-2">
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                    Signing in...
+                  </div>
+                ) : (
+                  "Sign In"
+                )}
               </Button>
 
               <div className="text-center text-sm text-gray-400">
                 Don't have an account?{" "}
-                <Link to="/signup" className="text-emerald-500 hover:text-emerald-400">
+                <Link to="/signup" className="text-emerald-500 hover:text-emerald-400 transition-colors">
                   Sign up for free
                 </Link>
               </div>
