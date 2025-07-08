@@ -28,11 +28,11 @@ export const signUpUser = async (userData: SignupData) => {
       await updateProfile(userCredential.user, {
         displayName: userData.fullName,
       })
+      console.log("Display name updated:", userData.fullName)
     }
 
     // Save user data to Firestore using the user's UID as document ID
     const userDoc = {
-      uid: userCredential.user.uid,
       email: userData.email,
       fullName: userData.fullName || "",
       phoneNumber: userData.phoneNumber || "",
@@ -49,12 +49,35 @@ export const signUpUser = async (userData: SignupData) => {
 
     // Use setDoc with the user's UID as the document ID
     await setDoc(doc(db, "users", userCredential.user.uid), userDoc)
-    console.log("User data saved to Firestore")
+    console.log("User data saved to Firestore successfully")
 
     return { success: true, user: userCredential.user }
   } catch (error: any) {
     console.error("Signup error:", error)
-    return { success: false, error: error.message }
+    let errorMessage = "An error occurred during signup"
+
+    // Handle specific Firebase auth errors
+    switch (error.code) {
+      case "auth/email-already-in-use":
+        errorMessage = "This email is already registered. Please use a different email or try signing in."
+        break
+      case "auth/weak-password":
+        errorMessage = "Password is too weak. Please use at least 6 characters."
+        break
+      case "auth/invalid-email":
+        errorMessage = "Please enter a valid email address."
+        break
+      case "auth/operation-not-allowed":
+        errorMessage = "Email/password accounts are not enabled. Please contact support."
+        break
+      case "auth/network-request-failed":
+        errorMessage = "Network error. Please check your internet connection and try again."
+        break
+      default:
+        errorMessage = error.message || errorMessage
+    }
+
+    return { success: false, error: errorMessage }
   }
 }
 
@@ -66,7 +89,36 @@ export const signInUser = async (email: string, password: string) => {
     return { success: true, user: userCredential.user }
   } catch (error: any) {
     console.error("Sign in error:", error)
-    return { success: false, error: error.message }
+    let errorMessage = "An error occurred during sign in"
+
+    // Handle specific Firebase auth errors
+    switch (error.code) {
+      case "auth/user-not-found":
+        errorMessage = "No account found with this email address. Please check your email or sign up."
+        break
+      case "auth/wrong-password":
+        errorMessage = "Incorrect password. Please try again."
+        break
+      case "auth/invalid-email":
+        errorMessage = "Please enter a valid email address."
+        break
+      case "auth/user-disabled":
+        errorMessage = "This account has been disabled. Please contact support."
+        break
+      case "auth/too-many-requests":
+        errorMessage = "Too many failed attempts. Please try again later."
+        break
+      case "auth/invalid-credential":
+        errorMessage = "Invalid email or password. Please check your credentials and try again."
+        break
+      case "auth/network-request-failed":
+        errorMessage = "Network error. Please check your internet connection and try again."
+        break
+      default:
+        errorMessage = error.message || errorMessage
+    }
+
+    return { success: false, error: errorMessage }
   }
 }
 
@@ -85,13 +137,13 @@ export const getUserData = async (uid: string) => {
   try {
     console.log("Getting user data for UID:", uid)
 
-    // First try to get user by document ID (UID)
+    // Get user by document ID (UID)
     const userDocRef = doc(db, "users", uid)
     const userDocSnap = await getDoc(userDocRef)
 
     if (userDocSnap.exists()) {
       const userData = userDocSnap.data()
-      console.log("User data found by document ID:", userData)
+      console.log("User data found:", userData)
       return {
         success: true,
         userData: {
@@ -102,26 +154,7 @@ export const getUserData = async (uid: string) => {
       }
     }
 
-    // Fallback: query by uid field
-    console.log("User not found by document ID, trying uid field query")
-    const q = query(collection(db, "users"), where("uid", "==", uid))
-    const querySnapshot = await getDocs(q)
-
-    if (!querySnapshot.empty) {
-      const userDoc = querySnapshot.docs[0]
-      const userData = userDoc.data()
-      console.log("User data found by uid field:", userData)
-      return {
-        success: true,
-        userData: {
-          id: userDoc.id,
-          ...userData,
-          createdAt: userData.createdAt?.toDate() || new Date(),
-        },
-      }
-    }
-
-    console.log("User data not found")
+    console.log("User data not found for UID:", uid)
     return { success: false, error: "User data not found" }
   } catch (error: any) {
     console.error("Get user data error:", error)

@@ -69,6 +69,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const login = async (email: string, password: string): Promise<boolean> => {
     try {
+      console.log("Attempting login for:", email)
       const result = await signInUser(email, password)
       console.log("Login result:", result)
 
@@ -87,12 +88,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const signup = async (userData: SignupData): Promise<boolean> => {
     try {
+      console.log("Attempting signup for:", userData.email)
       const result = await signUpUser(userData)
       console.log("Signup result:", result)
 
       if (result.success) {
-        // Sign out the user immediately after signup so they need to sign in
-        await signOutUser()
+        // Don't sign out immediately - let the user stay signed in after signup
+        console.log("Signup successful, user should be signed in")
         return true
       } else {
         console.error("Signup failed:", result.error)

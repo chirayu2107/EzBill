@@ -2,7 +2,7 @@
 
 import type React from "react"
 import { useState } from "react"
-import { Link, useNavigate } from "react-router-dom"
+import { Link } from "react-router-dom"
 import { useAuth } from "../../context/AuthContext"
 import { useToast } from "../../hooks/useToast"
 import { Mail, Lock, UserPlus, Receipt, User } from "lucide-react"
@@ -12,7 +12,6 @@ import Card from "../UI/Card"
 const Signup: React.FC = () => {
   const { signup } = useAuth()
   const { toast } = useToast()
-  const navigate = useNavigate()
 
   const [email, setEmail] = useState("")
   const [name, setName] = useState("")
@@ -50,13 +49,11 @@ const Signup: React.FC = () => {
 
       const success = await signup(signupData)
       if (success) {
-        // Show success message in top right and redirect to login
-        toast.success("Account Created Successfully", "Sign in with your new account to get started!")
-
-        // Navigate to login page after a short delay
-        setTimeout(() => {
-          navigate("/login")
-        }, 1500)
+        toast.success(
+          "Account Created Successfully!",
+          `Welcome to EzBill, ${name}! Your account has been created and you're now signed in.`,
+        )
+        // The auth context will handle the redirect automatically
       } else {
         const errorMsg = "Failed to create account. Please try again."
         setError(errorMsg)
