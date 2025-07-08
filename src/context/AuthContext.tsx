@@ -20,7 +20,6 @@ export const useAuth = () => {
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [loading, setLoading] = useState(true)
   const [authChecked, setAuthChecked] = useState(false)
 
   // Function to refresh user data from Firestore
@@ -86,7 +85,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setUser(null)
         setIsAuthenticated(false)
       } finally {
-        setLoading(false)
         setAuthChecked(true)
       }
     })
