@@ -25,9 +25,8 @@ const Login: React.FC = () => {
     try {
       const success = await login(email, password)
       if (success) {
-        // Show success message
-        toast.success("Welcome back!", "You have been signed in successfully")
-        // Don't navigate manually - let the auth context handle it
+        // Show success message in top right
+        toast.success("Login Successful", "Welcome back! You have been signed in successfully.")
       } else {
         setError("Invalid email or password. Please check your credentials and try again.")
         toast.error("Sign In Failed", "Please check your email and password")
