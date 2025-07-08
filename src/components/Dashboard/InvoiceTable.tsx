@@ -172,39 +172,57 @@ const InvoiceTable: React.FC<InvoiceTableProps> = ({ invoices, onViewInvoice, on
                       <td className="py-4 px-4">
                         <div className="flex items-center gap-1">
                           <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
-                            <Button size="sm" variant="primary" icon={Eye} onClick={() => onViewInvoice(invoice)}>
-                              View
-                            </Button>
+                            <button
+                              onClick={() => onViewInvoice(invoice)}
+                              className="p-2 text-emerald-500 hover:bg-emerald-500/10 rounded-lg transition-colors"
+                              title="View Invoice"
+                            >
+                              <Eye className="w-4 h-4" />
+                            </button>
                           </motion.div>
                           <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
-                            <Button
-                              size="sm"
-                              variant="secondary"
-                              icon={Download}
+                            <button
                               onClick={() => handleDownload(invoice)}
+                              className="p-2 text-blue-500 hover:bg-blue-500/10 rounded-lg transition-colors"
+                              title="Download PDF"
                             >
-                              PDF
-                            </Button>
+                              <Download className="w-4 h-4" />
+                            </button>
                           </motion.div>
                           <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
-                            <Button size="sm" variant="secondary" icon={Edit} onClick={() => onEditInvoice(invoice)}>
-                              Edit
-                            </Button>
+                            <button
+                              onClick={() => onEditInvoice(invoice)}
+                              className="p-2 text-gray-400 hover:bg-gray-500/10 rounded-lg transition-colors"
+                              title="Edit Invoice"
+                            >
+                              <Edit className="w-4 h-4" />
+                            </button>
                           </motion.div>
                           <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
-                            <Button
-                              size="sm"
-                              variant={invoice.status === "paid" ? "secondary" : "success"}
-                              icon={invoice.status === "paid" ? XCircle : CheckCircle}
+                            <button
                               onClick={() => toggleInvoiceStatus(invoice)}
+                              className={`p-2 rounded-lg transition-colors ${
+                                invoice.status === "paid"
+                                  ? "text-yellow-500 hover:bg-yellow-500/10"
+                                  : "text-green-500 hover:bg-green-500/10"
+                              }`}
+                              title={invoice.status === "paid" ? "Mark as Unpaid" : "Mark as Paid"}
                             >
-                              {invoice.status === "paid" ? "Unpaid" : "Paid"}
-                            </Button>
+                              {invoice.status === "paid" ? (
+                                <XCircle className="w-4 h-4" />
+                              ) : (
+                                <CheckCircle className="w-4 h-4" />
+                              )}
+                            </button>
                           </motion.div>
                           <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
-                            <Button size="sm" variant="danger" icon={Trash2} onClick={() => handleDeleteClick(invoice)}>
-                              Delete
-                            </Button>
+                            <button
+                              onClick={() => handleDeleteClick(invoice)}
+                              className="p-2 text-red-500 hover:bg-red-500/10 rounded-lg transition-colors"
+                              title="Delete Invoice"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
                           </motion.div>
                         </div>
                       </td>
