@@ -11,6 +11,7 @@ import {
   getUserInvoices,
 } from "../services/firebaseService"
 import type { Invoice, DashboardSummary } from "../types"
+import { useToast } from "../hooks/useToast"
 
 interface AppContextType {
   invoices: Invoice[]
@@ -40,6 +41,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const { user, isAuthenticated } = useAuth()
+  const { toast } = useToast()
 
   // Debug logging
   useEffect(() => {
@@ -141,9 +143,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       if (result.success) {
         console.log("Invoice added successfully, refreshing list")
         await loadInvoices() // Reload invoices to get the latest data
+        toast.success("Invoice Created", `Invoice ${invoiceNumber} has been created successfully`)
       } else {
         console.error("Failed to add invoice:", result.error)
         setError(result.error || "Failed to add invoice")
+        toast.error("Failed to Create Invoice", result.error || "An error occurred while creating the invoice")
       }
     } catch (error: any) {
       console.error("Error adding invoice:", error)
@@ -176,9 +180,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       if (result.success) {
         console.log("Invoice updated successfully, refreshing list")
         await loadInvoices() // Reload invoices to get the latest data
+        toast.success("Invoice Updated", "Invoice has been updated successfully")
       } else {
         console.error("Failed to update invoice:", result.error)
         setError(result.error || "Failed to update invoice")
+        toast.error("Failed to Update Invoice", result.error || "An error occurred while updating the invoice")
       }
     } catch (error: any) {
       console.error("Error updating invoice:", error)

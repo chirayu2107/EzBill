@@ -11,6 +11,7 @@ import Button from "../UI/Button"
 import Card from "../UI/Card"
 import { generateInvoicePDF } from "../../utils/pdf"
 import { useAuth } from "../../context/AuthContext"
+import { useToast } from "../../hooks/useToast"
 
 interface InvoiceTableProps {
   invoices: Invoice[]
@@ -23,6 +24,7 @@ const InvoiceTable: React.FC<InvoiceTableProps> = ({ invoices, onViewInvoice, on
   const { updateInvoiceStatus, deleteInvoice } = useApp()
   const { user } = useAuth()
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null)
+  const { toast } = useToast()
 
   const getStatusColor = (status: Invoice["status"]) => {
     switch (status) {
@@ -40,10 +42,13 @@ const InvoiceTable: React.FC<InvoiceTableProps> = ({ invoices, onViewInvoice, on
   const toggleInvoiceStatus = (invoice: Invoice) => {
     const newStatus = invoice.status === "paid" ? "unpaid" : "paid"
     updateInvoiceStatus(invoice.id, newStatus)
+    toast.success("Status Updated", `Invoice ${invoice.invoiceNumber} marked as ${newStatus}`)
   }
 
   const handleDownload = (invoice: Invoice) => {
+    toast.info("Generating PDF", "Creating your invoice PDF...")
     generateInvoicePDF(invoice, user)
+    toast.success("PDF Generated", "Invoice PDF has been downloaded")
   }
 
   const handleDeleteClick = (invoice: Invoice) => {
@@ -53,6 +58,7 @@ const InvoiceTable: React.FC<InvoiceTableProps> = ({ invoices, onViewInvoice, on
   const confirmDelete = (invoice: Invoice) => {
     deleteInvoice(invoice.id)
     setDeleteConfirm(null)
+    toast.success("Invoice Deleted", `Invoice ${invoice.invoiceNumber} has been deleted`)
   }
 
   const cancelDelete = () => {
