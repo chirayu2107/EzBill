@@ -69,6 +69,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
               ifscCode: "",
               gstNumber: "",
               invoicePrefix: "XUSE",
+              signature: "", // Initialize signature field
               createdAt: new Date(),
             }
             setUser(basicUser)
@@ -145,6 +146,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (user && auth.currentUser) {
       try {
         console.log("Updating profile for user:", auth.currentUser.uid, userData)
+
+        // Log signature data specifically
+        if (userData.signature !== undefined) {
+          console.log("Signature update - length:", userData.signature?.length || 0)
+          console.log("Signature starts with data:image:", userData.signature?.startsWith("data:image/") || false)
+        }
+
         const result = await updateUserData(auth.currentUser.uid, userData)
 
         if (result.success) {

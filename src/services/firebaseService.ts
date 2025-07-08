@@ -52,6 +52,7 @@ export const signUpUser = async (userData: SignupData) => {
       ifscCode: userData.ifscCode || "",
       gstNumber: userData.gstNumber || "",
       invoicePrefix: invoicePrefix,
+      signature: "", // Initialize signature as empty string
       createdAt: Timestamp.now(),
     }
 
@@ -172,6 +173,7 @@ export const getUserData = async (uid: string) => {
         ifscCode: userData.ifscCode || "",
         gstNumber: userData.gstNumber || "",
         invoicePrefix: userData.invoicePrefix || "XUSE",
+        signature: userData.signature || "", // Handle signature field
         createdAt: userData.createdAt?.toDate() || new Date(),
       }
 
@@ -204,7 +206,12 @@ export const updateUserData = async (uid: string, userData: Partial<User>) => {
 
     Object.entries(userData).forEach(([key, value]) => {
       if (value !== undefined && key !== "id" && key !== "createdAt") {
-        updateData[key] = value
+        // Handle signature field specifically
+        if (key === "signature") {
+          updateData[key] = value || "" // Ensure signature is always a string
+        } else {
+          updateData[key] = value
+        }
       }
     })
 
@@ -251,6 +258,7 @@ export const updateUserData = async (uid: string, userData: Partial<User>) => {
         ifscCode: "",
         gstNumber: "",
         invoicePrefix: "XUSE",
+        signature: "", // Initialize signature field
         createdAt: Timestamp.now(),
         ...updateData,
       }
