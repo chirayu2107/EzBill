@@ -4,7 +4,6 @@ import type React from "react"
 import { useState, useMemo } from "react"
 import { motion } from "framer-motion"
 import { useApp } from "../../context/AppContext"
-import { useAuth } from "../../context/AuthContext"
 import { useToast } from "../../hooks/useToast"
 import { formatCurrency, formatDate } from "../../utils/calculations"
 import { BarChart3, Download, TrendingUp, FileSpreadsheet, ChevronDown } from "lucide-react"
@@ -20,7 +19,6 @@ type ViewType = "chart" | "table"
 
 const Analytics: React.FC = () => {
   const { invoices } = useApp()
-  const { user } = useAuth()
   const { toast } = useToast()
 
   const [reportType, setReportType] = useState<ReportType>("monthly")
@@ -104,7 +102,7 @@ const Analytics: React.FC = () => {
     // Initialize all months of the FY
     const months = ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar"]
 
-    months.forEach((monthName, index) => {
+    months.forEach((_, index) => {
       const actualMonth = index < 9 ? index + 4 : index - 8
       const actualYear = index < 9 ? selectedFY : selectedFY + 1
       const monthKey = `${actualYear}-${String(actualMonth).padStart(2, "0")}`
