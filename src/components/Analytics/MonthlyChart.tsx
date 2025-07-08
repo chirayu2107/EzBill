@@ -1,8 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useMemo } from "react"
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts"
+import { useMemo, useState, useEffect } from "react"
 import { formatCurrency } from "../../utils/calculations"
 
 interface MonthlyChartProps {
@@ -15,7 +14,32 @@ interface MonthlyChartProps {
   }>
 }
 
+interface TooltipProps {
+  active?: boolean
+  payload?: Array<{
+    value: number
+    payload: {
+      day: number
+      sales: number
+      invoices: number
+      date: string
+    }
+  }>
+  label?: string | number
+}
+
 const MonthlyChart: React.FC<MonthlyChartProps> = ({ data }) => {
+  const [isClient, setIsClient] = useState(false)
+  const [RechartsComponents, setRechartsComponents] = useState<any>(null)
+
+  useEffect(() => {
+    setIsClient(true)
+    // Dynamic import to avoid SSR issues
+    import("recharts").then((recharts) => {
+      setRechartsComponents(recharts)
+    })
+  }, [])
+
   const chartData = useMemo(() => {
     return data.map((item) => ({
       day: item.day,
@@ -25,7 +49,7 @@ const MonthlyChart: React.FC<MonthlyChartProps> = ({ data }) => {
     }))
   }, [data])
 
-  const CustomTooltip = ({ active, payload, label }: any) => {
+  const CustomTooltip: React.FC<TooltipProps> = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload
       return (
@@ -40,6 +64,24 @@ const MonthlyChart: React.FC<MonthlyChartProps> = ({ data }) => {
     return null
   }
 
+  const formatYAxisTick = (value: number): string => {
+    return `₹${(value / 1000).toFixed(0)}K`
+  }
+
+  // Show loading state while components are loading
+  if (!isClient || !RechartsComponents) {
+    return (
+      <div className="w-full h-96 flex items-center justify-center" id="monthly-chart">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500 mx-auto mb-2"></div>
+          <p className="text-gray-400">Loading chart...</p>
+        </div>
+      </div>
+    )
+  }
+
+  const { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } = RechartsComponents
+
   return (
     <div className="w-full h-96" id="monthly-chart">
       <ResponsiveContainer width="100%" height="100%">
@@ -53,7 +95,7 @@ const MonthlyChart: React.FC<MonthlyChartProps> = ({ data }) => {
             fontSize={12}
             tickLine={false}
             axisLine={false}
-            tickFormatter={(value) => `₹${(value / 1000).toFixed(0)}K`}
+            tickFormatter={formatYAxisTick}
           />
           <YAxis
             yAxisId="invoices"

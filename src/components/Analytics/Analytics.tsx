@@ -11,8 +11,6 @@ import Button from "../UI/Button"
 import Card from "../UI/Card"
 import MonthlyChart from "./MonthlyChart"
 import FinancialYearChart from "./FinancialYearChart"
-import { exportToExcel } from "../../utils/excelExport"
-import { exportChartAsPNG } from "../../utils/chartExport"
 
 type ReportType = "monthly" | "financial-year"
 type ViewType = "chart" | "table"
@@ -140,6 +138,9 @@ const Analytics: React.FC = () => {
 
   const handleExportExcel = async () => {
     try {
+      // Dynamic import to avoid SSR issues
+      const XLSX = await import("xlsx")
+
       const filename =
         reportType === "monthly"
           ? `Monthly_Report_${selectedMonth}.xlsx`
@@ -164,7 +165,22 @@ const Analytics: React.FC = () => {
         }))
       }
 
-      await exportToExcel(worksheetData, filename, reportType === "monthly" ? "Daily Sales" : "Monthly Sales")
+      // Create workbook and worksheet
+      const workbook = XLSX.utils.book_new()
+      const worksheet = XLSX.utils.json_to_sheet(worksheetData)
+
+      // Auto-size columns
+      const colWidths = Object.keys(worksheetData[0] || {}).map((key) => ({
+        wch: Math.max(key.length, ...worksheetData.map((row) => String(row[key] || "").length)) + 2,
+      }))
+      worksheet["!cols"] = colWidths
+
+      // Add worksheet to workbook
+      XLSX.utils.book_append_sheet(workbook, worksheet, reportType === "monthly" ? "Daily Sales" : "Monthly Sales")
+
+      // Write file
+      XLSX.writeFile(workbook, filename)
+
       toast.success(
         "Export Successful",
         `${reportType === "monthly" ? "Monthly" : "Financial Year"} report exported to Excel`,
@@ -177,11 +193,38 @@ const Analytics: React.FC = () => {
 
   const handleExportChart = async () => {
     try {
+      // Dynamic import to avoid SSR issues
+      const html2canvas = (await import("html2canvas")).default
+
       const chartId = reportType === "monthly" ? "monthly-chart" : "fy-chart"
       const filename =
         reportType === "monthly" ? `Monthly_Chart_${selectedMonth}.png` : `FY_Chart_${selectedFY}-${selectedFY + 1}.png`
 
-      await exportChartAsPNG(chartId, filename)
+      const chartElement = document.getElementById(chartId)
+      if (!chartElement) {
+        throw new Error("Chart element not found")
+      }
+
+      // Create canvas from the chart element
+      const canvas = await html2canvas(chartElement, {
+        scale: 2, // Higher quality
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: "#1F2937", // Match the dark theme
+        width: chartElement.scrollWidth,
+        height: chartElement.scrollHeight,
+      })
+
+      // Create download link
+      const link = document.createElement("a")
+      link.download = filename
+      link.href = canvas.toDataURL("image/png")
+
+      // Trigger download
+      document.body.appendChild(link)
+      link.click()
+      document.body.removeChild(link)
+
       toast.success("Chart Exported", "Chart saved as PNG image")
     } catch (error) {
       console.error("Chart export error:", error)
@@ -268,21 +311,30 @@ const Analytics: React.FC = () => {
                   onChange={(e) => setSelectedMonth(e.target.value)}
                   className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none"
                 >
-                  {availableMonths.map((month) => {
-                    const [year, monthNum] = month.split("-")
-                    const monthName = new Date(Number.parseInt(year), Number.parseInt(monthNum) - 1).toLocaleDateString(
-                      "en-US",
-                      {
+                  {availableMonths.length > 0 ? (
+                    availableMonths.map((month) => {
+                      const [year, monthNum] = month.split("-")
+                      const monthName = new Date(
+                        Number.parseInt(year),
+                        Number.parseInt(monthNum) - 1,
+                      ).toLocaleDateString("en-US", {
                         year: "numeric",
                         month: "long",
-                      },
-                    )
-                    return (
-                      <option key={month} value={month}>
-                        {monthName}
-                      </option>
-                    )
-                  })}
+                      })
+                      return (
+                        <option key={month} value={month}>
+                          {monthName}
+                        </option>
+                      )
+                    })
+                  ) : (
+                    <option value={selectedMonth}>
+                      {new Date(selectedMonth + "-01").toLocaleDateString("en-US", {
+                        year: "numeric",
+                        month: "long",
+                      })}
+                    </option>
+                  )}
                 </select>
               ) : (
                 <select
@@ -290,11 +342,17 @@ const Analytics: React.FC = () => {
                   onChange={(e) => setSelectedFY(Number.parseInt(e.target.value))}
                   className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none"
                 >
-                  {availableFYs.map((fy) => (
-                    <option key={fy} value={fy}>
-                      FY {fy}-{fy + 1}
+                  {availableFYs.length > 0 ? (
+                    availableFYs.map((fy) => (
+                      <option key={fy} value={fy}>
+                        FY {fy}-{fy + 1}
+                      </option>
+                    ))
+                  ) : (
+                    <option value={selectedFY}>
+                      FY {selectedFY}-{selectedFY + 1}
                     </option>
-                  ))}
+                  )}
                 </select>
               )}
               <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
