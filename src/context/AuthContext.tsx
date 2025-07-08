@@ -23,6 +23,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(true)
   const [authChecked, setAuthChecked] = useState(false)
 
+  // Function to refresh user data from Firestore
+  const refreshUserData = async (uid: string) => {
+    try {
+      console.log("Refreshing user data for UID:", uid)
+      const result = await getUserData(uid)
+
+      if (result.success && result.userData) {
+        console.log("User data refreshed successfully:", result.userData)
+        setUser(result.userData as User)
+        return result.userData
+      } else {
+        console.error("Failed to refresh user data:", result.error)
+        return null
+      }
+    } catch (error) {
+      console.error("Error refreshing user data:", error)
+      return null
+    }
+  }
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       console.log("Auth state changed:", firebaseUser?.uid)
@@ -30,19 +50,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       try {
         if (firebaseUser) {
           // User is signed in, get their data from Firestore
-          const result = await getUserData(firebaseUser.uid)
-          console.log("User data result:", result)
+          const userData = await refreshUserData(firebaseUser.uid)
 
-          if (result.success && result.userData) {
-            setUser(result.userData as User)
+          if (userData) {
             setIsAuthenticated(true)
           } else {
-            console.error("Failed to get user data:", result.error)
             // If user data doesn't exist, create a basic user object
+            console.log("Creating basic user object for new user")
             const basicUser: User = {
               id: firebaseUser.uid,
               email: firebaseUser.email || "",
               fullName: firebaseUser.displayName || "",
+              phoneNumber: "",
+              panNumber: "",
+              address: "",
+              state: "",
+              bankName: "",
+              accountNumber: "",
+              ifscCode: "",
+              gstNumber: "",
+              invoicePrefix: "XUSE",
               createdAt: new Date(),
             }
             setUser(basicUser)
@@ -121,18 +148,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       try {
         console.log("Updating profile for user:", auth.currentUser.uid, userData)
         const result = await updateUserData(auth.currentUser.uid, userData)
+
         if (result.success) {
-          // Update local user state immediately with proper merging
-          const updatedUser = {
-            ...user,
-            ...userData,
-            // Ensure we don't overwrite the ID and createdAt
-            id: user.id,
-            createdAt: user.createdAt,
+          // Refresh user data from Firestore to get the latest data
+          const refreshedUserData = await refreshUserData(auth.currentUser.uid)
+
+          if (refreshedUserData) {
+            console.log("Profile updated and refreshed successfully")
+            return { success: true }
+          } else {
+            // Fallback: update local state if refresh fails
+            const updatedUser = {
+              ...user,
+              ...userData,
+              id: user.id,
+              createdAt: user.createdAt,
+            }
+            setUser(updatedUser)
+            console.log("Profile updated successfully (local fallback)")
+            return { success: true }
           }
-          setUser(updatedUser)
-          console.log("Profile updated successfully:", updatedUser)
-          return { success: true }
         } else {
           console.error("Failed to update profile:", result.error)
           throw new Error(result.error || "Failed to update profile")

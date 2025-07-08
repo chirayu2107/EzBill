@@ -31,6 +31,12 @@ export const signUpUser = async (userData: SignupData) => {
       console.log("Display name updated:", userData.fullName)
     }
 
+    // Generate invoice prefix from full name
+    const invoicePrefix =
+      userData.fullName && userData.fullName.length >= 4
+        ? userData.fullName.replace(/\s+/g, "").substring(0, 4).toUpperCase()
+        : "XUSE"
+
     // Save user data to Firestore using the user's UID as document ID
     const userDoc = {
       email: userData.email,
@@ -43,7 +49,7 @@ export const signUpUser = async (userData: SignupData) => {
       accountNumber: userData.accountNumber || "",
       ifscCode: userData.ifscCode || "",
       gstNumber: userData.gstNumber || "",
-      invoicePrefix: userData.invoicePrefix || "XUSE",
+      invoicePrefix: invoicePrefix,
       createdAt: Timestamp.now(),
     }
 
@@ -137,6 +143,11 @@ export const getUserData = async (uid: string) => {
   try {
     console.log("Getting user data for UID:", uid)
 
+    if (!uid) {
+      console.error("No UID provided")
+      return { success: false, error: "No user ID provided" }
+    }
+
     // Get user by document ID (UID)
     const userDocRef = doc(db, "users", uid)
     const userDocSnap = await getDoc(userDocRef)
@@ -145,7 +156,8 @@ export const getUserData = async (uid: string) => {
       const userData = userDocSnap.data()
       console.log("Raw user data from Firestore:", userData)
 
-      const processedUserData = {
+      // Ensure all fields have default values
+      const processedUserData: User = {
         id: userDocSnap.id,
         email: userData.email || "",
         fullName: userData.fullName || "",
@@ -168,8 +180,8 @@ export const getUserData = async (uid: string) => {
       }
     }
 
-    console.log("User data not found for UID:", uid)
-    return { success: false, error: "User data not found" }
+    console.log("User document not found for UID:", uid)
+    return { success: false, error: "User document not found" }
   } catch (error: any) {
     console.error("Get user data error:", error)
     return { success: false, error: error.message }
@@ -180,42 +192,59 @@ export const updateUserData = async (uid: string, userData: Partial<User>) => {
   try {
     console.log("Updating user data for UID:", uid, userData)
 
-    // Remove undefined values and prepare clean update data
-    const cleanUserData: Record<string, any> = {}
+    if (!uid) {
+      console.error("No UID provided for update")
+      return { success: false, error: "No user ID provided" }
+    }
+
+    // Generate invoice prefix if fullName is being updated
+    const updateData: Record<string, any> = {}
+
     Object.entries(userData).forEach(([key, value]) => {
       if (value !== undefined && key !== "id" && key !== "createdAt") {
-        cleanUserData[key] = value
+        updateData[key] = value
       }
     })
 
-    console.log("Clean user data to update:", cleanUserData)
+    // Auto-generate invoice prefix if fullName is provided
+    if (userData.fullName && userData.fullName.length >= 4) {
+      updateData.invoicePrefix = userData.fullName.replace(/\s+/g, "").substring(0, 4).toUpperCase()
+    }
 
-    // Try to update using UID as document ID first
+    console.log("Clean user data to update:", updateData)
+
+    // Update using UID as document ID
     const userDocRef = doc(db, "users", uid)
 
-    // Check if document exists first
+    // Check if document exists
     const docSnap = await getDoc(userDocRef)
 
     if (docSnap.exists()) {
-      await updateDoc(userDocRef, cleanUserData)
-      console.log("User data updated successfully using UID as doc ID")
+      await updateDoc(userDocRef, updateData)
+      console.log("User data updated successfully")
       return { success: true }
     } else {
-      console.log("Document doesn't exist with UID as doc ID, trying fallback...")
-
-      // Fallback: find by uid field
-      const q = query(collection(db, "users"), where("uid", "==", uid))
-      const querySnapshot = await getDocs(q)
-
-      if (!querySnapshot.empty) {
-        const userDoc = querySnapshot.docs[0]
-        await updateDoc(doc(db, "users", userDoc.id), cleanUserData)
-        console.log("User data updated successfully (fallback method)")
-        return { success: true }
-      } else {
-        console.error("User document not found in either method")
-        return { success: false, error: "User document not found" }
+      // If document doesn't exist, create it
+      console.log("Document doesn't exist, creating new one")
+      const newUserData = {
+        email: "",
+        fullName: "",
+        phoneNumber: "",
+        panNumber: "",
+        address: "",
+        state: "",
+        bankName: "",
+        accountNumber: "",
+        ifscCode: "",
+        gstNumber: "",
+        invoicePrefix: "XUSE",
+        createdAt: Timestamp.now(),
+        ...updateData,
       }
+
+      await setDoc(userDocRef, newUserData)
+      console.log("New user document created successfully")
+      return { success: true }
     }
   } catch (error: any) {
     console.error("Update user data error:", error)

@@ -4,7 +4,7 @@ import type React from "react"
 import { useState, useEffect } from "react"
 import { useAuth } from "../../context/AuthContext"
 import { useToast } from "../../hooks/useToast"
-import { User, Mail, Phone, CreditCard, MapPin, Building, Hash, Save, AlertCircle } from "lucide-react"
+import { User, Mail, Phone, CreditCard, MapPin, Building, Hash, Save, AlertCircle, RefreshCw } from "lucide-react"
 import Button from "../UI/Button"
 import Card from "../UI/Card"
 
@@ -13,6 +13,7 @@ const Profile: React.FC = () => {
   const { toast } = useToast()
   const [isEditing, setIsEditing] = useState(false)
   const [saving, setSaving] = useState(false)
+  const [loading, setLoading] = useState(true)
   const [formData, setFormData] = useState({
     fullName: "",
     phoneNumber: "",
@@ -28,8 +29,10 @@ const Profile: React.FC = () => {
 
   // Sync form data with user data whenever user changes
   useEffect(() => {
+    console.log("Profile component - user data changed:", user)
+
     if (user) {
-      setFormData({
+      const newFormData = {
         fullName: user.fullName || "",
         phoneNumber: user.phoneNumber || "",
         panNumber: user.panNumber || "",
@@ -40,19 +43,15 @@ const Profile: React.FC = () => {
         ifscCode: user.ifscCode || "",
         gstNumber: user.gstNumber || "",
         invoicePrefix: user.invoicePrefix || "XUSE",
-      })
+      }
+
+      console.log("Setting form data:", newFormData)
+      setFormData(newFormData)
+      setLoading(false)
+    } else {
+      setLoading(true)
     }
   }, [user])
-
-  // Auto-generate invoice prefix from fullName
-  useEffect(() => {
-    if (formData.fullName && formData.fullName.length >= 4) {
-      const autoPrefix = formData.fullName.replace(/\s+/g, "").substring(0, 4).toUpperCase()
-      if (autoPrefix !== formData.invoicePrefix) {
-        setFormData((prev) => ({ ...prev, invoicePrefix: autoPrefix }))
-      }
-    }
-  }, [formData.fullName])
 
   const updateField = (field: string, value: string) => {
     setFormData((prev) => {
@@ -71,6 +70,7 @@ const Profile: React.FC = () => {
   const handleSave = async () => {
     setSaving(true)
     try {
+      console.log("Saving profile data:", formData)
       await updateProfile(formData)
       setIsEditing(false)
       toast.success("Profile Updated", "Your business profile has been saved successfully!")
@@ -103,14 +103,28 @@ const Profile: React.FC = () => {
 
   // Check if profile is incomplete
   const isProfileIncomplete =
-    !user?.fullName ||
-    !user?.phoneNumber ||
-    !user?.panNumber ||
-    !user?.address ||
-    !user?.state ||
-    !user?.bankName ||
-    !user?.accountNumber ||
-    !user?.ifscCode
+    !formData.fullName ||
+    !formData.phoneNumber ||
+    !formData.panNumber ||
+    !formData.address ||
+    !formData.state ||
+    !formData.bankName ||
+    !formData.accountNumber ||
+    !formData.ifscCode
+
+  // Show loading state
+  if (loading) {
+    return (
+      <div className="max-w-4xl mx-auto space-y-8">
+        <div className="flex items-center justify-center py-12">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-500 mx-auto mb-4"></div>
+            <div className="text-white text-lg">Loading profile...</div>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="max-w-4xl mx-auto space-y-8 select-none">
@@ -118,9 +132,15 @@ const Profile: React.FC = () => {
         <div>
           <h1 className="text-3xl font-bold text-white">Business Profile</h1>
           <p className="text-gray-400 mt-1">Manage your business information</p>
+          {user && <p className="text-xs text-gray-500 mt-1">User ID: {user.id}</p>}
         </div>
         {!isEditing ? (
-          <Button onClick={() => setIsEditing(true)}>Edit Profile</Button>
+          <div className="flex gap-3">
+            <Button onClick={() => setIsEditing(true)}>Edit Profile</Button>
+            <Button onClick={() => window.location.reload()} variant="secondary" icon={RefreshCw} size="sm">
+              Refresh
+            </Button>
+          </div>
         ) : (
           <div className="flex gap-3">
             <Button
@@ -174,7 +194,7 @@ const Profile: React.FC = () => {
           <h3 className="text-lg font-semibold text-white mb-4">Personal Details</h3>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Business Name *</label>
+              <label className="block text-sm font-medium text-gray-300 mb-2">Full Name *</label>
               <div className="relative">
                 <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                 <input
