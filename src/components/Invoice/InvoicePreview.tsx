@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import type { Invoice } from "../../types"
 import { useAuth } from "../../context/AuthContext"
 import { formatCurrency, formatDate } from "../../utils/calculations"
@@ -13,27 +13,48 @@ import { useToast } from "../../hooks/useToast"
 interface InvoicePreviewProps {
   invoice: Invoice
   onClose: () => void
+  autoDownload?: boolean
 }
 
-const InvoicePreview: React.FC<InvoicePreviewProps> = ({ invoice, onClose }) => {
+const InvoicePreview: React.FC<InvoicePreviewProps> = ({ invoice, onClose, autoDownload = false }) => {
   const { user } = useAuth()
   const { toast } = useToast()
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false)
 
+  // Auto-download functionality
+  useEffect(() => {
+    if (autoDownload) {
+      // Small delay to ensure the component is fully rendered
+      const timer = setTimeout(() => {
+        handleDownloadPDF()
+      }, 500)
+
+      return () => clearTimeout(timer)
+    }
+  }, [autoDownload])
+
   const handleDownloadPDF = async () => {
     setIsGeneratingPDF(true)
-    toast.info("Generating PDF", "Please wait while we create your invoice PDF...")
+    toast.info("Generating PDF", "Creating your invoice PDF from preview...")
 
     try {
-      const result = await convertElementToPDF(`invoice-preview-${invoice.id}`, `invoice-${invoice.invoiceNumber}.pdf`)
+      const filename = `invoice-${invoice.invoiceNumber}.pdf`
+      const result = await convertElementToPDF(`invoice-preview-${invoice.id}`, filename)
 
       if (result.success) {
         toast.success("PDF Downloaded", "Your invoice has been downloaded successfully!")
+        if (autoDownload) {
+          // Close the preview after successful download
+          setTimeout(() => {
+            onClose()
+          }, 1000)
+        }
       } else {
-        toast.error("PDF Generation Failed", result.error || "Failed to generate PDF")
+        throw new Error(result.error || "Failed to generate PDF")
       }
     } catch (error: any) {
-      toast.error("PDF Generation Failed", error.message || "An unexpected error occurred")
+      console.error("PDF generation error:", error)
+      toast.error("PDF Generation Failed", error.message || "Failed to generate PDF. Please try again.")
     } finally {
       setIsGeneratingPDF(false)
     }
@@ -106,23 +127,36 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({ invoice, onClose }) => 
   }
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-xl shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-y-auto">
-        {/* Header Actions */}
-        <div className="flex justify-between items-center p-6 border-b border-gray-200 bg-gray-50">
-          <h2 className="text-xl font-semibold text-gray-800">Invoice Preview</h2>
-          <div className="flex items-center gap-3">
-            <Button onClick={handleDownloadPDF} icon={Download} variant="primary" size="sm" disabled={isGeneratingPDF}>
-              {isGeneratingPDF ? "Generating..." : "Download PDF"}
-            </Button>
-            <Button onClick={handlePrint} icon={Printer} variant="secondary" size="sm">
-              Print
-            </Button>
-            <Button onClick={onClose} icon={X} variant="secondary" size="sm">
-              Close
-            </Button>
+    <div
+      className={`fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 ${autoDownload ? "pointer-events-none" : ""}`}
+    >
+      <div
+        className={`bg-white rounded-xl shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-y-auto ${autoDownload ? "opacity-0" : ""}`}
+      >
+        {/* Header Actions - Only show if not auto-downloading */}
+        {!autoDownload && (
+          <div className="flex justify-between items-center p-6 border-b border-gray-200 bg-gray-50">
+            <h2 className="text-xl font-semibold text-gray-800">Invoice Preview</h2>
+            <div className="flex items-center gap-3">
+              <Button
+                onClick={handleDownloadPDF}
+                icon={Download}
+                variant="primary"
+                size="sm"
+                disabled={isGeneratingPDF}
+                className={isGeneratingPDF ? "opacity-75" : ""}
+              >
+                {isGeneratingPDF ? "Generating..." : "Download"}
+              </Button>
+              <Button onClick={handlePrint} icon={Printer} variant="secondary" size="sm">
+                Print
+              </Button>
+              <Button onClick={onClose} icon={X} variant="secondary" size="sm">
+                Close
+              </Button>
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Invoice Content */}
         <div className="p-8 bg-white text-gray-800" id={`invoice-preview-${invoice.id}`}>

@@ -248,7 +248,7 @@ const CreateInvoice: React.FC = () => {
           </div>
 
           <div className="space-y-4">
-            {items.map((item, index) => (
+            {items.map((item) => (
               <div key={item.id} className="grid grid-cols-1 md:grid-cols-12 gap-4 p-4 bg-gray-700 rounded-lg">
                 <div className="md:col-span-4">
                   <label className="block text-sm font-medium text-gray-300 mb-2">Item Name *</label>

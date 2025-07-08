@@ -6,10 +6,10 @@ import { motion, AnimatePresence } from "framer-motion"
 import { useApp } from "../../context/AppContext"
 import type { Invoice } from "../../types"
 import { formatCurrency, formatDate } from "../../utils/calculations"
-import { Eye, CheckCircle, XCircle, Edit, Trash2, AlertTriangle, FileX } from "lucide-react"
+import { Eye, CheckCircle, XCircle, Edit, Trash2, AlertTriangle, FileX, Download } from "lucide-react"
 import Button from "../UI/Button"
 import Card from "../UI/Card"
-import { useAuth } from "../../context/AuthContext"
+import InvoicePreview from "../Invoice/InvoicePreview"
 import { useToast } from "../../hooks/useToast"
 
 interface InvoiceTableProps {
@@ -21,8 +21,8 @@ interface InvoiceTableProps {
 
 const InvoiceTable: React.FC<InvoiceTableProps> = ({ invoices, onViewInvoice, onEditInvoice, statusFilter }) => {
   const { updateInvoiceStatus, deleteInvoice } = useApp()
-  const { user } = useAuth()
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null)
+  const [downloadPreview, setDownloadPreview] = useState<Invoice | null>(null)
   const { toast } = useToast()
 
   const getStatusColor = (status: Invoice["status"]) => {
@@ -42,6 +42,14 @@ const InvoiceTable: React.FC<InvoiceTableProps> = ({ invoices, onViewInvoice, on
     const newStatus = invoice.status === "paid" ? "unpaid" : "paid"
     updateInvoiceStatus(invoice.id, newStatus)
     toast.success("Status Updated", `Invoice ${invoice.invoiceNumber} marked as ${newStatus}`)
+  }
+
+  const handleDownload = (invoice: Invoice) => {
+    setDownloadPreview(invoice)
+  }
+
+  const closeDownloadPreview = () => {
+    setDownloadPreview(null)
   }
 
   const handleDeleteClick = (invoice: Invoice) => {
@@ -168,9 +176,18 @@ const InvoiceTable: React.FC<InvoiceTableProps> = ({ invoices, onViewInvoice, on
                             <button
                               onClick={() => onViewInvoice(invoice)}
                               className="p-2 text-emerald-500 hover:bg-emerald-500/10 rounded-lg transition-colors"
-                              title="View & Download Invoice"
+                              title="View Invoice"
                             >
                               <Eye className="w-4 h-4" />
+                            </button>
+                          </motion.div>
+                          <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+                            <button
+                              onClick={() => handleDownload(invoice)}
+                              className="p-2 text-blue-500 hover:bg-blue-500/10 rounded-lg transition-colors"
+                              title="Download PDF"
+                            >
+                              <Download className="w-4 h-4" />
                             </button>
                           </motion.div>
                           <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
@@ -284,6 +301,11 @@ const InvoiceTable: React.FC<InvoiceTableProps> = ({ invoices, onViewInvoice, on
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Download Preview Modal - Hidden but renders for PDF generation */}
+      {downloadPreview && (
+        <InvoicePreview invoice={downloadPreview} onClose={closeDownloadPreview} autoDownload={true} />
+      )}
     </>
   )
 }
