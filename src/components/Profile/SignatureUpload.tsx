@@ -144,7 +144,7 @@ const SignatureUpload: React.FC<SignatureUploadProps> = ({ currentSignature, onS
           </div>
           {!disabled && (
             <Button onClick={handleButtonClick} variant="secondary" size="sm" icon={Upload}>
-              Replace Signature
+              Upload/Replace Signature
             </Button>
           )}
         </div>
