@@ -54,17 +54,23 @@ const Profile: React.FC = () => {
   }, [user])
 
   const updateField = (field: string, value: string) => {
-    setFormData((prev) => {
-      const updated = { ...prev, [field]: value }
+    setFormData((prev) => ({
+      ...prev,
+      [field]: value,
+    }))
+  }
 
-      // Auto-generate invoice prefix when fullName changes
-      if (field === "fullName" && value && value.length >= 4) {
-        const autoPrefix = value.replace(/\s+/g, "").substring(0, 4).toUpperCase()
-        updated.invoicePrefix = autoPrefix
-      }
-
-      return updated
-    })
+  const generatePrefixFromName = () => {
+    if (formData.fullName && formData.fullName.length >= 4) {
+      const autoPrefix = formData.fullName.replace(/\s+/g, "").substring(0, 4).toUpperCase()
+      setFormData((prev) => ({
+        ...prev,
+        invoicePrefix: autoPrefix,
+      }))
+      toast.info("Prefix Generated", `Invoice prefix set to "${autoPrefix}" from your name`)
+    } else {
+      toast.warning("Name Required", "Please enter your full name (at least 4 characters) to generate prefix")
+    }
   }
 
   const handleSave = async () => {
@@ -352,15 +358,34 @@ const Profile: React.FC = () => {
           <h3 className="text-lg font-semibold text-white mb-4">Business Settings</h3>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Invoice Prefix</label>
-              <input
-                type="text"
-                value={formData.invoicePrefix}
-                readOnly
-                className="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded-lg text-white opacity-75 cursor-not-allowed"
-                placeholder="Auto-generated from name"
-              />
-              <p className="text-xs text-gray-400 mt-1">Auto-generated from first 4 letters of your name</p>
+              <label className="block text-sm font-medium text-gray-300 mb-2">Invoice Prefix *</label>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={formData.invoicePrefix}
+                  onChange={(e) => updateField("invoicePrefix", e.target.value.toUpperCase())}
+                  disabled={!isEditing}
+                  className="flex-1 px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:opacity-50"
+                  placeholder="Enter invoice prefix (e.g., ABCD)"
+                  maxLength={6}
+                />
+                {isEditing && (
+                  <Button
+                    onClick={generatePrefixFromName}
+                    variant="secondary"
+                    size="sm"
+                    className="whitespace-nowrap"
+                    disabled={!formData.fullName || formData.fullName.length < 4}
+                  >
+                    Auto Generate
+                  </Button>
+                )}
+              </div>
+              <p className="text-xs text-gray-400 mt-1">
+                {isEditing
+                  ? "Enter a custom prefix or click 'Auto Generate' to create from your name"
+                  : "This prefix will be used for all your invoice numbers (e.g., ABCD-5970)"}
+              </p>
             </div>
 
             <div className="bg-gray-700 rounded-lg p-4">
@@ -386,6 +411,12 @@ const Profile: React.FC = () => {
                     className={`${formData.bankName && formData.accountNumber && formData.ifscCode ? "text-green-400" : "text-yellow-400"}`}
                   >
                     {formData.bankName && formData.accountNumber && formData.ifscCode ? "✓ Complete" : "⚠ Incomplete"}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-gray-400">Invoice Prefix</span>
+                  <span className={`${formData.invoicePrefix ? "text-green-400" : "text-yellow-400"}`}>
+                    {formData.invoicePrefix ? "✓ Set" : "⚠ Not Set"}
                   </span>
                 </div>
               </div>
