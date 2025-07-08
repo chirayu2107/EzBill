@@ -10,6 +10,7 @@ import Dashboard from "./components/Dashboard/Dashboard"
 import InvoicesPage from "./components/Dashboard/InvoicesPage"
 import CreateInvoice from "./components/Invoice/CreateInvoice"
 import Profile from "./components/Profile/Profile"
+import Analytics from "./components/Analytics/Analytics"
 import ToastContainer from "./components/UI/ToastContainer"
 import { useToast } from "./hooks/useToast"
 
@@ -34,6 +35,7 @@ function AppContent() {
             <Route path="create-invoice" element={<CreateInvoice />} />
             <Route path="edit-invoice/:id" element={<CreateInvoice />} />
             <Route path="invoices" element={<InvoicesPage />} />
+            <Route path="analytics" element={<Analytics />} />
             <Route path="profile" element={<Profile />} />
           </Route>
         </Routes>
