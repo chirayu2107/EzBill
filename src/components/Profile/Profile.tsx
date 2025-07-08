@@ -126,17 +126,12 @@ const Profile: React.FC = () => {
     )
   }
 
-  // Debug information (remove this after testing)
-  console.log("Profile render - user object:", user)
-  console.log("Profile render - user email:", user?.email)
-
   return (
     <div className="max-w-4xl mx-auto space-y-8 select-none">
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold text-white">Business Profile</h1>
           <p className="text-gray-400 mt-1">Manage your business information</p>
-          {user && <p className="text-xs text-gray-500 mt-1">User ID: {user.id}</p>}
         </div>
         {!isEditing ? (
           <div className="flex gap-3">

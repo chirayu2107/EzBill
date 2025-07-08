@@ -274,7 +274,8 @@ const CreateInvoice: React.FC = () => {
                   <label className="block text-sm font-medium text-gray-300 mb-2">Rate *</label>
                   <input
                     type="number"
-                    value={item.rate}
+                    placeholder="Enter rate"
+                    value={item.rate === 0 ? "" : item.rate}
                     onChange={(e) => updateItem(item.id, "rate", Number.parseFloat(e.target.value) || 0)}
                     className="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
                     min="0"
