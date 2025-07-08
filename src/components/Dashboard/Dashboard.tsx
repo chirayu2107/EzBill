@@ -150,7 +150,7 @@ const Dashboard: React.FC = () => {
               icon={Plus}
               size="lg"
               className="p-3 bg-white/10 hover:bg-white/20 rounded-lg transition-colors disabled:opacity-50"
->
+              >
               Create Invoice
             </Button>
             <motion.button
@@ -264,7 +264,12 @@ const Dashboard: React.FC = () => {
           </div>
         </div>
 
-        <InvoiceTable invoices={recentInvoices} onViewInvoice={handleViewInvoice} onEditInvoice={handleEditInvoice} />
+        <InvoiceTable
+          invoices={recentInvoices}
+          onViewInvoice={handleViewInvoice}
+          onEditInvoice={handleEditInvoice}
+          statusFilter={statusFilter}
+        />
 
         {recentInvoices.length > 0 && (
           <motion.div

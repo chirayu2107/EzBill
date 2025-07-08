@@ -202,7 +202,12 @@ const InvoicesPage: React.FC = () => {
 
       {/* Invoices Table */}
       <motion.div variants={itemVariants}>
-        <InvoiceTable invoices={filteredInvoices} onViewInvoice={handleViewInvoice} onEditInvoice={handleEditInvoice} />
+        <InvoiceTable
+          invoices={filteredInvoices}
+          onViewInvoice={handleViewInvoice}
+          onEditInvoice={handleEditInvoice}
+          statusFilter={statusFilter}
+        />
       </motion.div>
 
       {selectedInvoice && <InvoicePreview invoice={selectedInvoice} onClose={closePreview} />}
