@@ -126,6 +126,10 @@ const Profile: React.FC = () => {
     )
   }
 
+  // Debug information (remove this after testing)
+  console.log("Profile render - user object:", user)
+  console.log("Profile render - user email:", user?.email)
+
   return (
     <div className="max-w-4xl mx-auto space-y-8 select-none">
       <div className="flex justify-between items-center">
@@ -231,7 +235,8 @@ const Profile: React.FC = () => {
                   type="email"
                   value={user?.email || ""}
                   disabled
-                  className="w-full pl-10 pr-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white opacity-50"
+                  className="w-full pl-10 pr-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white opacity-75"
+                  placeholder="Email address"
                 />
               </div>
               <p className="text-xs text-gray-400 mt-1">Email cannot be changed</p>
