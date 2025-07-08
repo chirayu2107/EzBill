@@ -44,8 +44,28 @@ const Profile: React.FC = () => {
     }
   }, [user])
 
+  // Auto-generate invoice prefix from fullName
+  useEffect(() => {
+    if (formData.fullName && formData.fullName.length >= 4) {
+      const autoPrefix = formData.fullName.replace(/\s+/g, "").substring(0, 4).toUpperCase()
+      if (autoPrefix !== formData.invoicePrefix) {
+        setFormData((prev) => ({ ...prev, invoicePrefix: autoPrefix }))
+      }
+    }
+  }, [formData.fullName])
+
   const updateField = (field: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }))
+    setFormData((prev) => {
+      const updated = { ...prev, [field]: value }
+
+      // Auto-generate invoice prefix when fullName changes
+      if (field === "fullName" && value && value.length >= 4) {
+        const autoPrefix = value.replace(/\s+/g, "").substring(0, 4).toUpperCase()
+        updated.invoicePrefix = autoPrefix
+      }
+
+      return updated
+    })
   }
 
   const handleSave = async () => {
@@ -154,7 +174,7 @@ const Profile: React.FC = () => {
           <h3 className="text-lg font-semibold text-white mb-4">Personal Details</h3>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Full Name *</label>
+              <label className="block text-sm font-medium text-gray-300 mb-2">Business Name *</label>
               <div className="relative">
                 <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                 <input
@@ -316,12 +336,11 @@ const Profile: React.FC = () => {
               <input
                 type="text"
                 value={formData.invoicePrefix}
-                onChange={(e) => updateField("invoicePrefix", e.target.value.toUpperCase())}
-                disabled={!isEditing}
-                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:opacity-50"
-                placeholder="e.g., XUSE"
+                readOnly
+                className="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded-lg text-white opacity-75 cursor-not-allowed"
+                placeholder="Auto-generated from name"
               />
-              <p className="text-xs text-gray-400 mt-1">This will be used in your invoice numbers</p>
+              <p className="text-xs text-gray-400 mt-1">Auto-generated from first 4 letters of your name</p>
             </div>
 
             <div className="bg-gray-700 rounded-lg p-4">

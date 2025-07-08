@@ -143,14 +143,28 @@ export const getUserData = async (uid: string) => {
 
     if (userDocSnap.exists()) {
       const userData = userDocSnap.data()
-      console.log("User data found:", userData)
+      console.log("Raw user data from Firestore:", userData)
+
+      const processedUserData = {
+        id: userDocSnap.id,
+        email: userData.email || "",
+        fullName: userData.fullName || "",
+        phoneNumber: userData.phoneNumber || "",
+        panNumber: userData.panNumber || "",
+        address: userData.address || "",
+        state: userData.state || "",
+        bankName: userData.bankName || "",
+        accountNumber: userData.accountNumber || "",
+        ifscCode: userData.ifscCode || "",
+        gstNumber: userData.gstNumber || "",
+        invoicePrefix: userData.invoicePrefix || "XUSE",
+        createdAt: userData.createdAt?.toDate() || new Date(),
+      }
+
+      console.log("Processed user data:", processedUserData)
       return {
         success: true,
-        userData: {
-          id: userDocSnap.id,
-          ...userData,
-          createdAt: userData.createdAt?.toDate() || new Date(),
-        },
+        userData: processedUserData,
       }
     }
 

@@ -122,8 +122,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         console.log("Updating profile for user:", auth.currentUser.uid, userData)
         const result = await updateUserData(auth.currentUser.uid, userData)
         if (result.success) {
-          // Update local user state immediately
-          const updatedUser = { ...user, ...userData }
+          // Update local user state immediately with proper merging
+          const updatedUser = {
+            ...user,
+            ...userData,
+            // Ensure we don't overwrite the ID and createdAt
+            id: user.id,
+            createdAt: user.createdAt,
+          }
           setUser(updatedUser)
           console.log("Profile updated successfully:", updatedUser)
           return { success: true }
