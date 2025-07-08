@@ -118,7 +118,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({ invoice, onClose }) => 
         <div className="p-8 bg-white text-gray-800" id={`invoice-preview-${invoice.id}`}>
           {/* Header */}
           <div className="border-2 border-gray-800 p-4 mb-6">
-            <div className="flex justify-between items-start">
+            <div className="flex justify-between items-start mb-4">
               <div className="flex-1">
                 <h1 className="text-2xl font-bold text-gray-800 mb-2">{user?.fullName || "Your Business"}</h1>
                 <div className="text-sm text-gray-600 space-y-1">
@@ -146,11 +146,11 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({ invoice, onClose }) => 
                 </div>
               </div>
             </div>
-          </div>
 
-          {/* Centered TAX INVOICE Title */}
-          <div className="text-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-800">TAX INVOICE</h2>
+            {/* TAX INVOICE Title - moved inside the header box */}
+            <div className="text-center border-t border-gray-800 pt-3">
+              <h2 className="text-2xl font-bold text-gray-800">TAX INVOICE</h2>
+            </div>
           </div>
 
           {/* Customer Details */}
