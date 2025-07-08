@@ -6,10 +6,9 @@ import { motion, AnimatePresence } from "framer-motion"
 import { useApp } from "../../context/AppContext"
 import type { Invoice } from "../../types"
 import { formatCurrency, formatDate } from "../../utils/calculations"
-import { Eye, CheckCircle, XCircle, Download, Edit, Trash2, AlertTriangle, FileX } from "lucide-react"
+import { Eye, CheckCircle, XCircle, Edit, Trash2, AlertTriangle, FileX } from "lucide-react"
 import Button from "../UI/Button"
 import Card from "../UI/Card"
-import { generateInvoicePDF } from "../../utils/pdf"
 import { useAuth } from "../../context/AuthContext"
 import { useToast } from "../../hooks/useToast"
 
@@ -43,12 +42,6 @@ const InvoiceTable: React.FC<InvoiceTableProps> = ({ invoices, onViewInvoice, on
     const newStatus = invoice.status === "paid" ? "unpaid" : "paid"
     updateInvoiceStatus(invoice.id, newStatus)
     toast.success("Status Updated", `Invoice ${invoice.invoiceNumber} marked as ${newStatus}`)
-  }
-
-  const handleDownload = (invoice: Invoice) => {
-    toast.info("Generating PDF", "Creating your invoice PDF...")
-    generateInvoicePDF(invoice, user)
-    toast.success("PDF Generated", "Invoice PDF has been downloaded")
   }
 
   const handleDeleteClick = (invoice: Invoice) => {
@@ -175,18 +168,9 @@ const InvoiceTable: React.FC<InvoiceTableProps> = ({ invoices, onViewInvoice, on
                             <button
                               onClick={() => onViewInvoice(invoice)}
                               className="p-2 text-emerald-500 hover:bg-emerald-500/10 rounded-lg transition-colors"
-                              title="View Invoice"
+                              title="View & Download Invoice"
                             >
                               <Eye className="w-4 h-4" />
-                            </button>
-                          </motion.div>
-                          <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
-                            <button
-                              onClick={() => handleDownload(invoice)}
-                              className="p-2 text-blue-500 hover:bg-blue-500/10 rounded-lg transition-colors"
-                              title="Download PDF"
-                            >
-                              <Download className="w-4 h-4" />
                             </button>
                           </motion.div>
                           <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
