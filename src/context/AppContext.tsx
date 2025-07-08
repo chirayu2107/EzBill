@@ -1,133 +1,240 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { useAuth } from './AuthContext';
-import { auth } from '../config/firebase';
-import { 
+"use client"
+
+import type React from "react"
+import { createContext, useContext, useState, useEffect } from "react"
+import { useAuth } from "./AuthContext"
+import { auth } from "../config/firebase"
+import {
   addInvoice as addInvoiceToFirebase,
   updateInvoice as updateInvoiceInFirebase,
   deleteInvoice as deleteInvoiceFromFirebase,
-  getUserInvoices
-} from '../services/firebaseService';
-import { Invoice, DashboardSummary } from '../types';
+  getUserInvoices,
+} from "../services/firebaseService"
+import type { Invoice, DashboardSummary } from "../types"
 
 interface AppContextType {
-  invoices: Invoice[];
-  addInvoice: (invoice: Omit<Invoice, 'id' | 'invoiceNumber' | 'createdAt'>) => Promise<void>;
-  updateInvoice: (id: string, invoice: Omit<Invoice, 'id' | 'invoiceNumber' | 'createdAt'>) => Promise<void>;
-  updateInvoiceStatus: (id: string, status: Invoice['status']) => Promise<void>;
-  deleteInvoice: (id: string) => Promise<void>;
-  getDashboardSummary: () => DashboardSummary;
-  getInvoiceById: (id: string) => Invoice | undefined;
-  loading: boolean;
+  invoices: Invoice[]
+  addInvoice: (invoice: Omit<Invoice, "id" | "invoiceNumber" | "createdAt">) => Promise<void>
+  updateInvoice: (id: string, invoice: Omit<Invoice, "id" | "invoiceNumber" | "createdAt">) => Promise<void>
+  updateInvoiceStatus: (id: string, status: Invoice["status"]) => Promise<void>
+  deleteInvoice: (id: string) => Promise<void>
+  getDashboardSummary: () => DashboardSummary
+  getInvoiceById: (id: string) => Invoice | undefined
+  loading: boolean
+  error: string | null
+  refreshInvoices: () => Promise<void>
 }
 
-const AppContext = createContext<AppContextType | undefined>(undefined);
+const AppContext = createContext<AppContextType | undefined>(undefined)
 
 export const useApp = () => {
-  const context = useContext(AppContext);
+  const context = useContext(AppContext)
   if (!context) {
-    throw new Error('useApp must be used within an AppProvider');
+    throw new Error("useApp must be used within an AppProvider")
   }
-  return context;
-};
+  return context
+}
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [invoices, setInvoices] = useState<Invoice[]>([]);
-  const [loading, setLoading] = useState(false);
-  const { user, isAuthenticated } = useAuth();
+  const [invoices, setInvoices] = useState<Invoice[]>([])
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const { user, isAuthenticated } = useAuth()
+
+  // Debug logging
+  useEffect(() => {
+    console.log("AppContext - Auth state changed:")
+    console.log("- isAuthenticated:", isAuthenticated)
+    console.log("- user:", user)
+    console.log("- auth.currentUser:", auth.currentUser)
+  }, [isAuthenticated, user])
 
   // Load invoices when user is authenticated
   useEffect(() => {
     if (isAuthenticated && auth.currentUser) {
-      loadInvoices();
+      console.log("User authenticated, loading invoices...")
+      loadInvoices()
     } else {
-      setInvoices([]);
+      console.log("User not authenticated, clearing invoices")
+      setInvoices([])
+      setError(null)
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated])
 
   const loadInvoices = async () => {
-    if (!auth.currentUser) return;
-    
-    setLoading(true);
-    try {
-      const result = await getUserInvoices(auth.currentUser.uid);
-      if (result.success) {
-        setInvoices(result.invoices || []);
-      }
-    } catch (error) {
-      console.error('Error loading invoices:', error);
-    } finally {
-      setLoading(false);
+    if (!auth.currentUser) {
+      console.log("No current user, cannot load invoices")
+      return
     }
-  };
 
-  const addInvoice = async (invoiceData: Omit<Invoice, 'id' | 'invoiceNumber' | 'createdAt'>) => {
-    if (!auth.currentUser) return;
+    setLoading(true)
+    setError(null)
 
-    const invoiceNumber = `${user?.invoicePrefix || 'XUSE'}-${(5969 + invoices.length + 1).toString()}`;
-    const newInvoice: Omit<Invoice, 'id'> = {
+    try {
+      console.log("Loading invoices for user:", auth.currentUser.uid)
+      const result = await getUserInvoices(auth.currentUser.uid)
+
+      console.log("Load invoices result:", result)
+
+      if (result.success) {
+        console.log("Successfully loaded invoices:", result.invoices?.length || 0)
+        setInvoices(result.invoices || [])
+        setError(null)
+      } else {
+        console.error("Failed to load invoices:", result.error)
+        setError(result.error || "Failed to load invoices")
+        setInvoices([])
+      }
+    } catch (error: any) {
+      console.error("Error loading invoices:", error)
+      setError(`Failed to load invoices: ${error.message}`)
+      setInvoices([])
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const refreshInvoices = async () => {
+    console.log("Refreshing invoices...")
+    await loadInvoices()
+  }
+
+  const generateInvoiceNumber = () => {
+    const prefix = user?.invoicePrefix || "XUSE"
+    const baseNumber = 5969
+
+    // Get the highest existing invoice number for this user
+    let maxNumber = baseNumber
+
+    invoices.forEach((invoice) => {
+      if (invoice.invoiceNumber.startsWith(prefix + "-")) {
+        const numberPart = invoice.invoiceNumber.split("-")[1]
+        const num = Number.parseInt(numberPart)
+        if (!isNaN(num) && num > maxNumber) {
+          maxNumber = num
+        }
+      }
+    })
+
+    // Return the next number in sequence
+    return `${prefix}-${maxNumber + 1}`
+  }
+
+  const addInvoice = async (invoiceData: Omit<Invoice, "id" | "invoiceNumber" | "createdAt">) => {
+    if (!auth.currentUser) {
+      setError("User not authenticated")
+      return
+    }
+
+    console.log("Adding new invoice:", invoiceData)
+
+    const invoiceNumber = generateInvoiceNumber()
+    const newInvoice: Omit<Invoice, "id"> = {
       ...invoiceData,
       invoiceNumber,
       createdAt: new Date(),
-    };
+    }
 
     try {
-      const result = await addInvoiceToFirebase(newInvoice, auth.currentUser.uid);
+      setError(null)
+      const result = await addInvoiceToFirebase(newInvoice, auth.currentUser.uid)
       if (result.success) {
-        await loadInvoices(); // Reload invoices to get the latest data
+        console.log("Invoice added successfully, refreshing list")
+        await loadInvoices() // Reload invoices to get the latest data
+      } else {
+        console.error("Failed to add invoice:", result.error)
+        setError(result.error || "Failed to add invoice")
       }
-    } catch (error) {
-      console.error('Error adding invoice:', error);
+    } catch (error: any) {
+      console.error("Error adding invoice:", error)
+      setError(`Failed to add invoice: ${error.message}`)
     }
-  };
+  }
 
-  const updateInvoice = async (id: string, invoiceData: Omit<Invoice, 'id' | 'invoiceNumber' | 'createdAt'>) => {
+  const updateInvoice = async (id: string, invoiceData: Omit<Invoice, "id" | "invoiceNumber" | "createdAt">) => {
     try {
-      const result = await updateInvoiceInFirebase(id, invoiceData);
-      if (result.success) {
-        await loadInvoices(); // Reload invoices to get the latest data
-      }
-    } catch (error) {
-      console.error('Error updating invoice:', error);
-    }
-  };
+      setError(null)
+      console.log("Updating invoice:", id, invoiceData)
 
-  const updateInvoiceStatus = async (id: string, status: Invoice['status']) => {
-    try {
-      const result = await updateInvoiceInFirebase(id, { status });
-      if (result.success) {
-        setInvoices(prev => 
-          prev.map(invoice => 
-            invoice.id === id ? { ...invoice, status } : invoice
-          )
-        );
+      // Create a clean update object without the excluded fields
+      const updateData: Partial<Invoice> = {
+        customerName: invoiceData.customerName,
+        customerAddress: invoiceData.customerAddress,
+        customerState: invoiceData.customerState,
+        customerGSTIN: invoiceData.customerGSTIN,
+        customerPAN: invoiceData.customerPAN,
+        date: invoiceData.date,
+        items: invoiceData.items,
+        subtotal: invoiceData.subtotal,
+        gst: invoiceData.gst,
+        gstBreakdown: invoiceData.gstBreakdown,
+        total: invoiceData.total,
+        status: invoiceData.status,
       }
-    } catch (error) {
-      console.error('Error updating invoice status:', error);
+
+      const result = await updateInvoiceInFirebase(id, updateData)
+      if (result.success) {
+        console.log("Invoice updated successfully, refreshing list")
+        await loadInvoices() // Reload invoices to get the latest data
+      } else {
+        console.error("Failed to update invoice:", result.error)
+        setError(result.error || "Failed to update invoice")
+      }
+    } catch (error: any) {
+      console.error("Error updating invoice:", error)
+      setError(`Failed to update invoice: ${error.message}`)
     }
-  };
+  }
+
+  const updateInvoiceStatus = async (id: string, status: Invoice["status"]) => {
+    try {
+      setError(null)
+      console.log("Updating invoice status:", id, status)
+
+      const result = await updateInvoiceInFirebase(id, { status })
+      if (result.success) {
+        console.log("Invoice status updated successfully")
+        setInvoices((prev) => prev.map((invoice) => (invoice.id === id ? { ...invoice, status } : invoice)))
+      } else {
+        console.error("Failed to update invoice status:", result.error)
+        setError(result.error || "Failed to update invoice status")
+      }
+    } catch (error: any) {
+      console.error("Error updating invoice status:", error)
+      setError(`Failed to update invoice status: ${error.message}`)
+    }
+  }
 
   const deleteInvoice = async (id: string) => {
     try {
-      const result = await deleteInvoiceFromFirebase(id);
+      setError(null)
+      console.log("Deleting invoice:", id)
+
+      const result = await deleteInvoiceFromFirebase(id)
       if (result.success) {
-        setInvoices(prev => prev.filter(invoice => invoice.id !== id));
+        console.log("Invoice deleted successfully")
+        setInvoices((prev) => prev.filter((invoice) => invoice.id !== id))
+      } else {
+        console.error("Failed to delete invoice:", result.error)
+        setError(result.error || "Failed to delete invoice")
       }
-    } catch (error) {
-      console.error('Error deleting invoice:', error);
+    } catch (error: any) {
+      console.error("Error deleting invoice:", error)
+      setError(`Failed to delete invoice: ${error.message}`)
     }
-  };
+  }
 
   const getDashboardSummary = (): DashboardSummary => {
-    const totalRevenue = invoices.reduce((sum, invoice) => sum + invoice.total, 0);
+    const totalRevenue = invoices.reduce((sum, invoice) => sum + invoice.total, 0)
     const paidAmount = invoices
-      .filter(invoice => invoice.status === 'paid')
-      .reduce((sum, invoice) => sum + invoice.total, 0);
+      .filter((invoice) => invoice.status === "paid")
+      .reduce((sum, invoice) => sum + invoice.total, 0)
     const pendingAmount = invoices
-      .filter(invoice => invoice.status === 'unpaid')
-      .reduce((sum, invoice) => sum + invoice.total, 0);
+      .filter((invoice) => invoice.status === "unpaid")
+      .reduce((sum, invoice) => sum + invoice.total, 0)
     const overdueAmount = invoices
-      .filter(invoice => invoice.status === 'overdue')
-      .reduce((sum, invoice) => sum + invoice.total, 0);
+      .filter((invoice) => invoice.status === "overdue")
+      .reduce((sum, invoice) => sum + invoice.total, 0)
 
     return {
       totalRevenue,
@@ -135,12 +242,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       pendingAmount,
       overdueAmount,
       totalInvoices: invoices.length,
-    };
-  };
+    }
+  }
 
   const getInvoiceById = (id: string) => {
-    return invoices.find(invoice => invoice.id === id);
-  };
+    return invoices.find((invoice) => invoice.id === id)
+  }
 
   return (
     <AppContext.Provider
@@ -153,9 +260,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         getDashboardSummary,
         getInvoiceById,
         loading,
+        error,
+        refreshInvoices,
       }}
     >
       {children}
     </AppContext.Provider>
-  );
-};
+  )
+}

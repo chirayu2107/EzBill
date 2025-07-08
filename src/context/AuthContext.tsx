@@ -1,116 +1,142 @@
-// src/context/AuthContext.tsx
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { onAuthStateChanged } from 'firebase/auth';
-import { auth } from '../config/firebase';
-import {
-  signUpUser,
-  signInUser,
-  signOutUser,
-  getUserData,
-  updateUserData,
-} from '../services/firebaseService';
-import { User, AuthContextType, SignupData } from '../types';
+"use client"
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+import type React from "react"
+import { createContext, useContext, useState, useEffect } from "react"
+import { onAuthStateChanged } from "firebase/auth"
+import { auth } from "../config/firebase"
+import { signUpUser, signInUser, signOutUser, getUserData, updateUserData } from "../services/firebaseService"
+import type { User, AuthContextType, SignupData } from "../types"
+
+const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export const useAuth = () => {
-  const context = useContext(AuthContext);
+  const context = useContext(AuthContext)
   if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider")
   }
-  return context;
-};
+  return context
+}
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<User | null>(null)
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      console.log("Auth state changed:", firebaseUser?.uid)
+
       if (firebaseUser) {
-        const result = await getUserData(firebaseUser.uid);
-        if (result.success) {
-          setUser(result.userData as User);
-          setIsAuthenticated(true);
-        } else {
-          console.error('Failed to fetch user data');
+        // User is signed in, get their data from Firestore
+        try {
+          const result = await getUserData(firebaseUser.uid)
+          console.log("User data result:", result)
+
+          if (result.success && result.userData) {
+            setUser(result.userData as User)
+            setIsAuthenticated(true)
+          } else {
+            console.error("Failed to get user data:", result.error)
+            // If user data doesn't exist, create a basic user object
+            const basicUser: User = {
+              id: firebaseUser.uid,
+              email: firebaseUser.email || "",
+              fullName: firebaseUser.displayName || "",
+              createdAt: new Date(),
+            }
+            setUser(basicUser)
+            setIsAuthenticated(true)
+          }
+        } catch (error) {
+          console.error("Error getting user data:", error)
+          setUser(null)
+          setIsAuthenticated(false)
         }
       } else {
-        setUser(null);
-        setIsAuthenticated(false);
+        // User is signed out
+        console.log("User signed out")
+        setUser(null)
+        setIsAuthenticated(false)
       }
-      setLoading(false);
-    });
+      setLoading(false)
+    })
 
-    return () => unsubscribe();
-  }, []);
+    return () => unsubscribe()
+  }, [])
 
   const login = async (email: string, password: string): Promise<boolean> => {
     try {
-      const result = await signInUser(email, password);
-      if (result.success && result.user) {
-        const userData = await getUserData(result.user.uid);
-        if (userData.success) {
-          setUser(userData.userData as User);
-          setIsAuthenticated(true);
-          return true;
-        }
-      }
-      return false;
-    } catch (error: any) {
-      console.error('Login error:', error.message || error);
-      return false;
-    }
-  };
+      setLoading(true)
+      const result = await signInUser(email, password)
+      console.log("Login result:", result)
 
-  const signup = async (signupData: SignupData): Promise<boolean> => {
-    try {
-      const result = await signUpUser(signupData);
-      if (result.success && result.user) {
-        const userData = await getUserData(result.user.uid);
-        if (userData.success) {
-          setUser(userData.userData as User);
-          setIsAuthenticated(true);
-          return true;
-        }
+      if (result.success) {
+        // User data will be loaded by the onAuthStateChanged listener
+        return true
       }
-      return false;
-    } catch (error: any) {
-      console.error('Signup error:', error.message || error);
-      return false;
+      return false
+    } catch (error) {
+      console.error("Login error:", error)
+      return false
+    } finally {
+      setLoading(false)
     }
-  };
+  }
+
+  const signup = async (userData: SignupData): Promise<boolean> => {
+    try {
+      setLoading(true)
+      const result = await signUpUser(userData)
+      console.log("Signup result:", result)
+
+      if (result.success) {
+        // Wait a moment for Firestore to save the data
+        await new Promise((resolve) => setTimeout(resolve, 1000))
+
+        // The onAuthStateChanged listener will handle setting the user data
+        return true
+      }
+      return false
+    } catch (error) {
+      console.error("Signup error:", error)
+      return false
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const logout = async () => {
     try {
-      await signOutUser();
-      setUser(null);
-      setIsAuthenticated(false);
-    } catch (error: any) {
-      console.error('Logout error:', error.message || error);
+      await signOutUser()
+      setUser(null)
+      setIsAuthenticated(false)
+    } catch (error) {
+      console.error("Logout error:", error)
     }
-  };
+  }
 
   const updateProfile = async (userData: Partial<User>) => {
     if (user && auth.currentUser) {
       try {
-        const result = await updateUserData(auth.currentUser.uid, userData);
+        const result = await updateUserData(auth.currentUser.uid, userData)
         if (result.success) {
-          setUser((prev) => ({ ...prev!, ...userData }));
+          setUser({ ...user, ...userData })
         }
-      } catch (error: any) {
-        console.error('Update profile error:', error.message || error);
+      } catch (error) {
+        console.error("Update profile error:", error)
       }
     }
-  };
+  }
 
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-900 flex items-center justify-center">
-        <div className="text-white text-xl">Loading...</div>
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-500 mx-auto mb-4"></div>
+          <div className="text-white text-lg">Loading...</div>
+        </div>
       </div>
-    );
+    )
   }
 
   return (
@@ -126,5 +152,5 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     >
       {children}
     </AuthContext.Provider>
-  );
-};
+  )
+}

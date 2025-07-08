@@ -1,56 +1,60 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { useApp } from '../../context/AppContext';
-import InvoiceTable from './InvoiceTable';
-import InvoicePreview from '../Invoice/InvoicePreview';
-import { Invoice } from '../../types';
-import { FileText, Plus, Search, Filter } from 'lucide-react';
-import Button from '../UI/Button';
-import Card from '../UI/Card';
+"use client"
+
+import type React from "react"
+import { useState } from "react"
+import { useNavigate } from "react-router-dom"
+import { motion } from "framer-motion"
+import { useApp } from "../../context/AppContext"
+import InvoiceTable from "./InvoiceTable"
+import InvoicePreview from "../Invoice/InvoicePreview"
+import type { Invoice } from "../../types"
+import { FileText, Plus, Search, Filter } from "lucide-react"
+import Button from "../UI/Button"
+import Card from "../UI/Card"
 
 const InvoicesPage: React.FC = () => {
-  const { invoices } = useApp();
-  const navigate = useNavigate();
-  const [statusFilter, setStatusFilter] = useState<'all' | 'paid' | 'unpaid' | 'overdue'>('all');
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
+  const { invoices } = useApp()
+  const navigate = useNavigate()
+  const [statusFilter, setStatusFilter] = useState<"all" | "paid" | "unpaid" | "overdue">("all")
+  const [searchTerm, setSearchTerm] = useState("")
+  const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null)
 
-  const filteredInvoices = invoices.filter(invoice => {
-    const matchesStatus = statusFilter === 'all' || invoice.status === statusFilter;
-    const matchesSearch = invoice.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         invoice.invoiceNumber.toLowerCase().includes(searchTerm.toLowerCase());
-    return matchesStatus && matchesSearch;
-  });
+  const filteredInvoices = invoices.filter((invoice) => {
+    const matchesStatus = statusFilter === "all" || invoice.status === statusFilter
+    const matchesSearch =
+      invoice.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      invoice.invoiceNumber.toLowerCase().includes(searchTerm.toLowerCase())
+    return matchesStatus && matchesSearch
+  })
 
   const filters = [
-    { value: 'all', label: 'All Invoices', count: invoices.length },
-    { value: 'paid', label: 'Paid', count: invoices.filter(i => i.status === 'paid').length },
-    { value: 'unpaid', label: 'Unpaid', count: invoices.filter(i => i.status === 'unpaid').length },
-    { value: 'overdue', label: 'Overdue', count: invoices.filter(i => i.status === 'overdue').length },
-  ];
+    { value: "all", label: "All Invoices", count: invoices.length },
+    { value: "paid", label: "Paid", count: invoices.filter((i) => i.status === "paid").length },
+    { value: "unpaid", label: "Unpaid", count: invoices.filter((i) => i.status === "unpaid").length },
+    { value: "overdue", label: "Overdue", count: invoices.filter((i) => i.status === "overdue").length },
+  ]
 
   const handleViewInvoice = (invoice: Invoice) => {
-    setSelectedInvoice(invoice);
-  };
+    setSelectedInvoice(invoice)
+  }
 
   const handleEditInvoice = (invoice: Invoice) => {
-    navigate(`/edit-invoice/${invoice.id}`);
-  };
+    navigate(`/edit-invoice/${invoice.id}`)
+  }
 
   const closePreview = () => {
-    setSelectedInvoice(null);
-  };
+    setSelectedInvoice(null)
+  }
 
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1
-      }
-    }
-  };
+        staggerChildren: 0.1,
+      },
+    },
+  }
 
   const itemVariants = {
     hidden: { y: 20, opacity: 0 },
@@ -59,27 +63,19 @@ const InvoicesPage: React.FC = () => {
       opacity: 1,
       transition: {
         duration: 0.5,
-        ease: "easeOut"
-      }
-    }
-  };
+        ease: "easeOut" as const,
+      },
+    },
+  }
 
   return (
-    <motion.div 
-      className="space-y-8"
-      variants={containerVariants}
-      initial="hidden"
-      animate="visible"
-    >
+    <motion.div className="space-y-8" variants={containerVariants} initial="hidden" animate="visible">
       {/* Header */}
-      <motion.div 
-        className="flex justify-between items-start"
-        variants={itemVariants}
-      >
+      <motion.div className="flex justify-between items-start" variants={itemVariants}>
         <div>
           <div className="flex items-center gap-4 mb-2">
-            <div className="p-3 bg-blue-500/10 rounded-xl">
-              <FileText className="w-8 h-8 text-blue-500" />
+            <div className="p-3 bg-emerald-500/10 rounded-xl">
+              <FileText className="w-8 h-8 text-emerald-500" />
             </div>
             <div>
               <h1 className="text-4xl font-bold text-white">All Invoices</h1>
@@ -92,30 +88,18 @@ const InvoicesPage: React.FC = () => {
           animate={{ scale: 1 }}
           transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
         >
-          <Button
-            onClick={() => navigate('/create-invoice')}
-            icon={Plus}
-            size="lg"
-            className="shadow-lg"
-          >
+          <Button onClick={() => navigate("/create-invoice")} icon={Plus} size="lg" className="shadow-lg">
             Create New Invoice
           </Button>
         </motion.div>
       </motion.div>
 
       {/* Stats Cards */}
-      <motion.div 
-        className="grid grid-cols-1 md:grid-cols-4 gap-6"
-        variants={itemVariants}
-      >
+      <motion.div className="grid grid-cols-1 md:grid-cols-4 gap-6" variants={itemVariants}>
         {filters.map((filter, index) => (
           <motion.div
             key={filter.value}
-            className={`cursor-pointer transition-all ${
-              statusFilter === filter.value
-                ? 'ring-2 ring-emerald-500'
-                : ''
-            }`}
+            className="cursor-pointer transition-all relative"
             whileHover={{ scale: 1.02, y: -2 }}
             whileTap={{ scale: 0.98 }}
             onClick={() => setStatusFilter(filter.value as any)}
@@ -123,14 +107,29 @@ const InvoicesPage: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
           >
-            <Card className="hover:bg-gray-750">
-              <div className="text-center">
-                <div className={`text-3xl font-bold mb-2 ${
-                  filter.value === 'paid' ? 'text-green-500' :
-                  filter.value === 'unpaid' ? 'text-yellow-500' :
-                  filter.value === 'overdue' ? 'text-red-500' :
-                  'text-blue-500'
-                }`}>
+            <Card className="hover:bg-gray-750 relative overflow-hidden">
+              {/* Selected state overlay */}
+              {statusFilter === filter.value && (
+                <motion.div
+                  className="absolute inset-0 bg-emerald-500/10 border border-emerald-500/30 rounded-xl"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.2 }}
+                />
+              )}
+
+              <div className="text-center relative z-10">
+                <div
+                  className={`text-3xl font-bold mb-2 ${
+                    filter.value === "paid"
+                      ? "text-green-500"
+                      : filter.value === "unpaid"
+                        ? "text-yellow-500"
+                        : filter.value === "overdue"
+                          ? "text-red-500"
+                          : "text-emerald-500"
+                  }`}
+                >
                   {filter.count}
                 </div>
                 <div className="text-gray-300 font-medium">{filter.label}</div>
@@ -154,18 +153,18 @@ const InvoicesPage: React.FC = () => {
                 className="w-full pl-10 pr-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
               />
             </div>
-            
+
             <div className="flex items-center gap-3">
               <Filter className="w-5 h-5 text-gray-400" />
               <div className="flex gap-2">
-                {filters.map(filter => (
+                {filters.map((filter) => (
                   <motion.button
                     key={filter.value}
                     onClick={() => setStatusFilter(filter.value as any)}
                     className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
                       statusFilter === filter.value
-                        ? 'bg-emerald-600 text-white shadow-lg'
-                        : 'bg-gray-700 text-gray-300 hover:bg-gray-600'
+                        ? "bg-emerald-600 text-white shadow-lg"
+                        : "bg-gray-700 text-gray-300 hover:bg-gray-600"
                     }`}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
@@ -180,10 +179,7 @@ const InvoicesPage: React.FC = () => {
       </motion.div>
 
       {/* Results Summary */}
-      <motion.div 
-        className="flex items-center justify-between"
-        variants={itemVariants}
-      >
+      <motion.div className="flex items-center justify-between" variants={itemVariants}>
         <div className="text-gray-400">
           Showing {filteredInvoices.length} of {invoices.length} invoices
           {searchTerm && (
@@ -192,10 +188,10 @@ const InvoicesPage: React.FC = () => {
             </span>
           )}
         </div>
-        
+
         {searchTerm && (
           <motion.button
-            onClick={() => setSearchTerm('')}
+            onClick={() => setSearchTerm("")}
             className="text-emerald-500 hover:text-emerald-400 text-sm"
             whileHover={{ scale: 1.05 }}
           >
@@ -206,18 +202,12 @@ const InvoicesPage: React.FC = () => {
 
       {/* Invoices Table */}
       <motion.div variants={itemVariants}>
-        <InvoiceTable 
-          invoices={filteredInvoices} 
-          onViewInvoice={handleViewInvoice}
-          onEditInvoice={handleEditInvoice}
-        />
+        <InvoiceTable invoices={filteredInvoices} onViewInvoice={handleViewInvoice} onEditInvoice={handleEditInvoice} />
       </motion.div>
 
-      {selectedInvoice && (
-        <InvoicePreview invoice={selectedInvoice} onClose={closePreview} />
-      )}
+      {selectedInvoice && <InvoicePreview invoice={selectedInvoice} onClose={closePreview} />}
     </motion.div>
-  );
-};
+  )
+}
 
-export default InvoicesPage;
+export default InvoicesPage
