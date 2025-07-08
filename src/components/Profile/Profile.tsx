@@ -1,54 +1,96 @@
-import React, { useState } from 'react';
-import { useAuth } from '../../context/AuthContext';
-import { User, Mail, Phone, CreditCard, MapPin, Building, Hash, Save, AlertCircle } from 'lucide-react';
-import Button from '../UI/Button';
-import Card from '../UI/Card';
+"use client"
+
+import type React from "react"
+import { useState, useEffect } from "react"
+import { useAuth } from "../../context/AuthContext"
+import { useToast } from "../../hooks/useToast"
+import { User, Mail, Phone, CreditCard, MapPin, Building, Hash, Save, AlertCircle } from "lucide-react"
+import Button from "../UI/Button"
+import Card from "../UI/Card"
 
 const Profile: React.FC = () => {
-  const { user, updateProfile } = useAuth();
-  const [isEditing, setIsEditing] = useState(false);
+  const { user, updateProfile } = useAuth()
+  const { toast } = useToast()
+  const [isEditing, setIsEditing] = useState(false)
+  const [saving, setSaving] = useState(false)
   const [formData, setFormData] = useState({
-    fullName: user?.fullName || '',
-    phoneNumber: user?.phoneNumber || '',
-    panNumber: user?.panNumber || '',
-    address: user?.address || '',
-    state: user?.state || '',
-    bankName: user?.bankName || '',
-    accountNumber: user?.accountNumber || '',
-    ifscCode: user?.ifscCode || '',
-    gstNumber: user?.gstNumber || '',
-    invoicePrefix: user?.invoicePrefix || '',
-  });
+    fullName: "",
+    phoneNumber: "",
+    panNumber: "",
+    address: "",
+    state: "",
+    bankName: "",
+    accountNumber: "",
+    ifscCode: "",
+    gstNumber: "",
+    invoicePrefix: "",
+  })
+
+  // Sync form data with user data whenever user changes
+  useEffect(() => {
+    if (user) {
+      setFormData({
+        fullName: user.fullName || "",
+        phoneNumber: user.phoneNumber || "",
+        panNumber: user.panNumber || "",
+        address: user.address || "",
+        state: user.state || "",
+        bankName: user.bankName || "",
+        accountNumber: user.accountNumber || "",
+        ifscCode: user.ifscCode || "",
+        gstNumber: user.gstNumber || "",
+        invoicePrefix: user.invoicePrefix || "XUSE",
+      })
+    }
+  }, [user])
 
   const updateField = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-  };
+    setFormData((prev) => ({ ...prev, [field]: value }))
+  }
 
-  const handleSave = () => {
-    updateProfile(formData);
-    setIsEditing(false);
-  };
+  const handleSave = async () => {
+    setSaving(true)
+    try {
+      await updateProfile(formData)
+      setIsEditing(false)
+      toast.success("Profile Updated", "Your business profile has been saved successfully!")
+    } catch (error: any) {
+      console.error("Profile save error:", error)
+      toast.error("Save Failed", error.message || "Failed to update profile. Please try again.")
+    } finally {
+      setSaving(false)
+    }
+  }
 
   const handleCancel = () => {
-    setFormData({
-      fullName: user?.fullName || '',
-      phoneNumber: user?.phoneNumber || '',
-      panNumber: user?.panNumber || '',
-      address: user?.address || '',
-      state: user?.state || '',
-      bankName: user?.bankName || '',
-      accountNumber: user?.accountNumber || '',
-      ifscCode: user?.ifscCode || '',
-      gstNumber: user?.gstNumber || '',
-      invoicePrefix: user?.invoicePrefix || '',
-    });
-    setIsEditing(false);
-  };
+    // Reset form data to current user data
+    if (user) {
+      setFormData({
+        fullName: user.fullName || "",
+        phoneNumber: user.phoneNumber || "",
+        panNumber: user.panNumber || "",
+        address: user.address || "",
+        state: user.state || "",
+        bankName: user.bankName || "",
+        accountNumber: user.accountNumber || "",
+        ifscCode: user.ifscCode || "",
+        gstNumber: user.gstNumber || "",
+        invoicePrefix: user.invoicePrefix || "XUSE",
+      })
+    }
+    setIsEditing(false)
+  }
 
   // Check if profile is incomplete
-  const isProfileIncomplete = !user?.fullName || !user?.phoneNumber || !user?.panNumber || 
-                              !user?.address || !user?.state || !user?.bankName || 
-                              !user?.accountNumber || !user?.ifscCode;
+  const isProfileIncomplete =
+    !user?.fullName ||
+    !user?.phoneNumber ||
+    !user?.panNumber ||
+    !user?.address ||
+    !user?.state ||
+    !user?.bankName ||
+    !user?.accountNumber ||
+    !user?.ifscCode
 
   return (
     <div className="max-w-4xl mx-auto space-y-8 select-none">
@@ -58,15 +100,25 @@ const Profile: React.FC = () => {
           <p className="text-gray-400 mt-1">Manage your business information</p>
         </div>
         {!isEditing ? (
-          <Button onClick={() => setIsEditing(true)}>
-            Edit Profile
-          </Button>
+          <Button onClick={() => setIsEditing(true)}>Edit Profile</Button>
         ) : (
           <div className="flex gap-3">
-            <Button onClick={handleSave} icon={Save}>
-              Save Changes
+            <Button
+              onClick={handleSave}
+              icon={saving ? undefined : Save}
+              disabled={saving}
+              className={saving ? "opacity-75" : ""}
+            >
+              {saving ? (
+                <div className="flex items-center gap-2">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                  Saving...
+                </div>
+              ) : (
+                "Save Changes"
+              )}
             </Button>
-            <Button onClick={handleCancel} variant="secondary">
+            <Button onClick={handleCancel} variant="secondary" disabled={saving}>
               Cancel
             </Button>
           </div>
@@ -83,15 +135,11 @@ const Profile: React.FC = () => {
             <div className="flex-1">
               <h3 className="text-yellow-400 font-semibold mb-1">Complete Your Profile</h3>
               <p className="text-yellow-300 text-sm mb-3">
-                Please complete your business profile to start creating professional invoices. 
-                Missing information may affect invoice generation.
+                Please complete your business profile to start creating professional invoices. Missing information may
+                affect invoice generation.
               </p>
               {!isEditing && (
-                <Button 
-                  onClick={() => setIsEditing(true)} 
-                  size="sm" 
-                  className="bg-yellow-600 hover:bg-yellow-700"
-                >
+                <Button onClick={() => setIsEditing(true)} size="sm" className="bg-yellow-600 hover:bg-yellow-700">
                   Complete Profile
                 </Button>
               )}
@@ -106,15 +154,13 @@ const Profile: React.FC = () => {
           <h3 className="text-lg font-semibold text-white mb-4">Personal Details</h3>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Full Name *
-              </label>
+              <label className="block text-sm font-medium text-gray-300 mb-2">Full Name *</label>
               <div className="relative">
                 <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                 <input
                   type="text"
                   value={formData.fullName}
-                  onChange={(e) => updateField('fullName', e.target.value)}
+                  onChange={(e) => updateField("fullName", e.target.value)}
                   disabled={!isEditing}
                   className="w-full pl-10 pr-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:opacity-50"
                   placeholder="Enter your full name"
@@ -123,15 +169,13 @@ const Profile: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Phone Number *
-              </label>
+              <label className="block text-sm font-medium text-gray-300 mb-2">Phone Number *</label>
               <div className="relative">
                 <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                 <input
                   type="tel"
                   value={formData.phoneNumber}
-                  onChange={(e) => updateField('phoneNumber', e.target.value)}
+                  onChange={(e) => updateField("phoneNumber", e.target.value)}
                   disabled={!isEditing}
                   className="w-full pl-10 pr-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:opacity-50"
                   placeholder="Enter your phone number"
@@ -140,14 +184,12 @@ const Profile: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Email Address
-              </label>
+              <label className="block text-sm font-medium text-gray-300 mb-2">Email Address</label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                 <input
                   type="email"
-                  value={user?.email || ''}
+                  value={user?.email || ""}
                   disabled
                   className="w-full pl-10 pr-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white opacity-50"
                 />
@@ -156,15 +198,13 @@ const Profile: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                PAN Number *
-              </label>
+              <label className="block text-sm font-medium text-gray-300 mb-2">PAN Number *</label>
               <div className="relative">
                 <CreditCard className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                 <input
                   type="text"
                   value={formData.panNumber}
-                  onChange={(e) => updateField('panNumber', e.target.value.toUpperCase())}
+                  onChange={(e) => updateField("panNumber", e.target.value.toUpperCase())}
                   disabled={!isEditing}
                   className="w-full pl-10 pr-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:opacity-50"
                   placeholder="Enter your PAN number"
@@ -179,14 +219,12 @@ const Profile: React.FC = () => {
           <h3 className="text-lg font-semibold text-white mb-4">Address & Location</h3>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Address *
-              </label>
+              <label className="block text-sm font-medium text-gray-300 mb-2">Address *</label>
               <div className="relative">
                 <MapPin className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
                 <textarea
                   value={formData.address}
-                  onChange={(e) => updateField('address', e.target.value)}
+                  onChange={(e) => updateField("address", e.target.value)}
                   disabled={!isEditing}
                   className="w-full pl-10 pr-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:opacity-50"
                   rows={3}
@@ -196,13 +234,11 @@ const Profile: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                State *
-              </label>
+              <label className="block text-sm font-medium text-gray-300 mb-2">State *</label>
               <input
                 type="text"
                 value={formData.state}
-                onChange={(e) => updateField('state', e.target.value)}
+                onChange={(e) => updateField("state", e.target.value)}
                 disabled={!isEditing}
                 className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:opacity-50"
                 placeholder="Enter your state"
@@ -210,15 +246,13 @@ const Profile: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                GST Number (optional)
-              </label>
+              <label className="block text-sm font-medium text-gray-300 mb-2">GST Number (optional)</label>
               <div className="relative">
                 <Hash className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                 <input
                   type="text"
                   value={formData.gstNumber}
-                  onChange={(e) => updateField('gstNumber', e.target.value.toUpperCase())}
+                  onChange={(e) => updateField("gstNumber", e.target.value.toUpperCase())}
                   disabled={!isEditing}
                   className="w-full pl-10 pr-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:opacity-50"
                   placeholder="Enter GST number"
@@ -233,15 +267,13 @@ const Profile: React.FC = () => {
           <h3 className="text-lg font-semibold text-white mb-4">Banking Details</h3>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Bank Name *
-              </label>
+              <label className="block text-sm font-medium text-gray-300 mb-2">Bank Name *</label>
               <div className="relative">
                 <Building className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                 <input
                   type="text"
                   value={formData.bankName}
-                  onChange={(e) => updateField('bankName', e.target.value)}
+                  onChange={(e) => updateField("bankName", e.target.value)}
                   disabled={!isEditing}
                   className="w-full pl-10 pr-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:opacity-50"
                   placeholder="Enter bank name"
@@ -250,13 +282,11 @@ const Profile: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Account Number *
-              </label>
+              <label className="block text-sm font-medium text-gray-300 mb-2">Account Number *</label>
               <input
                 type="text"
                 value={formData.accountNumber}
-                onChange={(e) => updateField('accountNumber', e.target.value)}
+                onChange={(e) => updateField("accountNumber", e.target.value)}
                 disabled={!isEditing}
                 className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:opacity-50"
                 placeholder="Enter account number"
@@ -264,13 +294,11 @@ const Profile: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                IFSC Code *
-              </label>
+              <label className="block text-sm font-medium text-gray-300 mb-2">IFSC Code *</label>
               <input
                 type="text"
                 value={formData.ifscCode}
-                onChange={(e) => updateField('ifscCode', e.target.value.toUpperCase())}
+                onChange={(e) => updateField("ifscCode", e.target.value.toUpperCase())}
                 disabled={!isEditing}
                 className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:opacity-50"
                 placeholder="Enter IFSC code"
@@ -284,13 +312,11 @@ const Profile: React.FC = () => {
           <h3 className="text-lg font-semibold text-white mb-4">Business Settings</h3>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
-                Invoice Prefix
-              </label>
+              <label className="block text-sm font-medium text-gray-300 mb-2">Invoice Prefix</label>
               <input
                 type="text"
                 value={formData.invoicePrefix}
-                onChange={(e) => updateField('invoicePrefix', e.target.value.toUpperCase())}
+                onChange={(e) => updateField("invoicePrefix", e.target.value.toUpperCase())}
                 disabled={!isEditing}
                 className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:opacity-50"
                 placeholder="e.g., XUSE"
@@ -303,20 +329,24 @@ const Profile: React.FC = () => {
               <div className="space-y-2">
                 <div className="flex items-center justify-between text-xs">
                   <span className="text-gray-400">Personal Details</span>
-                  <span className={`${formData.fullName && formData.phoneNumber && formData.panNumber ? 'text-green-400' : 'text-yellow-400'}`}>
-                    {formData.fullName && formData.phoneNumber && formData.panNumber ? '✓ Complete' : '⚠ Incomplete'}
+                  <span
+                    className={`${formData.fullName && formData.phoneNumber && formData.panNumber ? "text-green-400" : "text-yellow-400"}`}
+                  >
+                    {formData.fullName && formData.phoneNumber && formData.panNumber ? "✓ Complete" : "⚠ Incomplete"}
                   </span>
                 </div>
                 <div className="flex items-center justify-between text-xs">
                   <span className="text-gray-400">Address & Location</span>
-                  <span className={`${formData.address && formData.state ? 'text-green-400' : 'text-yellow-400'}`}>
-                    {formData.address && formData.state ? '✓ Complete' : '⚠ Incomplete'}
+                  <span className={`${formData.address && formData.state ? "text-green-400" : "text-yellow-400"}`}>
+                    {formData.address && formData.state ? "✓ Complete" : "⚠ Incomplete"}
                   </span>
                 </div>
                 <div className="flex items-center justify-between text-xs">
                   <span className="text-gray-400">Banking Details</span>
-                  <span className={`${formData.bankName && formData.accountNumber && formData.ifscCode ? 'text-green-400' : 'text-yellow-400'}`}>
-                    {formData.bankName && formData.accountNumber && formData.ifscCode ? '✓ Complete' : '⚠ Incomplete'}
+                  <span
+                    className={`${formData.bankName && formData.accountNumber && formData.ifscCode ? "text-green-400" : "text-yellow-400"}`}
+                  >
+                    {formData.bankName && formData.accountNumber && formData.ifscCode ? "✓ Complete" : "⚠ Incomplete"}
                   </span>
                 </div>
               </div>
@@ -325,7 +355,7 @@ const Profile: React.FC = () => {
         </Card>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Profile;
+export default Profile

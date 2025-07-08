@@ -166,30 +166,46 @@ export const updateUserData = async (uid: string, userData: Partial<User>) => {
   try {
     console.log("Updating user data for UID:", uid, userData)
 
+    // Remove undefined values and prepare clean update data
+    const cleanUserData: Record<string, any> = {}
+    Object.entries(userData).forEach(([key, value]) => {
+      if (value !== undefined && key !== "id" && key !== "createdAt") {
+        cleanUserData[key] = value
+      }
+    })
+
+    console.log("Clean user data to update:", cleanUserData)
+
     // Try to update using UID as document ID first
     const userDocRef = doc(db, "users", uid)
-    await updateDoc(userDocRef, userData)
-    console.log("User data updated successfully")
-    return { success: true }
-  } catch (error: any) {
-    console.error("Update user data error:", error)
-    // Fallback: find by uid field
-    try {
+
+    // Check if document exists first
+    const docSnap = await getDoc(userDocRef)
+
+    if (docSnap.exists()) {
+      await updateDoc(userDocRef, cleanUserData)
+      console.log("User data updated successfully using UID as doc ID")
+      return { success: true }
+    } else {
+      console.log("Document doesn't exist with UID as doc ID, trying fallback...")
+
+      // Fallback: find by uid field
       const q = query(collection(db, "users"), where("uid", "==", uid))
       const querySnapshot = await getDocs(q)
 
       if (!querySnapshot.empty) {
         const userDoc = querySnapshot.docs[0]
-        await updateDoc(doc(db, "users", userDoc.id), userData)
-        console.log("User data updated successfully (fallback)")
+        await updateDoc(doc(db, "users", userDoc.id), cleanUserData)
+        console.log("User data updated successfully (fallback method)")
         return { success: true }
+      } else {
+        console.error("User document not found in either method")
+        return { success: false, error: "User document not found" }
       }
-
-      return { success: false, error: "User not found" }
-    } catch (fallbackError: any) {
-      console.error("Fallback update error:", fallbackError)
-      return { success: false, error: fallbackError.message }
     }
+  } catch (error: any) {
+    console.error("Update user data error:", error)
+    return { success: false, error: error.message }
   }
 }
 

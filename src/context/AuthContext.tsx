@@ -119,13 +119,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const updateProfile = async (userData: Partial<User>) => {
     if (user && auth.currentUser) {
       try {
+        console.log("Updating profile for user:", auth.currentUser.uid, userData)
         const result = await updateUserData(auth.currentUser.uid, userData)
         if (result.success) {
-          setUser({ ...user, ...userData })
+          // Update local user state immediately
+          const updatedUser = { ...user, ...userData }
+          setUser(updatedUser)
+          console.log("Profile updated successfully:", updatedUser)
+          return { success: true }
+        } else {
+          console.error("Failed to update profile:", result.error)
+          throw new Error(result.error || "Failed to update profile")
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error("Update profile error:", error)
+        throw error
       }
+    } else {
+      throw new Error("User not authenticated")
     }
   }
 
