@@ -33,9 +33,11 @@ export const signUpUser = async (userData: SignupData) => {
 
     // Generate invoice prefix from full name
     const invoicePrefix =
-      userData.fullName && userData.fullName.length >= 4
-        ? userData.fullName.replace(/\s+/g, "").substring(0, 4).toUpperCase()
-        : "XUSE"
+      userData.invoicePrefix && userData.invoicePrefix.trim()
+        ? userData.invoicePrefix.trim().toUpperCase()
+        : userData.fullName && userData.fullName.length >= 4
+          ? userData.fullName.replace(/\s+/g, "").substring(0, 4).toUpperCase()
+          : "XUSE"
 
     // Save user data to Firestore using the user's UID as document ID
     const userDoc = {
@@ -206,9 +208,20 @@ export const updateUserData = async (uid: string, userData: Partial<User>) => {
       }
     })
 
-    // Auto-generate invoice prefix if fullName is provided
-    if (userData.fullName && userData.fullName.length >= 4) {
-      updateData.invoicePrefix = userData.fullName.replace(/\s+/g, "").substring(0, 4).toUpperCase()
+    // Handle invoice prefix - use custom value if provided, otherwise auto-generate
+    if (userData.invoicePrefix !== undefined) {
+      // User explicitly set a prefix (could be empty string to clear it)
+      updateData.invoicePrefix = userData.invoicePrefix.trim().toUpperCase() || "XUSE"
+    } else if (userData.fullName && userData.fullName.length >= 4) {
+      // Only auto-generate if no custom prefix is set and fullName is being updated
+      const userDocRef = doc(db, "users", uid)
+      const existingDoc = await getDoc(userDocRef)
+      const existingData = existingDoc.exists() ? existingDoc.data() : {}
+
+      // Only auto-generate if user doesn't have a custom prefix already
+      if (!existingData.invoicePrefix || existingData.invoicePrefix === "XUSE") {
+        updateData.invoicePrefix = userData.fullName.replace(/\s+/g, "").substring(0, 4).toUpperCase()
+      }
     }
 
     console.log("Clean user data to update:", updateData)

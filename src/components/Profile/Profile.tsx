@@ -73,7 +73,42 @@ const Profile: React.FC = () => {
     }
   }
 
+  const validateInvoicePrefix = (prefix: string) => {
+    // Remove spaces and convert to uppercase
+    const cleanPrefix = prefix.replace(/\s+/g, "").toUpperCase()
+
+    // Check for valid characters (letters and numbers only)
+    const validPattern = /^[A-Z0-9]+$/
+
+    if (!validPattern.test(cleanPrefix)) {
+      toast.warning("Invalid Prefix", "Invoice prefix can only contain letters and numbers")
+      return false
+    }
+
+    if (cleanPrefix.length < 2) {
+      toast.warning("Prefix Too Short", "Invoice prefix must be at least 2 characters long")
+      return false
+    }
+
+    if (cleanPrefix.length > 6) {
+      toast.warning("Prefix Too Long", "Invoice prefix cannot exceed 6 characters")
+      return false
+    }
+
+    return true
+  }
+
+  const handlePrefixChange = (value: string) => {
+    const cleanValue = value.replace(/\s+/g, "").toUpperCase()
+    updateField("invoicePrefix", cleanValue)
+  }
+
   const handleSave = async () => {
+    // Validate invoice prefix before saving
+    if (formData.invoicePrefix && !validateInvoicePrefix(formData.invoicePrefix)) {
+      return // Don't save if validation fails
+    }
+
     setSaving(true)
     try {
       console.log("Saving profile data:", formData)
@@ -363,10 +398,11 @@ const Profile: React.FC = () => {
                 <input
                   type="text"
                   value={formData.invoicePrefix}
-                  onChange={(e) => updateField("invoicePrefix", e.target.value.toUpperCase())}
+                  onChange={(e) => handlePrefixChange(e.target.value)}
                   disabled={!isEditing}
                   className="flex-1 px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:opacity-50"
                   placeholder="Enter invoice prefix (e.g., ABCD)"
+                  minLength={2}
                   maxLength={6}
                 />
                 {isEditing && (
@@ -381,11 +417,18 @@ const Profile: React.FC = () => {
                   </Button>
                 )}
               </div>
-              <p className="text-xs text-gray-400 mt-1">
-                {isEditing
-                  ? "Enter a custom prefix or click 'Auto Generate' to create from your name"
-                  : "This prefix will be used for all your invoice numbers (e.g., ABCD-5970)"}
-              </p>
+              <div className="mt-1 space-y-1">
+                <p className="text-xs text-gray-400">
+                  {isEditing
+                    ? "Enter a custom prefix (2-6 characters, letters/numbers only) or click 'Auto Generate'"
+                    : `Your invoices will be numbered as: ${formData.invoicePrefix || "XUSE"}-XXXX`}
+                </p>
+                {formData.invoicePrefix && (
+                  <p className="text-xs text-emerald-400">
+                    Preview: {formData.invoicePrefix}-5970, {formData.invoicePrefix}-5971, etc.
+                  </p>
+                )}
+              </div>
             </div>
 
             <div className="bg-gray-700 rounded-lg p-4">

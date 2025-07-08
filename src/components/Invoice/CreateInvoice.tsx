@@ -203,6 +203,21 @@ const CreateInvoice: React.FC = () => {
                 />
               </div>
 
+              {/* Invoice Number Preview */}
+              <div className="bg-gray-700 p-4 rounded-lg">
+                <h4 className="text-sm font-medium text-gray-300 mb-2">Invoice Number Preview</h4>
+                <div className="text-sm text-gray-400">
+                  {user?.invoicePrefix ? (
+                    <p>
+                      ✓ Next invoice will be numbered:{" "}
+                      <span className="text-emerald-400 font-medium">{user.invoicePrefix}-XXXX</span>
+                    </p>
+                  ) : (
+                    <p className="text-yellow-400">⚠ Set your invoice prefix in Profile to customize numbering</p>
+                  )}
+                </div>
+              </div>
+
               {/* GST Preview */}
               <div className="bg-gray-700 p-4 rounded-lg">
                 <h4 className="text-sm font-medium text-gray-300 mb-2">GST Calculation Preview</h4>

@@ -102,18 +102,20 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   }
 
   const generateInvoiceNumber = () => {
-    // Generate prefix from user's full name (first 4 letters, uppercase)
+    // Use the user's custom invoice prefix, fallback to auto-generated or default
     let prefix = "XUSE" // default fallback
 
-    if (user?.fullName && user.fullName.length >= 4) {
+    if (user?.invoicePrefix && user.invoicePrefix.trim()) {
+      // Use the user's custom prefix
+      prefix = user.invoicePrefix.trim().toUpperCase()
+    } else if (user?.fullName && user.fullName.length >= 4) {
+      // Fallback to auto-generated from name
       prefix = user.fullName.replace(/\s+/g, "").substring(0, 4).toUpperCase()
-    } else if (user?.invoicePrefix) {
-      prefix = user.invoicePrefix
     }
 
     const baseNumber = 5969
 
-    // Get the highest existing invoice number for this user
+    // Get the highest existing invoice number for this user with this prefix
     let maxNumber = baseNumber
 
     invoices.forEach((invoice) => {
