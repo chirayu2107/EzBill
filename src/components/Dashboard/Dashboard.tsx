@@ -9,7 +9,6 @@ import { useAuth } from "../../context/AuthContext"
 import SummaryCards from "./SummaryCards"
 import InvoiceTable from "./InvoiceTable"
 import InvoicePreview from "../Invoice/InvoicePreview"
-import MobileHeader from "../Layout/MobileHeader"
 import type { Invoice } from "../../types"
 import { Plus, TrendingUp, FileText, AlertCircle, RefreshCw } from "lucide-react"
 import Button from "../UI/Button"
@@ -81,8 +80,7 @@ const Dashboard: React.FC = () => {
   // Show loading state
   if (loading) {
     return (
-      <div className="space-y-8">
-        <MobileHeader />
+      <div className="space-y-8 pt-24 md:pt-0">
         <div className="flex items-center justify-center py-12">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-500 mx-auto mb-4"></div>
@@ -96,8 +94,7 @@ const Dashboard: React.FC = () => {
   // Show error state
   if (error) {
     return (
-      <div className="space-y-8">
-        <MobileHeader />
+      <div className="space-y-8 pt-24 md:pt-0">
         <Card className="border-red-500/20 bg-red-500/5">
           <div className="flex items-start gap-4">
             <div className="p-2 bg-red-500/10 rounded-lg">
@@ -117,10 +114,12 @@ const Dashboard: React.FC = () => {
   }
 
   return (
-    <motion.div className="space-y-6 md:space-y-8" variants={containerVariants} initial="hidden" animate="visible">
-      {/* Mobile Header */}
-      <MobileHeader />
-
+    <motion.div
+      className="space-y-6 md:space-y-8 pt-24 md:pt-0"
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+    >
       {/* Hero Section */}
       <motion.div
         className="relative overflow-hidden bg-gradient-to-br from-emerald-600 via-green-600 to-teal-700 rounded-xl md:rounded-2xl p-4 md:p-8 text-white"
@@ -180,7 +179,7 @@ const Dashboard: React.FC = () => {
           transition={{ duration: 3, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
         />
         <motion.div
-          className="absolute bottom-2 left-4 md:bottom-4 md:left-20 w-4 h-4 md:w-8 md:h-8 bg-white/20 rounded-full"
+          className="absolute bottom-2 left-4 md:left-20 w-4 h-4 md:w-8 md:h-8 bg-white/20 rounded-full"
           animate={{ y: [0, 10, 0] }}
           transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut", delay: 1 }}
         />

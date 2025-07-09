@@ -77,16 +77,30 @@ const Sidebar: React.FC = () => {
 
   return (
     <>
-      {/* Mobile Menu Button */}
-      <div className="md:hidden fixed top-4 left-4 z-50">
-        <motion.button
-          onClick={toggleMobileMenu}
-          className="p-2 bg-gray-800 text-white rounded-lg shadow-lg border border-gray-700"
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-        </motion.button>
+      {/* Mobile Top Navigation Bar */}
+      <div className="md:hidden fixed top-0 left-0 right-0 z-50 bg-gray-800 border-b border-gray-700">
+        <div className="flex items-center justify-between p-4">
+          <motion.button
+            onClick={toggleMobileMenu}
+            className="p-2 text-white rounded-lg"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </motion.button>
+          <motion.div
+            className="flex items-center gap-3"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <div className="w-8 h-8 bg-gradient-to-r from-emerald-500 to-green-600 rounded-lg flex items-center justify-center">
+              <Receipt className="w-5 h-5 text-white" />
+            </div>
+            <h1 className="text-xl font-bold text-white">EzBill</h1>
+          </motion.div>
+          <div className="w-10 h-10"></div> {/* Spacer for centering */}
+        </div>
       </div>
 
       {/* Desktop Sidebar */}
@@ -170,7 +184,7 @@ const Sidebar: React.FC = () => {
             exit="closed"
           >
             <div className="p-6 flex-1">
-              <motion.div className="flex items-center gap-3 mb-8 mt-12" variants={menuItemVariants}>
+              <motion.div className="flex items-center gap-3 mb-8 mt-16" variants={menuItemVariants}>
                 <div className="w-8 h-8 bg-gradient-to-r from-emerald-500 to-green-600 rounded-lg flex items-center justify-center">
                   <Receipt className="w-5 h-5 text-white" />
                 </div>
