@@ -70,7 +70,7 @@ const SummaryCards: React.FC = () => {
 
   return (
     <motion.div
-      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6"
+      className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
@@ -92,9 +92,9 @@ const SummaryCards: React.FC = () => {
 
             <div className="relative z-10 flex items-center justify-between">
               <div className="flex-1 min-w-0">
-                <p className="text-gray-400 text-xs md:text-sm font-medium mb-1 truncate">{card.title}</p>
+                <p className="text-gray-400 text-xs font-medium mb-1 truncate">{card.title}</p>
                 <motion.p
-                  className="text-lg md:text-2xl font-bold text-white truncate"
+                  className="text-sm md:text-2xl font-bold text-white truncate"
                   initial={{ scale: 0.8, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   transition={{ delay: index * 0.1 + 0.2 }}
@@ -103,11 +103,11 @@ const SummaryCards: React.FC = () => {
                 </motion.p>
               </div>
               <motion.div
-                className={`p-2 md:p-3 rounded-xl ${card.bgColor} relative flex-shrink-0`}
+                className={`p-1.5 md:p-3 rounded-xl ${card.bgColor} relative flex-shrink-0`}
                 whileHover={{ rotate: 5 }}
                 transition={{ duration: 0.2 }}
               >
-                <card.icon className={`w-5 h-5 md:w-6 md:h-6 ${card.color}`} />
+                <card.icon className={`w-4 h-4 md:w-6 md:h-6 ${card.color}`} />
 
                 {/* Pulse effect - Reduced on mobile */}
                 <motion.div

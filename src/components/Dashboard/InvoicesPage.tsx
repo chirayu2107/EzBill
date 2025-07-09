@@ -101,8 +101,8 @@ const InvoicesPage: React.FC = () => {
         </motion.div>
       </motion.div>
 
-      {/* Stats Cards */}
-      <motion.div className="grid grid-cols-1 md:grid-cols-4 gap-6" variants={itemVariants}>
+      {/* Stats Cards - Mobile: 2x2 Grid */}
+      <motion.div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6" variants={itemVariants}>
         {filters.map((filter, index) => (
           <motion.div
             key={filter.value}
@@ -127,7 +127,7 @@ const InvoicesPage: React.FC = () => {
 
               <div className="text-center relative z-10">
                 <div
-                  className={`text-3xl font-bold mb-2 ${
+                  className={`text-2xl md:text-3xl font-bold mb-1 md:mb-2 ${
                     filter.value === "paid"
                       ? "text-green-500"
                       : filter.value === "unpaid"
@@ -139,7 +139,7 @@ const InvoicesPage: React.FC = () => {
                 >
                   {filter.count}
                 </div>
-                <div className="text-gray-300 font-medium">{filter.label}</div>
+                <div className="text-gray-300 font-medium text-xs md:text-base break-words px-1">{filter.label}</div>
               </div>
             </Card>
           </motion.div>
@@ -149,37 +149,77 @@ const InvoicesPage: React.FC = () => {
       {/* Search and Filters */}
       <motion.div variants={itemVariants}>
         <Card>
-          <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
-            <div className="relative flex-1 max-w-md">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Search invoices by customer name or invoice number..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
-              />
+          <div className="space-y-4">
+            {/* Search Bar */}
+            <div className="flex items-center gap-3">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Search invoices by customer name or invoice number..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full pl-10 pr-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                />
+              </div>
+              <Filter className="w-5 h-5 text-gray-400" />
             </div>
 
-            <div className="flex items-center gap-3">
-              <Filter className="w-5 h-5 text-gray-400" />
-              <div className="flex gap-2">
-                {filters.map((filter) => (
-                  <motion.button
-                    key={filter.value}
-                    onClick={() => setStatusFilter(filter.value as any)}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                      statusFilter === filter.value
-                        ? "bg-emerald-600 text-white shadow-lg"
-                        : "bg-gray-700 text-gray-300 hover:bg-gray-600"
-                    }`}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    {filter.label} ({filter.count})
-                  </motion.button>
-                ))}
-              </div>
+            {/* Filter Buttons in 2x2 Grid */}
+            <div className="grid grid-cols-2 gap-3">
+              {/* First Row: All Invoices, Paid */}
+              <motion.button
+                onClick={() => setStatusFilter("all")}
+                className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+                  statusFilter === "all"
+                    ? "bg-emerald-600 text-white shadow-lg"
+                    : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                }`}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                All Invoices ({filters[0].count})
+              </motion.button>
+
+              <motion.button
+                onClick={() => setStatusFilter("paid")}
+                className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+                  statusFilter === "paid"
+                    ? "bg-emerald-600 text-white shadow-lg"
+                    : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                }`}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                Paid ({filters[1].count})
+              </motion.button>
+
+              {/* Second Row: Unpaid, Overdue */}
+              <motion.button
+                onClick={() => setStatusFilter("unpaid")}
+                className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+                  statusFilter === "unpaid"
+                    ? "bg-emerald-600 text-white shadow-lg"
+                    : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                }`}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                Unpaid ({filters[2].count})
+              </motion.button>
+
+              <motion.button
+                onClick={() => setStatusFilter("overdue")}
+                className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+                  statusFilter === "overdue"
+                    ? "bg-emerald-600 text-white shadow-lg"
+                    : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                }`}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                Overdue ({filters[3].count})
+              </motion.button>
             </div>
           </div>
         </Card>

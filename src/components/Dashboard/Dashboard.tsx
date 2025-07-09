@@ -196,54 +196,54 @@ const Dashboard: React.FC = () => {
       </motion.div>
 
       {/* Quick Actions */}
-      <motion.div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6" variants={itemVariants}>
+      <motion.div className="grid grid-cols-3 gap-2 md:gap-6" variants={itemVariants}>
         <motion.div
-          className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-4 md:p-6 text-white cursor-pointer hover:shadow-lg transition-all"
+          className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-2 md:p-6 text-white cursor-pointer hover:shadow-lg transition-all"
           whileHover={{ scale: 1.02, y: -2 }}
           whileTap={{ scale: 0.98 }}
           onClick={() => navigate("/create-invoice")}
         >
-          <div className="flex items-center gap-3 md:gap-4">
-            <div className="p-2 md:p-3 bg-white/20 rounded-lg">
-              <Plus className="w-5 h-5 md:w-6 md:h-6" />
+          <div className="flex flex-col md:flex-row items-center gap-1 md:gap-4">
+            <div className="p-1 md:p-3 bg-white/20 rounded-lg">
+              <Plus className="w-4 h-4 md:w-6 md:h-6" />
             </div>
-            <div>
-              <h3 className="font-semibold text-base md:text-lg">Create Invoice</h3>
-              <p className="text-blue-100 text-sm">Generate new invoice</p>
+            <div className="text-center md:text-left">
+              <h3 className="font-bold text-sm md:text-lg">Create Invoice</h3>
+              <p className="text-blue-100 text-xs md:text-sm">Generate new invoice</p>
             </div>
           </div>
         </motion.div>
 
         <motion.div
-          className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl p-4 md:p-6 text-white cursor-pointer hover:shadow-lg transition-all"
+          className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl p-2 md:p-6 text-white cursor-pointer hover:shadow-lg transition-all"
           whileHover={{ scale: 1.02, y: -2 }}
           whileTap={{ scale: 0.98 }}
           onClick={() => navigate("/invoices")}
         >
-          <div className="flex items-center gap-3 md:gap-4">
-            <div className="p-2 md:p-3 bg-white/20 rounded-lg">
-              <FileText className="w-5 h-5 md:w-6 md:h-6" />
+          <div className="flex flex-col md:flex-row items-center gap-1 md:gap-4">
+            <div className="p-1 md:p-3 bg-white/20 rounded-lg">
+              <FileText className="w-4 h-4 md:w-6 md:h-6" />
             </div>
-            <div>
-              <h3 className="font-semibold text-base md:text-lg">View All Invoices</h3>
-              <p className="text-purple-100 text-sm">Manage your invoices</p>
+            <div className="text-center md:text-left">
+              <h3 className="font-bold text-sm md:text-lg">View All Invoices</h3>
+              <p className="text-purple-100 text-xs md:text-sm">Manage your invoices</p>
             </div>
           </div>
         </motion.div>
 
         <motion.div
-          className="bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl p-4 md:p-6 text-white cursor-pointer hover:shadow-lg transition-all"
+          className="bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl p-2 md:p-6 text-white cursor-pointer hover:shadow-lg transition-all"
           whileHover={{ scale: 1.02, y: -2 }}
           whileTap={{ scale: 0.98 }}
           onClick={() => navigate("/profile")}
         >
-          <div className="flex items-center gap-3 md:gap-4">
-            <div className="p-2 md:p-3 bg-white/20 rounded-lg">
-              <TrendingUp className="w-5 h-5 md:w-6 md:h-6" />
+          <div className="flex flex-col md:flex-row items-center gap-1 md:gap-4">
+            <div className="p-1 md:p-3 bg-white/20 rounded-lg">
+              <TrendingUp className="w-4 h-4 md:w-6 md:h-6" />
             </div>
-            <div>
-              <h3 className="font-semibold text-base md:text-lg">Business Profile</h3>
-              <p className="text-orange-100 text-sm">Update your details</p>
+            <div className="text-center md:text-left">
+              <h3 className="font-bold text-sm md:text-lg">Business Profile</h3>
+              <p className="text-orange-100 text-xs md:text-sm">Update your details</p>
             </div>
           </div>
         </motion.div>
