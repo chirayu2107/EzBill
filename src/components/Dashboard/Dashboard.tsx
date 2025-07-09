@@ -167,16 +167,26 @@ const Dashboard: React.FC = () => {
           </motion.div>
         </div>
 
-        {/* Floating Elements - Hidden on mobile */}
+        {/* Floating Elements - Now visible on mobile too */}
         <motion.div
-          className="hidden md:block absolute top-4 right-20 w-16 h-16 bg-white/10 rounded-full"
+          className="absolute top-2 right-4 md:top-4 md:right-20 w-8 h-8 md:w-16 md:h-16 bg-white/10 rounded-full"
           animate={{ y: [0, -10, 0] }}
           transition={{ duration: 3, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
         />
         <motion.div
-          className="hidden md:block absolute bottom-4 left-20 w-8 h-8 bg-white/20 rounded-full"
+          className="absolute bottom-2 left-4 md:bottom-4 md:left-20 w-4 h-4 md:w-8 md:h-8 bg-white/20 rounded-full"
           animate={{ y: [0, 10, 0] }}
           transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut", delay: 1 }}
+        />
+        <motion.div
+          className="absolute top-1/2 right-8 md:right-32 w-3 h-3 md:w-6 md:h-6 bg-white/15 rounded-full"
+          animate={{ x: [0, 5, 0], y: [0, -5, 0] }}
+          transition={{ duration: 4, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut", delay: 0.5 }}
+        />
+        <motion.div
+          className="absolute bottom-1/3 left-8 md:left-16 w-5 h-5 md:w-10 md:h-10 bg-white/8 rounded-full"
+          animate={{ scale: [1, 1.2, 1], opacity: [0.8, 0.4, 0.8] }}
+          transition={{ duration: 3.5, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut", delay: 1.5 }}
         />
       </motion.div>
 

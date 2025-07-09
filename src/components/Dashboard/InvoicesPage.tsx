@@ -71,25 +71,32 @@ const InvoicesPage: React.FC = () => {
   return (
     <motion.div className="space-y-8" variants={containerVariants} initial="hidden" animate="visible">
       {/* Header */}
-      <motion.div className="flex justify-between items-start" variants={itemVariants}>
-        <div>
-          <div className="flex items-center gap-4 mb-2">
-            <div className="p-3 bg-emerald-500/10 rounded-xl">
-              <FileText className="w-8 h-8 text-emerald-500" />
+      <motion.div className="flex flex-col md:flex-row justify-between items-start gap-4" variants={itemVariants}>
+        <div className="flex-1">
+          <div className="flex items-center gap-3 md:gap-4 mb-2">
+            <div className="p-2 md:p-3 bg-emerald-500/10 rounded-xl">
+              <FileText className="w-6 h-6 md:w-8 md:h-8 text-emerald-500" />
             </div>
             <div>
-              <h1 className="text-4xl font-bold text-white">All Invoices</h1>
-              <p className="text-gray-400 text-lg">Manage and track all your invoices</p>
+              <h1 className="text-2xl md:text-4xl font-bold text-white">All Invoices</h1>
+              <p className="text-gray-400 text-sm md:text-lg">Manage and track all your invoices</p>
             </div>
           </div>
         </div>
         <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ delay: 0.2, duration: 0.3 }}
+          className="w-full md:w-auto"
         >
-          <Button onClick={() => navigate("/create-invoice")} icon={Plus} size="lg" className="shadow-lg">
-            Create New Invoice
+          <Button
+            onClick={() => navigate("/create-invoice")}
+            icon={Plus}
+            size="md"
+            className="w-full md:w-auto shadow-lg"
+          >
+            <span className="md:hidden">Create Invoice</span>
+            <span className="hidden md:inline">Create New Invoice</span>
           </Button>
         </motion.div>
       </motion.div>
