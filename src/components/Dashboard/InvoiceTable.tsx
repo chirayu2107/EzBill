@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { useApp } from "../../context/AppContext"
 import type { Invoice } from "../../types"
 import { formatCurrency, formatDate } from "../../utils/calculations"
-import { Eye, CheckCircle, XCircle, Edit, Trash2, AlertTriangle, FileX, Download } from "lucide-react"
+import { Eye, CheckCircle, XCircle, Edit, Trash2, AlertTriangle, FileX, Download, MoreVertical } from "lucide-react"
 import Button from "../UI/Button"
 import Card from "../UI/Card"
 import InvoicePreview from "../Invoice/InvoicePreview"
@@ -23,6 +23,7 @@ const InvoiceTable: React.FC<InvoiceTableProps> = ({ invoices, onViewInvoice, on
   const { updateInvoiceStatus, deleteInvoice } = useApp()
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null)
   const [downloadPreview, setDownloadPreview] = useState<Invoice | null>(null)
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null)
   const { toast } = useToast()
 
   const getStatusColor = (status: Invoice["status"]) => {
@@ -42,10 +43,12 @@ const InvoiceTable: React.FC<InvoiceTableProps> = ({ invoices, onViewInvoice, on
     const newStatus = invoice.status === "paid" ? "unpaid" : "paid"
     updateInvoiceStatus(invoice.id, newStatus)
     toast.success("Status Updated", `Invoice ${invoice.invoiceNumber} marked as ${newStatus}`)
+    setActiveDropdown(null)
   }
 
   const handleDownload = (invoice: Invoice) => {
     setDownloadPreview(invoice)
+    setActiveDropdown(null)
   }
 
   const closeDownloadPreview = () => {
@@ -54,6 +57,7 @@ const InvoiceTable: React.FC<InvoiceTableProps> = ({ invoices, onViewInvoice, on
 
   const handleDeleteClick = (invoice: Invoice) => {
     setDeleteConfirm(invoice.id)
+    setActiveDropdown(null)
   }
 
   const confirmDelete = (invoice: Invoice) => {
@@ -64,6 +68,10 @@ const InvoiceTable: React.FC<InvoiceTableProps> = ({ invoices, onViewInvoice, on
 
   const cancelDelete = () => {
     setDeleteConfirm(null)
+  }
+
+  const toggleDropdown = (invoiceId: string) => {
+    setActiveDropdown(activeDropdown === invoiceId ? null : invoiceId)
   }
 
   const getEmptyStateMessage = () => {
@@ -102,19 +110,19 @@ const InvoiceTable: React.FC<InvoiceTableProps> = ({ invoices, onViewInvoice, on
 
     return (
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-        <Card className="text-center py-16">
+        <Card className="text-center py-12 md:py-16">
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
             className="mb-4"
           >
-            <div className="w-16 h-16 bg-gray-700 rounded-full flex items-center justify-center mx-auto">
-              <FileX className="w-8 h-8 text-gray-400" />
+            <div className="w-12 h-12 md:w-16 md:h-16 bg-gray-700 rounded-full flex items-center justify-center mx-auto">
+              <FileX className="w-6 h-6 md:w-8 md:h-8 text-gray-400" />
             </div>
           </motion.div>
-          <h3 className="text-xl font-semibold text-white mb-2">{emptyState.title}</h3>
-          <p className="text-gray-400">{emptyState.description}</p>
+          <h3 className="text-lg md:text-xl font-semibold text-white mb-2">{emptyState.title}</h3>
+          <p className="text-gray-400 text-sm md:text-base">{emptyState.description}</p>
         </Card>
       </motion.div>
     )
@@ -124,7 +132,114 @@ const InvoiceTable: React.FC<InvoiceTableProps> = ({ invoices, onViewInvoice, on
     <>
       <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
         <Card className="overflow-hidden">
-          <div className="overflow-x-auto">
+          {/* Mobile Card View */}
+          <div className="block md:hidden space-y-4">
+            <AnimatePresence>
+              {invoices.map((invoice, index) => (
+                <motion.div
+                  key={invoice.id}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 20 }}
+                  transition={{ delay: index * 0.05 }}
+                  className="bg-gray-700 rounded-lg p-4 relative"
+                >
+                  <div className="flex justify-between items-start mb-3">
+                    <div>
+                      <h4 className="text-white font-medium">{invoice.invoiceNumber}</h4>
+                      <p className="text-gray-300 text-sm">{invoice.customerName}</p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <motion.span
+                        className={`px-2 py-1 rounded-full text-xs font-medium capitalize border ${getStatusColor(invoice.status)}`}
+                        whileHover={{ scale: 1.05 }}
+                      >
+                        {invoice.status}
+                      </motion.span>
+                      <div className="relative">
+                        <button
+                          onClick={() => toggleDropdown(invoice.id)}
+                          className="p-1 text-gray-400 hover:text-white rounded"
+                        >
+                          <MoreVertical className="w-4 h-4" />
+                        </button>
+
+                        <AnimatePresence>
+                          {activeDropdown === invoice.id && (
+                            <motion.div
+                              initial={{ opacity: 0, scale: 0.95, y: -10 }}
+                              animate={{ opacity: 1, scale: 1, y: 0 }}
+                              exit={{ opacity: 0, scale: 0.95, y: -10 }}
+                              className="absolute right-0 top-8 bg-gray-800 border border-gray-600 rounded-lg shadow-lg z-10 min-w-[150px]"
+                            >
+                              <button
+                                onClick={() => onViewInvoice(invoice)}
+                                className="w-full px-3 py-2 text-left text-sm text-gray-300 hover:bg-gray-700 flex items-center gap-2"
+                              >
+                                <Eye className="w-4 h-4" />
+                                View
+                              </button>
+                              <button
+                                onClick={() => handleDownload(invoice)}
+                                className="w-full px-3 py-2 text-left text-sm text-gray-300 hover:bg-gray-700 flex items-center gap-2"
+                              >
+                                <Download className="w-4 h-4" />
+                                Download
+                              </button>
+                              <button
+                                onClick={() => onEditInvoice(invoice)}
+                                className="w-full px-3 py-2 text-left text-sm text-gray-300 hover:bg-gray-700 flex items-center gap-2"
+                              >
+                                <Edit className="w-4 h-4" />
+                                Edit
+                              </button>
+                              <button
+                                onClick={() => toggleInvoiceStatus(invoice)}
+                                className="w-full px-3 py-2 text-left text-sm text-gray-300 hover:bg-gray-700 flex items-center gap-2"
+                              >
+                                {invoice.status === "paid" ? (
+                                  <>
+                                    <XCircle className="w-4 h-4" />
+                                    Mark Unpaid
+                                  </>
+                                ) : (
+                                  <>
+                                    <CheckCircle className="w-4 h-4" />
+                                    Mark Paid
+                                  </>
+                                )}
+                              </button>
+                              <button
+                                onClick={() => handleDeleteClick(invoice)}
+                                className="w-full px-3 py-2 text-left text-sm text-red-400 hover:bg-gray-700 flex items-center gap-2"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                                Delete
+                              </button>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <p className="text-gray-400">Date</p>
+                      <p className="text-white">{formatDate(invoice.date)}</p>
+                    </div>
+                    <div>
+                      <p className="text-gray-400">Amount</p>
+                      <p className="text-white font-medium">{formatCurrency(invoice.total)}</p>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+          </div>
+
+          {/* Desktop Table View */}
+          <div className="hidden md:block overflow-x-auto">
             <table className="w-full">
               <thead>
                 <tr className="border-b border-gray-700">
@@ -236,6 +351,9 @@ const InvoiceTable: React.FC<InvoiceTableProps> = ({ invoices, onViewInvoice, on
         </Card>
       </motion.div>
 
+      {/* Click outside to close dropdown */}
+      {activeDropdown && <div className="fixed inset-0 z-5" onClick={() => setActiveDropdown(null)} />}
+
       {/* Delete Confirmation Modal */}
       <AnimatePresence>
         {deleteConfirm && (
@@ -246,7 +364,7 @@ const InvoiceTable: React.FC<InvoiceTableProps> = ({ invoices, onViewInvoice, on
             exit={{ opacity: 0 }}
           >
             <motion.div
-              className="bg-gray-800 rounded-xl p-6 max-w-md w-full border border-gray-700"
+              className="bg-gray-800 rounded-xl p-4 md:p-6 max-w-md w-full border border-gray-700"
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.8, opacity: 0 }}
@@ -258,7 +376,7 @@ const InvoiceTable: React.FC<InvoiceTableProps> = ({ invoices, onViewInvoice, on
                 </div>
                 <div>
                   <h3 className="text-lg font-semibold text-white">Delete Invoice</h3>
-                  <p className="text-gray-400">Are you sure you want to delete this invoice?</p>
+                  <p className="text-gray-400 text-sm">Are you sure you want to delete this invoice?</p>
                 </div>
               </div>
 

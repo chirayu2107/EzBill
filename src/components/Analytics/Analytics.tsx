@@ -254,34 +254,52 @@ const Analytics: React.FC = () => {
     return nonZeroData.length > 0 ? getTotalSales() / nonZeroData.length : 0
   }
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
+  }
+
+  const itemVariants = {
+    hidden: { y: 30, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        duration: 0.4,
+        ease: "easeOut",
+      },
+    },
+  }
+
   return (
-    <div className="max-w-7xl mx-auto space-y-8">
+    <motion.div
+      className="max-w-7xl mx-auto space-y-6 md:space-y-8"
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+    >
       {/* Header */}
-      <motion.div
-        className="flex justify-between items-start"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-      >
+      <motion.div className="flex flex-col md:flex-row justify-between items-start gap-4" variants={itemVariants}>
         <div>
-          <div className="flex items-center gap-4 mb-2">
-            <div className="p-3 bg-blue-500/10 rounded-xl">
-              <BarChart3 className="w-8 h-8 text-blue-500" />
+          <div className="flex items-center gap-3 md:gap-4 mb-2">
+            <div className="p-2 md:p-3 bg-blue-500/10 rounded-xl">
+              <BarChart3 className="w-6 h-6 md:w-8 md:h-8 text-blue-500" />
             </div>
             <div>
-              <h1 className="text-4xl font-bold text-white">Analytics</h1>
-              <p className="text-gray-400 text-lg">Business insights and reports</p>
+              <h1 className="text-2xl md:text-4xl font-bold text-white">Analytics</h1>
+              <p className="text-gray-400 text-base md:text-lg">Business insights and reports</p>
             </div>
           </div>
         </div>
       </motion.div>
 
       {/* Controls */}
-      <motion.div
-        className="grid grid-cols-1 md:grid-cols-4 gap-4"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1 }}
-      >
+      <motion.div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" variants={itemVariants}>
         <Card>
           <div className="space-y-3">
             <label className="block text-sm font-medium text-gray-300">Report Type</label>
@@ -289,7 +307,7 @@ const Analytics: React.FC = () => {
               <select
                 value={reportType}
                 onChange={(e) => setReportType(e.target.value as ReportType)}
-                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none"
+                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none text-sm"
               >
                 <option value="monthly">Monthly Report</option>
                 <option value="financial-year">Financial Year Report</option>
@@ -309,7 +327,7 @@ const Analytics: React.FC = () => {
                 <select
                   value={selectedMonth}
                   onChange={(e) => setSelectedMonth(e.target.value)}
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none"
+                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none text-sm"
                 >
                   {availableMonths.length > 0 ? (
                     availableMonths.map((month) => {
@@ -340,7 +358,7 @@ const Analytics: React.FC = () => {
                 <select
                   value={selectedFY}
                   onChange={(e) => setSelectedFY(Number.parseInt(e.target.value))}
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none"
+                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none text-sm"
                 >
                   {availableFYs.length > 0 ? (
                     availableFYs.map((fy) => (
@@ -392,7 +410,7 @@ const Analytics: React.FC = () => {
                 onClick={handleExportExcel}
                 icon={FileSpreadsheet}
                 size="sm"
-                className="flex-1 bg-green-600 hover:bg-green-700"
+                className="flex-1 bg-green-600 hover:bg-green-700 text-xs"
               >
                 Excel
               </Button>
@@ -401,7 +419,7 @@ const Analytics: React.FC = () => {
                   onClick={handleExportChart}
                   icon={Download}
                   size="sm"
-                  className="flex-1 bg-purple-600 hover:bg-purple-700"
+                  className="flex-1 bg-purple-600 hover:bg-purple-700 text-xs"
                 >
                   PNG
                 </Button>
@@ -412,60 +430,55 @@ const Analytics: React.FC = () => {
       </motion.div>
 
       {/* Summary Cards */}
-      <motion.div
-        className="grid grid-cols-1 md:grid-cols-3 gap-6"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.2 }}
-      >
+      <motion.div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6" variants={itemVariants}>
         <Card className="bg-gradient-to-br from-green-500/10 to-emerald-600/10 border-green-500/20">
           <div className="flex items-center justify-between">
-            <div>
+            <div className="min-w-0 flex-1">
               <p className="text-green-400 text-sm font-medium">Total Sales</p>
-              <p className="text-2xl font-bold text-white">{formatCurrency(getTotalSales())}</p>
+              <p className="text-lg md:text-2xl font-bold text-white truncate">{formatCurrency(getTotalSales())}</p>
             </div>
-            <div className="p-3 bg-green-500/10 rounded-lg">
-              <TrendingUp className="w-6 h-6 text-green-500" />
+            <div className="p-2 md:p-3 bg-green-500/10 rounded-lg flex-shrink-0">
+              <TrendingUp className="w-5 h-5 md:w-6 md:h-6 text-green-500" />
             </div>
           </div>
         </Card>
 
         <Card className="bg-gradient-to-br from-blue-500/10 to-cyan-600/10 border-blue-500/20">
           <div className="flex items-center justify-between">
-            <div>
+            <div className="min-w-0 flex-1">
               <p className="text-blue-400 text-sm font-medium">Total Invoices</p>
-              <p className="text-2xl font-bold text-white">{getTotalInvoices()}</p>
+              <p className="text-lg md:text-2xl font-bold text-white">{getTotalInvoices()}</p>
             </div>
-            <div className="p-3 bg-blue-500/10 rounded-lg">
-              <FileSpreadsheet className="w-6 h-6 text-blue-500" />
+            <div className="p-2 md:p-3 bg-blue-500/10 rounded-lg flex-shrink-0">
+              <FileSpreadsheet className="w-5 h-5 md:w-6 md:h-6 text-blue-500" />
             </div>
           </div>
         </Card>
 
         <Card className="bg-gradient-to-br from-purple-500/10 to-pink-600/10 border-purple-500/20">
           <div className="flex items-center justify-between">
-            <div>
+            <div className="min-w-0 flex-1">
               <p className="text-purple-400 text-sm font-medium">Average Sales</p>
-              <p className="text-2xl font-bold text-white">{formatCurrency(getAverageSales())}</p>
+              <p className="text-lg md:text-2xl font-bold text-white truncate">{formatCurrency(getAverageSales())}</p>
             </div>
-            <div className="p-3 bg-purple-500/10 rounded-lg">
-              <BarChart3 className="w-6 h-6 text-purple-500" />
+            <div className="p-2 md:p-3 bg-purple-500/10 rounded-lg flex-shrink-0">
+              <BarChart3 className="w-5 h-5 md:w-6 md:h-6 text-purple-500" />
             </div>
           </div>
         </Card>
       </motion.div>
 
       {/* Chart/Table Content */}
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }}>
+      <motion.div variants={itemVariants}>
         {viewType === "chart" ? (
           <Card>
-            <div className="mb-6">
-              <h3 className="text-xl font-semibold text-white mb-2">
+            <div className="mb-4 md:mb-6">
+              <h3 className="text-lg md:text-xl font-semibold text-white mb-2">
                 {reportType === "monthly"
                   ? `Daily Sales - ${new Date(selectedMonth + "-01").toLocaleDateString("en-US", { year: "numeric", month: "long" })}`
                   : `Monthly Sales - FY ${selectedFY}-${selectedFY + 1}`}
               </h3>
-              <p className="text-gray-400">
+              <p className="text-gray-400 text-sm md:text-base">
                 {reportType === "monthly"
                   ? "Daily breakdown of sales and invoice count"
                   : "Monthly breakdown of sales and invoice count for the financial year"}
@@ -480,8 +493,8 @@ const Analytics: React.FC = () => {
           </Card>
         ) : (
           <Card>
-            <div className="mb-6">
-              <h3 className="text-xl font-semibold text-white mb-2">
+            <div className="mb-4 md:mb-6">
+              <h3 className="text-lg md:text-xl font-semibold text-white mb-2">
                 {reportType === "monthly"
                   ? `Daily Sales Table - ${new Date(selectedMonth + "-01").toLocaleDateString("en-US", { year: "numeric", month: "long" })}`
                   : `Monthly Sales Table - FY ${selectedFY}-${selectedFY + 1}`}
@@ -492,32 +505,38 @@ const Analytics: React.FC = () => {
               <table className="w-full">
                 <thead>
                   <tr className="border-b border-gray-700">
-                    <th className="text-left py-3 px-4 text-gray-300 font-semibold">
+                    <th className="text-left py-3 px-2 md:px-4 text-gray-300 font-semibold text-sm">
                       {reportType === "monthly" ? "Date" : "Month"}
                     </th>
-                    <th className="text-right py-3 px-4 text-gray-300 font-semibold">Sales Amount</th>
-                    <th className="text-right py-3 px-4 text-gray-300 font-semibold">Invoice Count</th>
-                    <th className="text-right py-3 px-4 text-gray-300 font-semibold">Avg per Invoice</th>
+                    <th className="text-right py-3 px-2 md:px-4 text-gray-300 font-semibold text-sm">Sales Amount</th>
+                    <th className="text-right py-3 px-2 md:px-4 text-gray-300 font-semibold text-sm">Invoice Count</th>
+                    <th className="text-right py-3 px-2 md:px-4 text-gray-300 font-semibold text-sm">
+                      Avg per Invoice
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
                   {reportType === "monthly"
                     ? monthlyData.map((item, index) => (
                         <tr key={index} className="border-b border-gray-700 hover:bg-gray-750">
-                          <td className="py-3 px-4 text-white">{item.formattedDate}</td>
-                          <td className="py-3 px-4 text-right text-white font-medium">{formatCurrency(item.sales)}</td>
-                          <td className="py-3 px-4 text-right text-gray-300">{item.invoices}</td>
-                          <td className="py-3 px-4 text-right text-gray-300">
+                          <td className="py-3 px-2 md:px-4 text-white text-sm">{item.formattedDate}</td>
+                          <td className="py-3 px-2 md:px-4 text-right text-white font-medium text-sm">
+                            {formatCurrency(item.sales)}
+                          </td>
+                          <td className="py-3 px-2 md:px-4 text-right text-gray-300 text-sm">{item.invoices}</td>
+                          <td className="py-3 px-2 md:px-4 text-right text-gray-300 text-sm">
                             {item.invoices > 0 ? formatCurrency(item.sales / item.invoices) : formatCurrency(0)}
                           </td>
                         </tr>
                       ))
                     : financialYearData.map((item, index) => (
                         <tr key={index} className="border-b border-gray-700 hover:bg-gray-750">
-                          <td className="py-3 px-4 text-white">{item.month}</td>
-                          <td className="py-3 px-4 text-right text-white font-medium">{formatCurrency(item.sales)}</td>
-                          <td className="py-3 px-4 text-right text-gray-300">{item.invoices}</td>
-                          <td className="py-3 px-4 text-right text-gray-300">
+                          <td className="py-3 px-2 md:px-4 text-white text-sm">{item.month}</td>
+                          <td className="py-3 px-2 md:px-4 text-right text-white font-medium text-sm">
+                            {formatCurrency(item.sales)}
+                          </td>
+                          <td className="py-3 px-2 md:px-4 text-right text-gray-300 text-sm">{item.invoices}</td>
+                          <td className="py-3 px-2 md:px-4 text-right text-gray-300 text-sm">
                             {item.invoices > 0 ? formatCurrency(item.sales / item.invoices) : formatCurrency(0)}
                           </td>
                         </tr>
@@ -525,10 +544,14 @@ const Analytics: React.FC = () => {
                 </tbody>
                 <tfoot>
                   <tr className="border-t-2 border-gray-600 bg-gray-750">
-                    <td className="py-3 px-4 text-white font-semibold">Total</td>
-                    <td className="py-3 px-4 text-right text-white font-semibold">{formatCurrency(getTotalSales())}</td>
-                    <td className="py-3 px-4 text-right text-white font-semibold">{getTotalInvoices()}</td>
-                    <td className="py-3 px-4 text-right text-white font-semibold">
+                    <td className="py-3 px-2 md:px-4 text-white font-semibold text-sm">Total</td>
+                    <td className="py-3 px-2 md:px-4 text-right text-white font-semibold text-sm">
+                      {formatCurrency(getTotalSales())}
+                    </td>
+                    <td className="py-3 px-2 md:px-4 text-right text-white font-semibold text-sm">
+                      {getTotalInvoices()}
+                    </td>
+                    <td className="py-3 px-2 md:px-4 text-right text-white font-semibold text-sm">
                       {formatCurrency(getAverageSales())}
                     </td>
                   </tr>
@@ -538,7 +561,7 @@ const Analytics: React.FC = () => {
           </Card>
         )}
       </motion.div>
-    </div>
+    </motion.div>
   )
 }
 

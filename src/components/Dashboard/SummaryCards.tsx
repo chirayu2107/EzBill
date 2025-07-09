@@ -57,20 +57,20 @@ const SummaryCards: React.FC = () => {
   }
 
   const cardVariants = {
-    hidden: { y: 20, opacity: 0 },
+    hidden: { y: 30, opacity: 0 },
     visible: {
       y: 0,
       opacity: 1,
       transition: {
-        duration: 0.5,
-        ease: "easeOut" as const,
+        duration: 0.4,
+        ease: "easeOut",
       },
     },
   }
 
   return (
     <motion.div
-      className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
@@ -91,10 +91,10 @@ const SummaryCards: React.FC = () => {
             <div className={`absolute inset-0 bg-gradient-to-br ${card.gradient} opacity-5`}></div>
 
             <div className="relative z-10 flex items-center justify-between">
-              <div className="flex-1">
-                <p className="text-gray-400 text-sm font-medium mb-1">{card.title}</p>
+              <div className="flex-1 min-w-0">
+                <p className="text-gray-400 text-xs md:text-sm font-medium mb-1 truncate">{card.title}</p>
                 <motion.p
-                  className="text-2xl font-bold text-white"
+                  className="text-lg md:text-2xl font-bold text-white truncate"
                   initial={{ scale: 0.8, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
                   transition={{ delay: index * 0.1 + 0.2 }}
@@ -103,15 +103,15 @@ const SummaryCards: React.FC = () => {
                 </motion.p>
               </div>
               <motion.div
-                className={`p-3 rounded-xl ${card.bgColor} relative`}
+                className={`p-2 md:p-3 rounded-xl ${card.bgColor} relative flex-shrink-0`}
                 whileHover={{ rotate: 5 }}
                 transition={{ duration: 0.2 }}
               >
-                <card.icon className={`w-6 h-6 ${card.color}`} />
+                <card.icon className={`w-5 h-5 md:w-6 md:h-6 ${card.color}`} />
 
-                {/* Pulse effect */}
+                {/* Pulse effect - Reduced on mobile */}
                 <motion.div
-                  className={`absolute inset-0 rounded-xl ${card.bgColor}`}
+                  className={`absolute inset-0 rounded-xl ${card.bgColor} hidden md:block`}
                   animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0, 0.5] }}
                   transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
                 />
