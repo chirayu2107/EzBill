@@ -165,9 +165,9 @@ const InvoicesPage: React.FC = () => {
               <Filter className="w-5 h-5 text-gray-400" />
             </div>
 
-            {/* Filter Buttons in 2x2 Grid */}
-            <div className="grid grid-cols-2 gap-3">
-              {/* First Row: All Invoices, Paid */}
+            {/* Filter Buttons - 2x2 Grid on Mobile, Single Row on Desktop */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+              {/* First Row on Mobile: All Invoices, Paid */}
               <motion.button
                 onClick={() => setStatusFilter("all")}
                 className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
@@ -194,7 +194,7 @@ const InvoicesPage: React.FC = () => {
                 Paid ({filters[1].count})
               </motion.button>
 
-              {/* Second Row: Unpaid, Overdue */}
+              {/* Second Row on Mobile: Unpaid, Overdue */}
               <motion.button
                 onClick={() => setStatusFilter("unpaid")}
                 className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${

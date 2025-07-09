@@ -206,338 +206,334 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({ invoice, onClose, autoD
           </div>
         )}
 
-        {/* Invoice Content - Optimized for mobile */}
-        <div className="p-1 md:p-6 bg-white text-gray-800 text-xs md:text-sm" id={`invoice-preview-${invoice.id}`}>
-          {/* Main Border */}
-          <div className="border-2 border-gray-800 p-2 md:p-4">
+        {/* Invoice Content - Optimized for Mobile Clarity */}
+        <div
+          className="p-1 md:p-6 bg-white text-gray-900 text-[8px] md:text-sm leading-[9px] md:leading-normal font-medium"
+          id={`invoice-preview-${invoice.id}`}
+          style={{
+            fontFamily: "system-ui, -apple-system, sans-serif",
+            WebkitFontSmoothing: "antialiased",
+            MozOsxFontSmoothing: "grayscale",
+          }}
+        >
+          {/* Main Border - Thinner on mobile */}
+          <div className="border border-gray-600 md:border-gray-800 p-1 md:p-4">
             {/* Header with TAX INVOICE and ORIGINAL FOR RECIPIENT */}
-            <div className="flex justify-between items-center mb-3 md:mb-4 pb-2 border-b-2 border-gray-800">
-              <h1 className="text-lg md:text-2xl font-bold">TAX INVOICE</h1>
-              <div className="border border-gray-800 px-2 md:px-3 py-1">
-                <p className="text-xs md:text-sm font-bold whitespace-nowrap">ORIGINAL FOR RECIPIENT</p>
+            <div className="flex justify-between items-center mb-1 md:mb-4 pb-1 md:pb-2 border-b border-gray-600 md:border-gray-800">
+              <h1 className="text-[12px] md:text-2xl font-bold text-gray-900">TAX INVOICE</h1>
+              <div className="border border-gray-600 md:border-gray-800 px-1 md:px-3 py-0.5 md:py-1">
+                <p className="text-[6px] md:text-sm font-bold whitespace-nowrap text-gray-900">
+                  ORIGINAL FOR RECIPIENT
+                </p>
               </div>
             </div>
 
             {/* Business Details and Invoice Info */}
-            <div className="flex flex-col lg:flex-row justify-between mb-3 md:mb-4 pb-2 md:pb-3 border-b border-gray-800 gap-3">
-              <div className="flex gap-2 md:gap-3 flex-1">
+            <div className="flex justify-between mb-1 md:mb-4 pb-1 md:pb-3 border-b border-gray-600 md:border-gray-800 gap-1 md:gap-3">
+              <div className="flex gap-1 md:gap-3 flex-1">
                 {/* Initials Box */}
-                <div className="border border-gray-800 w-10 h-10 md:w-12 md:h-12 flex items-center justify-center flex-shrink-0">
-                  <span className="text-sm md:text-lg font-bold">{getInitials(user?.fullName || "Business")}</span>
+                <div className="border border-gray-600 md:border-gray-800 w-6 h-6 md:w-12 md:h-12 flex items-center justify-center flex-shrink-0 bg-gray-50">
+                  <span className="text-[8px] md:text-lg font-bold text-gray-900">
+                    {getInitials(user?.fullName || "Business")}
+                  </span>
                 </div>
 
                 {/* Business Details */}
                 <div className="min-w-0 flex-1">
-                  <h2 className="text-sm md:text-base font-bold mb-1">{user?.fullName || "Your Business"}</h2>
-                  <div className="text-xs md:text-sm space-y-0.5">
+                  <h2 className="text-[9px] md:text-base font-bold mb-0.5 md:mb-1 text-gray-900">
+                    {user?.fullName || "Your Business"}
+                  </h2>
+                  <div className="text-[7px] md:text-sm space-y-0 md:space-y-0.5 leading-[8px] md:leading-normal text-gray-800">
                     <p className="break-words">{user?.address}</p>
                     <p>State: {user?.state}</p>
                     {user?.gstNumber && <p>GSTIN: {user.gstNumber}</p>}
-                    <p>PAN Number: {user?.panNumber}</p>
+                    <p>PAN: {user?.panNumber}</p>
                     <p>Mobile: {user?.phoneNumber}</p>
                   </div>
                 </div>
               </div>
 
               {/* Invoice Details */}
-              <div className="text-right text-xs md:text-sm flex-shrink-0 lg:ml-4">
-                <div className="mb-2">
-                  <p className="font-bold">Invoice No.</p>
+              <div className="text-right text-[7px] md:text-sm flex-shrink-0 text-gray-800">
+                <div className="mb-1 md:mb-2">
+                  <p className="font-bold text-gray-900">Invoice No.</p>
                   <p className="break-all">{invoice.invoiceNumber}</p>
                 </div>
                 <div>
-                  <p className="font-bold">Invoice Date</p>
+                  <p className="font-bold text-gray-900">Invoice Date</p>
                   <p>{formatDate(invoice.date)}</p>
                 </div>
               </div>
             </div>
 
             {/* BILL TO Section */}
-            <div className="mb-3 md:mb-4">
-              <h3 className="text-xs md:text-sm font-bold mb-1">BILL TO</h3>
-              <div className="text-xs md:text-sm">
-                <h4 className="text-sm md:text-base font-bold mb-1 break-words">{invoice.customerName}</h4>
+            <div className="mb-1 md:mb-4">
+              <h3 className="text-[8px] md:text-sm font-bold mb-0.5 md:mb-1 text-gray-900">BILL TO</h3>
+              <div className="text-[7px] md:text-sm leading-[8px] md:leading-normal text-gray-800">
+                <h4 className="text-[9px] md:text-base font-bold mb-0.5 md:mb-1 break-words text-gray-900">
+                  {invoice.customerName}
+                </h4>
                 <p className="break-words">Address: {invoice.customerAddress}</p>
                 <p>State: {invoice.customerState}</p>
                 {invoice.customerGSTIN && <p className="break-all">GSTIN: {invoice.customerGSTIN}</p>}
-                {invoice.customerPAN && <p>PAN Number: {invoice.customerPAN}</p>}
+                {invoice.customerPAN && <p>PAN: {invoice.customerPAN}</p>}
               </div>
             </div>
 
-            {/* Items Table - Mobile Optimized */}
-            <div className="mb-3 md:mb-4">
-              <div className="overflow-x-auto">
-                <table className="w-full border-collapse border border-gray-800 min-w-[500px]">
-                  <thead>
-                    <tr className="bg-gray-100">
-                      <th className="border border-gray-800 py-1 md:py-2 px-1 md:px-2 text-xs md:text-sm font-bold text-center w-8 md:w-12">
-                        S.NO
-                      </th>
-                      <th className="border border-gray-800 py-1 md:py-2 px-1 md:px-2 text-xs md:text-sm font-bold text-left min-w-[120px]">
-                        SERVICES
-                      </th>
-                      <th className="border border-gray-800 py-1 md:py-2 px-1 md:px-2 text-xs md:text-sm font-bold text-center w-16 md:w-20">
-                        HSN/SAC
-                      </th>
-                      <th className="border border-gray-800 py-1 md:py-2 px-1 md:px-2 text-xs md:text-sm font-bold text-center w-8 md:w-12">
-                        QTY
-                      </th>
-                      <th className="border border-gray-800 py-1 md:py-2 px-1 md:px-2 text-xs md:text-sm font-bold text-right w-16 md:w-20">
-                        RATE
-                      </th>
-                      <th className="border border-gray-800 py-1 md:py-2 px-1 md:px-2 text-xs md:text-sm font-bold text-right w-20 md:w-24">
-                        AMOUNT
-                      </th>
+            {/* Items Table - Clear and Readable on Mobile */}
+            <div className="mb-1 md:mb-4">
+              <table className="w-full border-collapse text-[6px] md:text-sm">
+                <thead>
+                  <tr className="bg-gray-100">
+                    <th className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 font-bold text-center w-[8%] md:w-auto text-gray-900">
+                      S.NO
+                    </th>
+                    <th className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 font-bold text-left w-[35%] md:w-auto text-gray-900">
+                      SERVICES
+                    </th>
+                    <th className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 font-bold text-center w-[12%] md:w-auto text-gray-900">
+                      HSN/SAC
+                    </th>
+                    <th className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 font-bold text-center w-[8%] md:w-auto text-gray-900">
+                      QTY
+                    </th>
+                    <th className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 font-bold text-right w-[15%] md:w-auto text-gray-900">
+                      RATE
+                    </th>
+                    <th className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 font-bold text-right w-[22%] md:w-auto text-gray-900">
+                      AMOUNT
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {invoice.items.map((item, index) => (
+                    <tr key={item.id} className="bg-white">
+                      <td className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 text-center text-gray-900">
+                        {index + 1}
+                      </td>
+                      <td className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 break-words text-gray-800 leading-[7px] md:leading-normal">
+                        {item.name.length > 30 ? `${item.name.substring(0, 30)}...` : item.name}
+                      </td>
+                      <td className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 text-center text-gray-800">
+                        {item.hsnSac || "SAC300"}
+                      </td>
+                      <td className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 text-center text-gray-800">
+                        {item.quantity}
+                      </td>
+                      <td className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 text-right text-gray-800">
+                        {formatCurrency(item.rate).replace("₹", "")}
+                      </td>
+                      <td className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 text-right text-gray-900 font-semibold">
+                        {formatCurrency(item.lineTotal).replace("₹", "")}
+                      </td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    {invoice.items.map((item, index) => (
-                      <tr key={item.id}>
-                        <td className="border border-gray-800 py-1 md:py-2 px-1 md:px-2 text-xs md:text-sm text-center">
-                          {index + 1}
-                        </td>
-                        <td className="border border-gray-800 py-1 md:py-2 px-1 md:px-2 text-xs md:text-sm break-words">
-                          {item.name}
-                        </td>
-                        <td className="border border-gray-800 py-1 md:py-2 px-1 md:px-2 text-xs md:text-sm text-center">
-                          {item.hsnSac || "SAC300"}
-                        </td>
-                        <td className="border border-gray-800 py-1 md:py-2 px-1 md:px-2 text-xs md:text-sm text-center">
-                          {item.quantity}
-                        </td>
-                        <td className="border border-gray-800 py-1 md:py-2 px-1 md:px-2 text-xs md:text-sm text-right">
-                          {formatCurrency(item.rate).replace("₹", "")}
-                        </td>
-                        <td className="border border-gray-800 py-1 md:py-2 px-1 md:px-2 text-xs md:text-sm text-right">
-                          {formatCurrency(item.lineTotal).replace("₹", "")}
-                        </td>
-                      </tr>
-                    ))}
+                  ))}
 
-                    {/* Subtotal Row */}
-                    <tr>
+                  {/* Subtotal Row */}
+                  <tr className="bg-gray-50">
+                    <td
+                      colSpan={5}
+                      className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 text-right font-bold text-gray-900"
+                    >
+                      Subtotal
+                    </td>
+                    <td className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 text-right font-bold text-gray-900">
+                      {formatCurrency(invoice.subtotal).replace("₹", "")}
+                    </td>
+                  </tr>
+
+                  {/* GST Rows */}
+                  {invoice.gstBreakdown.isInterState ? (
+                    <tr className="bg-gray-50">
                       <td
                         colSpan={5}
-                        className="border border-gray-800 py-1 md:py-2 px-1 md:px-2 text-xs md:text-sm text-right font-bold"
+                        className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 text-right font-bold text-gray-900"
                       >
-                        Subtotal
+                        IGST @ 18%
                       </td>
-                      <td className="border border-gray-800 py-1 md:py-2 px-1 md:px-2 text-xs md:text-sm text-right font-bold">
-                        {formatCurrency(invoice.subtotal).replace("₹", "")}
+                      <td className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 text-right font-bold text-gray-900">
+                        {formatCurrency(invoice.gstBreakdown.igst).replace("₹", "")}
                       </td>
                     </tr>
-
-                    {/* GST Rows */}
-                    {invoice.gstBreakdown.isInterState ? (
-                      <tr>
+                  ) : (
+                    <>
+                      <tr className="bg-gray-50">
                         <td
                           colSpan={5}
-                          className="border border-gray-800 py-1 md:py-2 px-1 md:px-2 text-xs md:text-sm text-right font-bold"
+                          className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 text-right font-bold text-gray-900"
                         >
-                          IGST @ 18%
+                          CGST @ 9%
                         </td>
-                        <td className="border border-gray-800 py-1 md:py-2 px-1 md:px-2 text-xs md:text-sm text-right font-bold">
-                          {formatCurrency(invoice.gstBreakdown.igst).replace("₹", "")}
+                        <td className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 text-right font-bold text-gray-900">
+                          {formatCurrency(invoice.gstBreakdown.cgst).replace("₹", "")}
                         </td>
                       </tr>
+                      <tr className="bg-gray-50">
+                        <td
+                          colSpan={5}
+                          className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 text-right font-bold text-gray-900"
+                        >
+                          SGST @ 9%
+                        </td>
+                        <td className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 text-right font-bold text-gray-900">
+                          {formatCurrency(invoice.gstBreakdown.sgst).replace("₹", "")}
+                        </td>
+                      </tr>
+                    </>
+                  )}
+
+                  {/* Total Row */}
+                  <tr className="bg-gray-200">
+                    <td
+                      colSpan={5}
+                      className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 text-right font-bold text-gray-900"
+                    >
+                      TOTAL
+                    </td>
+                    <td className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 text-right font-bold text-gray-900">
+                      ₹{formatCurrency(invoice.total).replace("₹", "")}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            {/* Tax Summary Table - Simplified for Mobile */}
+            <div className="mb-1 md:mb-4">
+              <table className="w-full border-collapse text-[6px] md:text-sm">
+                <thead>
+                  <tr className="bg-gray-100">
+                    <th className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 font-bold text-center w-[15%] md:w-auto text-gray-900">
+                      HSN/SAC
+                    </th>
+                    <th className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 font-bold text-center w-[20%] md:w-auto text-gray-900">
+                      Taxable Value
+                    </th>
+                    {invoice.gstBreakdown.isInterState ? (
+                      <>
+                        <th className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 font-bold text-center w-[15%] md:w-auto text-gray-900">
+                          IGST Rate
+                        </th>
+                        <th className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 font-bold text-center w-[25%] md:w-auto text-gray-900">
+                          IGST Amount
+                        </th>
+                      </>
                     ) : (
                       <>
-                        <tr>
-                          <td
-                            colSpan={5}
-                            className="border border-gray-800 py-1 md:py-2 px-1 md:px-2 text-xs md:text-sm text-right font-bold"
-                          >
-                            CGST @ 9%
-                          </td>
-                          <td className="border border-gray-800 py-1 md:py-2 px-1 md:px-2 text-xs md:text-sm text-right font-bold">
-                            {formatCurrency(invoice.gstBreakdown.cgst).replace("₹", "")}
-                          </td>
-                        </tr>
-                        <tr>
-                          <td
-                            colSpan={5}
-                            className="border border-gray-800 py-1 md:py-2 px-1 md:px-2 text-xs md:text-sm text-right font-bold"
-                          >
-                            SGST @ 9%
-                          </td>
-                          <td className="border border-gray-800 py-1 md:py-2 px-1 md:px-2 text-xs md:text-sm text-right font-bold">
-                            {formatCurrency(invoice.gstBreakdown.sgst).replace("₹", "")}
-                          </td>
-                        </tr>
+                        <th className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 font-bold text-center w-[12%] md:w-auto text-gray-900">
+                          CGST Rate
+                        </th>
+                        <th className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 font-bold text-center w-[15%] md:w-auto text-gray-900">
+                          CGST Amount
+                        </th>
+                        <th className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 font-bold text-center w-[12%] md:w-auto text-gray-900">
+                          SGST Rate
+                        </th>
+                        <th className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 font-bold text-center w-[14%] md:w-auto text-gray-900">
+                          SGST Amount
+                        </th>
                       </>
                     )}
+                    <th className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 font-bold text-center w-[25%] md:w-auto text-gray-900">
+                      Total Tax
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr className="bg-white">
+                    <td className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 text-center text-gray-800">
+                      {invoice.items[0]?.hsnSac || "SAC300"}
+                    </td>
+                    <td className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 text-center text-gray-800">
+                      {formatCurrency(invoice.subtotal).replace("₹", "")}
+                    </td>
+                    {invoice.gstBreakdown.isInterState ? (
+                      <>
+                        <td className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 text-center text-gray-800">
+                          18%
+                        </td>
+                        <td className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 text-center text-gray-800">
+                          {formatCurrency(invoice.gstBreakdown.igst).replace("₹", "")}
+                        </td>
+                      </>
+                    ) : (
+                      <>
+                        <td className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 text-center text-gray-800">
+                          9%
+                        </td>
+                        <td className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 text-center text-gray-800">
+                          {formatCurrency(invoice.gstBreakdown.cgst).replace("₹", "")}
+                        </td>
+                        <td className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 text-center text-gray-800">
+                          9%
+                        </td>
+                        <td className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 text-center text-gray-800">
+                          {formatCurrency(invoice.gstBreakdown.sgst).replace("₹", "")}
+                        </td>
+                      </>
+                    )}
+                    <td className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 text-center text-gray-900 font-semibold">
+                      {formatCurrency(invoice.gstBreakdown.total).replace("₹", "")}
+                    </td>
+                  </tr>
+                  <tr className="bg-gray-100">
+                    <td className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 text-center font-bold text-gray-900">
+                      Total
+                    </td>
+                    <td className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 text-center font-bold text-gray-900">
+                      {formatCurrency(invoice.subtotal).replace("₹", "")}
+                    </td>
+                    {invoice.gstBreakdown.isInterState ? (
+                      <>
+                        <td className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 text-center font-bold text-gray-900"></td>
+                        <td className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 text-center font-bold text-gray-900">
+                          {formatCurrency(invoice.gstBreakdown.igst).replace("₹", "")}
+                        </td>
+                      </>
+                    ) : (
+                      <>
+                        <td className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 text-center font-bold text-gray-900"></td>
+                        <td className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 text-center font-bold text-gray-900">
+                          {formatCurrency(invoice.gstBreakdown.cgst).replace("₹", "")}
+                        </td>
+                        <td className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 text-center font-bold text-gray-900"></td>
+                        <td className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 text-center font-bold text-gray-900">
+                          {formatCurrency(invoice.gstBreakdown.sgst).replace("₹", "")}
+                        </td>
+                      </>
+                    )}
+                    <td className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 text-center font-bold text-gray-900">
+                      {formatCurrency(invoice.gstBreakdown.total).replace("₹", "")}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
 
-                    {/* Total Row */}
-                    <tr className="bg-gray-100">
-                      <td
-                        colSpan={5}
-                        className="border border-gray-800 py-1 md:py-2 px-1 md:px-2 text-xs md:text-sm text-right font-bold"
-                      >
-                        TOTAL
-                      </td>
-                      <td className="border border-gray-800 py-1 md:py-2 px-1 md:px-2 text-xs md:text-sm text-right font-bold">
-                        ₹{formatCurrency(invoice.total).replace("₹", "")}
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+            {/* Amount in Words - Clear and Readable */}
+            <div className="mb-1 md:mb-4">
+              <div className="border border-gray-400 md:border-gray-800 p-1 md:p-3 bg-gray-50">
+                <p className="text-[7px] md:text-sm font-bold mb-0.5 md:mb-1 text-gray-900">Total Amount (in words)</p>
+                <p className="text-[6px] md:text-sm italic break-words leading-[7px] md:leading-normal text-gray-800">
+                  {convertToWords(invoice.total)}
+                </p>
               </div>
             </div>
 
-            {/* Tax Summary Table - Mobile Optimized */}
-            <div className="mb-3 md:mb-4">
-              <div className="overflow-x-auto">
-                <table className="w-full border-collapse border border-gray-800 min-w-[400px]">
-                  <thead>
-                    <tr className="bg-gray-100">
-                      <th className="border border-gray-800 py-1 md:py-2 px-1 md:px-2 text-xs md:text-sm font-bold text-center">
-                        HSN/SAC
-                      </th>
-                      <th className="border border-gray-800 py-1 md:py-2 px-1 md:px-2 text-xs md:text-sm font-bold text-center">
-                        Taxable Value
-                      </th>
-                      {invoice.gstBreakdown.isInterState ? (
-                        <>
-                          <th
-                            className="border border-gray-800 py-1 md:py-2 px-1 md:px-2 text-xs md:text-sm font-bold text-center"
-                            colSpan={2}
-                          >
-                            IGST
-                          </th>
-                        </>
-                      ) : (
-                        <>
-                          <th
-                            className="border border-gray-800 py-1 md:py-2 px-1 md:px-2 text-xs md:text-sm font-bold text-center"
-                            colSpan={2}
-                          >
-                            CGST
-                          </th>
-                          <th
-                            className="border border-gray-800 py-1 md:py-2 px-1 md:px-2 text-xs md:text-sm font-bold text-center"
-                            colSpan={2}
-                          >
-                            SGST
-                          </th>
-                        </>
-                      )}
-                      <th className="border border-gray-800 py-1 md:py-2 px-1 md:px-2 text-xs md:text-sm font-bold text-center">
-                        Total Tax
-                      </th>
-                    </tr>
-                    <tr className="bg-gray-100">
-                      <th className="border border-gray-800 py-1 px-1 md:px-2 text-xs"></th>
-                      <th className="border border-gray-800 py-1 px-1 md:px-2 text-xs"></th>
-                      {invoice.gstBreakdown.isInterState ? (
-                        <>
-                          <th className="border border-gray-800 py-1 px-1 md:px-2 text-xs">Rate</th>
-                          <th className="border border-gray-800 py-1 px-1 md:px-2 text-xs">Amount</th>
-                        </>
-                      ) : (
-                        <>
-                          <th className="border border-gray-800 py-1 px-1 md:px-2 text-xs">Rate</th>
-                          <th className="border border-gray-800 py-1 px-1 md:px-2 text-xs">Amount</th>
-                          <th className="border border-gray-800 py-1 px-1 md:px-2 text-xs">Rate</th>
-                          <th className="border border-gray-800 py-1 px-1 md:px-2 text-xs">Amount</th>
-                        </>
-                      )}
-                      <th className="border border-gray-800 py-1 px-1 md:px-2 text-xs"></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td className="border border-gray-800 py-1 md:py-2 px-1 md:px-2 text-xs md:text-sm text-center">
-                        {invoice.items[0]?.hsnSac || "SAC300"}
-                      </td>
-                      <td className="border border-gray-800 py-1 md:py-2 px-1 md:px-2 text-xs md:text-sm text-center">
-                        {formatCurrency(invoice.subtotal).replace("₹", "")}
-                      </td>
-                      {invoice.gstBreakdown.isInterState ? (
-                        <>
-                          <td className="border border-gray-800 py-1 md:py-2 px-1 md:px-2 text-xs md:text-sm text-center">
-                            18%
-                          </td>
-                          <td className="border border-gray-800 py-1 md:py-2 px-1 md:px-2 text-xs md:text-sm text-center">
-                            {formatCurrency(invoice.gstBreakdown.igst).replace("₹", "")}
-                          </td>
-                        </>
-                      ) : (
-                        <>
-                          <td className="border border-gray-800 py-1 md:py-2 px-1 md:px-2 text-xs md:text-sm text-center">
-                            9%
-                          </td>
-                          <td className="border border-gray-800 py-1 md:py-2 px-1 md:px-2 text-xs md:text-sm text-center">
-                            {formatCurrency(invoice.gstBreakdown.cgst).replace("₹", "")}
-                          </td>
-                          <td className="border border-gray-800 py-1 md:py-2 px-1 md:px-2 text-xs md:text-sm text-center">
-                            9%
-                          </td>
-                          <td className="border border-gray-800 py-1 md:py-2 px-1 md:px-2 text-xs md:text-sm text-center">
-                            {formatCurrency(invoice.gstBreakdown.sgst).replace("₹", "")}
-                          </td>
-                        </>
-                      )}
-                      <td className="border border-gray-800 py-1 md:py-2 px-1 md:px-2 text-xs md:text-sm text-center">
-                        {formatCurrency(invoice.gstBreakdown.total).replace("₹", "")}
-                      </td>
-                    </tr>
-                    <tr className="bg-gray-100">
-                      <td className="border border-gray-800 py-1 md:py-2 px-1 md:px-2 text-xs md:text-sm text-center font-bold">
-                        Total
-                      </td>
-                      <td className="border border-gray-800 py-1 md:py-2 px-1 md:px-2 text-xs md:text-sm text-center font-bold">
-                        {formatCurrency(invoice.subtotal).replace("₹", "")}
-                      </td>
-                      {invoice.gstBreakdown.isInterState ? (
-                        <>
-                          <td className="border border-gray-800 py-1 md:py-2 px-1 md:px-2 text-xs md:text-sm text-center font-bold"></td>
-                          <td className="border border-gray-800 py-1 md:py-2 px-1 md:px-2 text-xs md:text-sm text-center font-bold">
-                            {formatCurrency(invoice.gstBreakdown.igst).replace("₹", "")}
-                          </td>
-                        </>
-                      ) : (
-                        <>
-                          <td className="border border-gray-800 py-1 md:py-2 px-1 md:px-2 text-xs md:text-sm text-center font-bold"></td>
-                          <td className="border border-gray-800 py-1 md:py-2 px-1 md:px-2 text-xs md:text-sm text-center font-bold">
-                            {formatCurrency(invoice.gstBreakdown.cgst).replace("₹", "")}
-                          </td>
-                          <td className="border border-gray-800 py-1 md:py-2 px-1 md:px-2 text-xs md:text-sm text-center font-bold"></td>
-                          <td className="border border-gray-800 py-1 md:py-2 px-1 md:px-2 text-xs md:text-sm text-center font-bold">
-                            {formatCurrency(invoice.gstBreakdown.sgst).replace("₹", "")}
-                          </td>
-                        </>
-                      )}
-                      <td className="border border-gray-800 py-1 md:py-2 px-1 md:px-2 text-xs md:text-sm text-center font-bold">
-                        {formatCurrency(invoice.gstBreakdown.total).replace("₹", "")}
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            {/* Amount in Words */}
-            <div className="mb-3 md:mb-4">
-              <div className="border border-gray-800 p-2 md:p-3">
-                <p className="text-xs md:text-sm font-bold mb-1">Total Amount (in words)</p>
-                <p className="text-xs md:text-sm italic break-words">{convertToWords(invoice.total)}</p>
-              </div>
-            </div>
-
-            {/* Footer Section - Mobile Optimized */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-2 md:gap-3">
-              <div className="border border-gray-800 p-2 md:p-3">
-                <p className="text-xs md:text-sm font-bold mb-1 md:mb-2">Bank Details</p>
-                <div className="text-xs space-y-0.5">
+            {/* Footer Section - Clear and Organized */}
+            <div className="grid grid-cols-3 gap-0.5 md:gap-3">
+              <div className="border border-gray-400 md:border-gray-800 p-1 md:p-3 bg-gray-50">
+                <p className="text-[7px] md:text-sm font-bold mb-0.5 md:mb-2 text-gray-900">Bank Details</p>
+                <div className="text-[6px] md:text-xs space-y-0 md:space-y-0.5 leading-[7px] md:leading-normal text-gray-800">
                   <p className="break-words">Name: {user?.bankName || "Bank Name"}</p>
                   <p>IFSC: {user?.ifscCode || "IFSC Code"}</p>
                   <p className="break-words">A/c No: {user?.accountNumber || "Account Number"}</p>
                 </div>
               </div>
 
-              <div className="border border-gray-800 p-2 md:p-3">
-                <p className="text-xs md:text-sm font-bold mb-1 md:mb-2">Terms and Conditions</p>
-                <div className="text-xs space-y-0.5">
+              <div className="border border-gray-400 md:border-gray-800 p-1 md:p-3 bg-gray-50">
+                <p className="text-[7px] md:text-sm font-bold mb-0.5 md:mb-2 text-gray-900">Terms and Conditions</p>
+                <div className="text-[6px] md:text-xs space-y-0 md:space-y-0.5 leading-[7px] md:leading-normal text-gray-800">
                   <p className="break-words">
                     1. All disputes are subject to {user?.state || "jurisdiction"} jurisdiction only
                   </p>
@@ -546,14 +542,14 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({ invoice, onClose, autoD
                 </div>
               </div>
 
-              <div className="border border-gray-800 p-2 md:p-3 text-center">
-                {/* Digital Signature with Enhanced Error Handling */}
+              <div className="border border-gray-400 md:border-gray-800 p-1 md:p-3 text-center bg-gray-50">
+                {/* Digital Signature - Clear Display */}
                 {isValidSignature(user?.signature) && !signatureError ? (
-                  <div className="mb-1 md:mb-2">
+                  <div className="mb-0.5 md:mb-2">
                     <img
                       src={user?.signature || "/placeholder.svg"}
                       alt="Digital Signature"
-                      className="max-h-6 md:max-h-10 max-w-full object-contain mx-auto mb-1"
+                      className="max-h-4 md:max-h-10 max-w-full object-contain mx-auto mb-0.5 md:mb-1"
                       style={signatureImageStyle}
                       onError={handleSignatureError}
                       onLoad={() => {
@@ -564,18 +560,20 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({ invoice, onClose, autoD
                     />
                   </div>
                 ) : (
-                  <div className="h-6 md:h-10 mb-1 md:mb-2 flex items-center justify-center">
+                  <div className="h-4 md:h-10 mb-0.5 md:mb-2 flex items-center justify-center">
                     {user?.signature && signatureError ? (
-                      <span className="text-xs text-red-500 italic">Signature Error</span>
+                      <span className="text-[6px] md:text-xs text-red-500 italic">Signature Error</span>
                     ) : (
-                      <span className="text-xs text-gray-500 italic">
-                        {user?.signature ? "Loading Signature..." : "Digital Signature"}
+                      <span className="text-[6px] md:text-xs text-gray-500 italic">
+                        {user?.signature ? "Loading..." : "Digital Signature"}
                       </span>
                     )}
                   </div>
                 )}
-                <p className="text-xs md:text-sm font-bold">Authorised Signatory For</p>
-                <p className="text-xs md:text-sm font-bold break-words">{user?.fullName || "Your Business"}</p>
+                <p className="text-[7px] md:text-sm font-bold text-gray-900">Authorised Signatory For</p>
+                <p className="text-[6px] md:text-sm font-bold break-words text-gray-900">
+                  {user?.fullName || "Your Business"}
+                </p>
               </div>
             </div>
           </div>
