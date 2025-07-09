@@ -298,177 +298,359 @@ const Analytics: React.FC = () => {
         </div>
       </motion.div>
 
-      {/* Controls */}
-      <motion.div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" variants={itemVariants}>
-        <Card>
-          <div className="space-y-3">
-            <label className="block text-sm font-medium text-gray-300">Report Type</label>
-            <div className="relative">
-              <select
-                value={reportType}
-                onChange={(e) => setReportType(e.target.value as ReportType)}
-                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none text-sm"
-              >
-                <option value="monthly">Monthly Report</option>
-                <option value="financial-year">Financial Year Report</option>
-              </select>
-              <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
-            </div>
-          </div>
-        </Card>
+      {/* Controls - Mobile: 2x2 Grid, Desktop: Original 4 columns */}
+      <motion.div variants={itemVariants}>
+        {/* Mobile Layout (2x2 Grid) */}
+        <div className="block md:hidden space-y-3">
+          {/* First Row: Report Type and Select Month/FY */}
+          <div className="grid grid-cols-2 gap-3">
+            <Card className="p-3">
+              <div className="space-y-2">
+                <label className="block text-xs font-medium text-gray-300">Report Type</label>
+                <div className="relative">
+                  <select
+                    value={reportType}
+                    onChange={(e) => setReportType(e.target.value as ReportType)}
+                    className="w-full px-2 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none text-xs"
+                  >
+                    <option value="monthly">Monthly</option>
+                    <option value="financial-year">Financial Year</option>
+                  </select>
+                  <ChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 w-3 h-3 text-gray-400 pointer-events-none" />
+                </div>
+              </div>
+            </Card>
 
-        <Card>
-          <div className="space-y-3">
-            <label className="block text-sm font-medium text-gray-300">
-              {reportType === "monthly" ? "Select Month" : "Select Financial Year"}
-            </label>
-            <div className="relative">
-              {reportType === "monthly" ? (
-                <select
-                  value={selectedMonth}
-                  onChange={(e) => setSelectedMonth(e.target.value)}
-                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none text-sm"
-                >
-                  {availableMonths.length > 0 ? (
-                    availableMonths.map((month) => {
-                      const [year, monthNum] = month.split("-")
-                      const monthName = new Date(
-                        Number.parseInt(year),
-                        Number.parseInt(monthNum) - 1,
-                      ).toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "long",
-                      })
-                      return (
-                        <option key={month} value={month}>
-                          {monthName}
+            <Card className="p-3">
+              <div className="space-y-2">
+                <label className="block text-xs font-medium text-gray-300">
+                  {reportType === "monthly" ? "Select Month" : "Select FY"}
+                </label>
+                <div className="relative">
+                  {reportType === "monthly" ? (
+                    <select
+                      value={selectedMonth}
+                      onChange={(e) => setSelectedMonth(e.target.value)}
+                      className="w-full px-2 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none text-xs"
+                    >
+                      {availableMonths.length > 0 ? (
+                        availableMonths.map((month) => {
+                          const [year, monthNum] = month.split("-")
+                          const monthName = new Date(
+                            Number.parseInt(year),
+                            Number.parseInt(monthNum) - 1,
+                          ).toLocaleDateString("en-US", {
+                            year: "numeric",
+                            month: "short",
+                          })
+                          return (
+                            <option key={month} value={month}>
+                              {monthName}
+                            </option>
+                          )
+                        })
+                      ) : (
+                        <option value={selectedMonth}>
+                          {new Date(selectedMonth + "-01").toLocaleDateString("en-US", {
+                            year: "numeric",
+                            month: "short",
+                          })}
                         </option>
-                      )
-                    })
+                      )}
+                    </select>
                   ) : (
-                    <option value={selectedMonth}>
-                      {new Date(selectedMonth + "-01").toLocaleDateString("en-US", {
-                        year: "numeric",
-                        month: "long",
-                      })}
-                    </option>
+                    <select
+                      value={selectedFY}
+                      onChange={(e) => setSelectedFY(Number.parseInt(e.target.value))}
+                      className="w-full px-2 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none text-xs"
+                    >
+                      {availableFYs.length > 0 ? (
+                        availableFYs.map((fy) => (
+                          <option key={fy} value={fy}>
+                            FY {fy}-{fy + 1}
+                          </option>
+                        ))
+                      ) : (
+                        <option value={selectedFY}>
+                          FY {selectedFY}-{selectedFY + 1}
+                        </option>
+                      )}
+                    </select>
                   )}
-                </select>
-              ) : (
+                  <ChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 w-3 h-3 text-gray-400 pointer-events-none" />
+                </div>
+              </div>
+            </Card>
+          </div>
+
+          {/* Second Row: View Type and Export Options */}
+          <div className="grid grid-cols-2 gap-3">
+            <Card className="p-3">
+              <div className="space-y-2">
+                <label className="block text-xs font-medium text-gray-300">View Type</label>
+                <div className="flex gap-1">
+                  <button
+                    onClick={() => setViewType("chart")}
+                    className={`flex-1 px-2 py-1.5 rounded-md text-xs font-medium transition-colors ${
+                      viewType === "chart" ? "bg-blue-600 text-white" : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                    }`}
+                  >
+                    Chart
+                  </button>
+                  <button
+                    onClick={() => setViewType("table")}
+                    className={`flex-1 px-2 py-1.5 rounded-md text-xs font-medium transition-colors ${
+                      viewType === "table" ? "bg-blue-600 text-white" : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                    }`}
+                  >
+                    Table
+                  </button>
+                </div>
+              </div>
+            </Card>
+
+            <Card className="p-3">
+              <div className="space-y-2">
+                <label className="block text-xs font-medium text-gray-300">Export Options</label>
+                <div className="flex flex-col gap-1">
+                  <Button
+                    onClick={handleExportExcel}
+                    icon={FileSpreadsheet}
+                    size="sm"
+                    className="w-full bg-green-600 hover:bg-green-700 text-xs py-1.5 px-2"
+                  >
+                    Excel
+                  </Button>
+                  {viewType === "chart" && (
+                    <Button
+                      onClick={handleExportChart}
+                      icon={Download}
+                      size="sm"
+                      className="w-full bg-purple-600 hover:bg-purple-700 text-xs py-1.5 px-2"
+                    >
+                      PNG
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </Card>
+          </div>
+        </div>
+
+        {/* Desktop Layout (Original 4 columns) */}
+        <div className="hidden md:grid md:grid-cols-4 gap-6">
+          <Card>
+            <div className="space-y-3">
+              <label className="block text-sm font-medium text-gray-300">Report Type</label>
+              <div className="relative">
                 <select
-                  value={selectedFY}
-                  onChange={(e) => setSelectedFY(Number.parseInt(e.target.value))}
+                  value={reportType}
+                  onChange={(e) => setReportType(e.target.value as ReportType)}
                   className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none text-sm"
                 >
-                  {availableFYs.length > 0 ? (
-                    availableFYs.map((fy) => (
-                      <option key={fy} value={fy}>
-                        FY {fy}-{fy + 1}
-                      </option>
-                    ))
-                  ) : (
-                    <option value={selectedFY}>
-                      FY {selectedFY}-{selectedFY + 1}
-                    </option>
-                  )}
+                  <option value="monthly">Monthly Report</option>
+                  <option value="financial-year">Financial Year Report</option>
                 </select>
-              )}
-              <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+              </div>
             </div>
-          </div>
-        </Card>
+          </Card>
 
-        <Card>
-          <div className="space-y-3">
-            <label className="block text-sm font-medium text-gray-300">View Type</label>
-            <div className="flex gap-2">
-              <button
-                onClick={() => setViewType("chart")}
-                className={`flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                  viewType === "chart" ? "bg-blue-600 text-white" : "bg-gray-700 text-gray-300 hover:bg-gray-600"
-                }`}
-              >
-                Chart
-              </button>
-              <button
-                onClick={() => setViewType("table")}
-                className={`flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                  viewType === "table" ? "bg-blue-600 text-white" : "bg-gray-700 text-gray-300 hover:bg-gray-600"
-                }`}
-              >
-                Table
-              </button>
+          <Card>
+            <div className="space-y-3">
+              <label className="block text-sm font-medium text-gray-300">
+                {reportType === "monthly" ? "Select Month" : "Select Financial Year"}
+              </label>
+              <div className="relative">
+                {reportType === "monthly" ? (
+                  <select
+                    value={selectedMonth}
+                    onChange={(e) => setSelectedMonth(e.target.value)}
+                    className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none text-sm"
+                  >
+                    {availableMonths.length > 0 ? (
+                      availableMonths.map((month) => {
+                        const [year, monthNum] = month.split("-")
+                        const monthName = new Date(
+                          Number.parseInt(year),
+                          Number.parseInt(monthNum) - 1,
+                        ).toLocaleDateString("en-US", {
+                          year: "numeric",
+                          month: "long",
+                        })
+                        return (
+                          <option key={month} value={month}>
+                            {monthName}
+                          </option>
+                        )
+                      })
+                    ) : (
+                      <option value={selectedMonth}>
+                        {new Date(selectedMonth + "-01").toLocaleDateString("en-US", {
+                          year: "numeric",
+                          month: "long",
+                        })}
+                      </option>
+                    )}
+                  </select>
+                ) : (
+                  <select
+                    value={selectedFY}
+                    onChange={(e) => setSelectedFY(Number.parseInt(e.target.value))}
+                    className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none text-sm"
+                  >
+                    {availableFYs.length > 0 ? (
+                      availableFYs.map((fy) => (
+                        <option key={fy} value={fy}>
+                          FY {fy}-{fy + 1}
+                        </option>
+                      ))
+                    ) : (
+                      <option value={selectedFY}>
+                        FY {selectedFY}-{selectedFY + 1}
+                      </option>
+                    )}
+                  </select>
+                )}
+                <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+              </div>
             </div>
-          </div>
-        </Card>
+          </Card>
 
-        <Card>
-          <div className="space-y-3">
-            <label className="block text-sm font-medium text-gray-300">Export Options</label>
-            <div className="flex gap-2">
-              <Button
-                onClick={handleExportExcel}
-                icon={FileSpreadsheet}
-                size="sm"
-                className="flex-1 bg-green-600 hover:bg-green-700 text-xs"
-              >
-                Excel
-              </Button>
-              {viewType === "chart" && (
-                <Button
-                  onClick={handleExportChart}
-                  icon={Download}
-                  size="sm"
-                  className="flex-1 bg-purple-600 hover:bg-purple-700 text-xs"
+          <Card>
+            <div className="space-y-3">
+              <label className="block text-sm font-medium text-gray-300">View Type</label>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setViewType("chart")}
+                  className={`flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                    viewType === "chart" ? "bg-blue-600 text-white" : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                  }`}
                 >
-                  PNG
+                  Chart
+                </button>
+                <button
+                  onClick={() => setViewType("table")}
+                  className={`flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                    viewType === "table" ? "bg-blue-600 text-white" : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                  }`}
+                >
+                  Table
+                </button>
+              </div>
+            </div>
+          </Card>
+
+          <Card>
+            <div className="space-y-3">
+              <label className="block text-sm font-medium text-gray-300">Export Options</label>
+              <div className="flex gap-2">
+                <Button
+                  onClick={handleExportExcel}
+                  icon={FileSpreadsheet}
+                  size="sm"
+                  className="flex-1 bg-green-600 hover:bg-green-700 text-xs"
+                >
+                  Excel
                 </Button>
-              )}
+                {viewType === "chart" && (
+                  <Button
+                    onClick={handleExportChart}
+                    icon={Download}
+                    size="sm"
+                    className="flex-1 bg-purple-600 hover:bg-purple-700 text-xs"
+                  >
+                    PNG
+                  </Button>
+                )}
+              </div>
             </div>
-          </div>
-        </Card>
+          </Card>
+        </div>
       </motion.div>
 
-      {/* Summary Cards */}
-      <motion.div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6" variants={itemVariants}>
-        <Card className="bg-gradient-to-br from-green-500/10 to-emerald-600/10 border-green-500/20">
-          <div className="flex items-center justify-between">
-            <div className="min-w-0 flex-1">
-              <p className="text-green-400 text-sm font-medium">Total Sales</p>
-              <p className="text-lg md:text-2xl font-bold text-white truncate">{formatCurrency(getTotalSales())}</p>
+      {/* Summary Cards - Mobile: Single Row, Desktop: Original Layout */}
+      <motion.div variants={itemVariants}>
+        {/* Mobile Layout (Single Row) */}
+        <div className="grid grid-cols-3 gap-2 md:hidden">
+          <Card className="bg-gradient-to-br from-green-500/10 to-emerald-600/10 border-green-500/20 p-3">
+            <div className="flex flex-col items-center gap-2">
+              <div className="text-center min-w-0 flex-1">
+                <p className="text-green-400 text-xs font-medium">Total Sales</p>
+                <p className="text-sm font-bold text-white truncate">{formatCurrency(getTotalSales())}</p>
+              </div>
+              <div className="p-1.5 bg-green-500/10 rounded-lg flex-shrink-0">
+                <TrendingUp className="w-3 h-3 text-green-500" />
+              </div>
             </div>
-            <div className="p-2 md:p-3 bg-green-500/10 rounded-lg flex-shrink-0">
-              <TrendingUp className="w-5 h-5 md:w-6 md:h-6 text-green-500" />
-            </div>
-          </div>
-        </Card>
+          </Card>
 
-        <Card className="bg-gradient-to-br from-blue-500/10 to-cyan-600/10 border-blue-500/20">
-          <div className="flex items-center justify-between">
-            <div className="min-w-0 flex-1">
-              <p className="text-blue-400 text-sm font-medium">Total Invoices</p>
-              <p className="text-lg md:text-2xl font-bold text-white">{getTotalInvoices()}</p>
+          <Card className="bg-gradient-to-br from-blue-500/10 to-cyan-600/10 border-blue-500/20 p-3">
+            <div className="flex flex-col items-center gap-2">
+              <div className="text-center min-w-0 flex-1">
+                <p className="text-blue-400 text-xs font-medium">Total Invoices</p>
+                <p className="text-sm font-bold text-white">{getTotalInvoices()}</p>
+              </div>
+              <div className="p-1.5 bg-blue-500/10 rounded-lg flex-shrink-0">
+                <FileSpreadsheet className="w-3 h-3 text-blue-500" />
+              </div>
             </div>
-            <div className="p-2 md:p-3 bg-blue-500/10 rounded-lg flex-shrink-0">
-              <FileSpreadsheet className="w-5 h-5 md:w-6 md:h-6 text-blue-500" />
-            </div>
-          </div>
-        </Card>
+          </Card>
 
-        <Card className="bg-gradient-to-br from-purple-500/10 to-pink-600/10 border-purple-500/20">
-          <div className="flex items-center justify-between">
-            <div className="min-w-0 flex-1">
-              <p className="text-purple-400 text-sm font-medium">Average Sales</p>
-              <p className="text-lg md:text-2xl font-bold text-white truncate">{formatCurrency(getAverageSales())}</p>
+          <Card className="bg-gradient-to-br from-purple-500/10 to-pink-600/10 border-purple-500/20 p-3">
+            <div className="flex flex-col items-center gap-2">
+              <div className="text-center min-w-0 flex-1">
+                <p className="text-purple-400 text-xs font-medium">Average Sales</p>
+                <p className="text-sm font-bold text-white truncate">{formatCurrency(getAverageSales())}</p>
+              </div>
+              <div className="p-1.5 bg-purple-500/10 rounded-lg flex-shrink-0">
+                <BarChart3 className="w-3 h-3 text-purple-500" />
+              </div>
             </div>
-            <div className="p-2 md:p-3 bg-purple-500/10 rounded-lg flex-shrink-0">
-              <BarChart3 className="w-5 h-5 md:w-6 md:h-6 text-purple-500" />
+          </Card>
+        </div>
+
+        {/* Desktop Layout (Original) */}
+        <div className="hidden md:grid md:grid-cols-3 gap-6">
+          <Card className="bg-gradient-to-br from-green-500/10 to-emerald-600/10 border-green-500/20">
+            <div className="flex items-center justify-between">
+              <div className="min-w-0 flex-1">
+                <p className="text-green-400 text-sm font-medium">Total Sales</p>
+                <p className="text-2xl font-bold text-white truncate">{formatCurrency(getTotalSales())}</p>
+              </div>
+              <div className="p-3 bg-green-500/10 rounded-lg flex-shrink-0">
+                <TrendingUp className="w-6 h-6 text-green-500" />
+              </div>
             </div>
-          </div>
-        </Card>
+          </Card>
+
+          <Card className="bg-gradient-to-br from-blue-500/10 to-cyan-600/10 border-blue-500/20">
+            <div className="flex items-center justify-between">
+              <div className="min-w-0 flex-1">
+                <p className="text-blue-400 text-sm font-medium">Total Invoices</p>
+                <p className="text-2xl font-bold text-white">{getTotalInvoices()}</p>
+              </div>
+              <div className="p-3 bg-blue-500/10 rounded-lg flex-shrink-0">
+                <FileSpreadsheet className="w-6 h-6 text-blue-500" />
+              </div>
+            </div>
+          </Card>
+
+          <Card className="bg-gradient-to-br from-purple-500/10 to-pink-600/10 border-purple-500/20">
+            <div className="flex items-center justify-between">
+              <div className="min-w-0 flex-1">
+                <p className="text-purple-400 text-sm font-medium">Average Sales</p>
+                <p className="text-2xl font-bold text-white truncate">{formatCurrency(getAverageSales())}</p>
+              </div>
+              <div className="p-3 bg-purple-500/10 rounded-lg flex-shrink-0">
+                <BarChart3 className="w-6 h-6 text-purple-500" />
+              </div>
+            </div>
+          </Card>
+        </div>
       </motion.div>
 
-      {/* Chart/Table Content */}
+      {/* Chart/Table Content - Mobile Optimized Charts/Tables */}
       <motion.div variants={itemVariants}>
         {viewType === "chart" ? (
           <Card>
