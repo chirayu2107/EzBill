@@ -9,6 +9,7 @@ import { formatCurrency, formatDate } from "../../utils/calculations"
 import { BarChart3, Download, TrendingUp, FileSpreadsheet, ChevronDown } from "lucide-react"
 import Button from "../UI/Button"
 import Card from "../UI/Card"
+import MobileHeader from "../Layout/MobileHeader"
 import MonthlyChart from "./MonthlyChart"
 import FinancialYearChart from "./FinancialYearChart"
 
@@ -283,6 +284,9 @@ const Analytics: React.FC = () => {
       initial="hidden"
       animate="visible"
     >
+      {/* Mobile Header */}
+      <MobileHeader />
+
       {/* Header */}
       <motion.div className="flex flex-col md:flex-row justify-between items-start gap-4" variants={itemVariants}>
         <div>

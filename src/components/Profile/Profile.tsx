@@ -7,6 +7,7 @@ import { useToast } from "../../hooks/useToast"
 import { User, Mail, Phone, CreditCard, MapPin, Building, Hash, Save, AlertCircle, RefreshCw } from "lucide-react"
 import Button from "../UI/Button"
 import Card from "../UI/Card"
+import MobileHeader from "../Layout/MobileHeader"
 import SignatureUpload from "./SignatureUpload"
 
 const Profile: React.FC = () => {
@@ -168,6 +169,7 @@ const Profile: React.FC = () => {
   if (loading) {
     return (
       <div className="max-w-4xl mx-auto space-y-8">
+        <MobileHeader />
         <div className="flex items-center justify-center py-12">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-500 mx-auto mb-4"></div>
@@ -180,6 +182,9 @@ const Profile: React.FC = () => {
 
   return (
     <div className="max-w-4xl mx-auto space-y-8 select-none">
+      {/* Mobile Header */}
+      <MobileHeader />
+
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold text-white">Business Profile</h1>

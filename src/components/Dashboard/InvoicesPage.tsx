@@ -7,6 +7,7 @@ import { motion } from "framer-motion"
 import { useApp } from "../../context/AppContext"
 import InvoiceTable from "./InvoiceTable"
 import InvoicePreview from "../Invoice/InvoicePreview"
+import MobileHeader from "../Layout/MobileHeader"
 import type { Invoice } from "../../types"
 import { FileText, Plus, Search, Filter } from "lucide-react"
 import Button from "../UI/Button"
@@ -70,6 +71,9 @@ const InvoicesPage: React.FC = () => {
 
   return (
     <motion.div className="space-y-8" variants={containerVariants} initial="hidden" animate="visible">
+      {/* Mobile Header */}
+      <MobileHeader />
+
       {/* Header */}
       <motion.div className="flex flex-col md:flex-row justify-between items-start gap-4" variants={itemVariants}>
         <div className="flex-1">

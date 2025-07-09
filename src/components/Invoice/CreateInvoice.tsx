@@ -6,6 +6,7 @@ import { useNavigate, useParams } from "react-router-dom"
 import { motion } from "framer-motion"
 import { useApp } from "../../context/AppContext"
 import { useAuth } from "../../context/AuthContext"
+import MobileHeader from "../Layout/MobileHeader"
 import type { InvoiceItem } from "../../types"
 import { calculateSubtotal, calculateGSTBreakdown, formatCurrency } from "../../utils/calculations"
 import { Plus, Minus, Save, FileText } from "lucide-react"
@@ -144,6 +145,9 @@ const CreateInvoice: React.FC = () => {
       initial="hidden"
       animate="visible"
     >
+      {/* Mobile Header */}
+      <MobileHeader />
+
       <motion.div className="flex items-center gap-3 md:gap-4" variants={itemVariants}>
         <div className="p-2 md:p-3 bg-emerald-500/10 rounded-lg">
           <FileText className="w-5 h-5 md:w-6 md:h-6 text-emerald-500" />
