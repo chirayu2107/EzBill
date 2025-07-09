@@ -170,7 +170,9 @@ const InvoiceTable: React.FC<InvoiceTableProps> = ({ invoices, onViewInvoice, on
                               initial={{ opacity: 0, scale: 0.95, y: -10 }}
                               animate={{ opacity: 1, scale: 1, y: 0 }}
                               exit={{ opacity: 0, scale: 0.95, y: -10 }}
-                              className="absolute right-0 top-8 bg-gray-800 border border-gray-600 rounded-lg shadow-lg z-10 min-w-[150px]"
+                              className={`absolute right-0 bg-gray-800 border border-gray-600 rounded-lg shadow-lg z-20 min-w-[150px] ${
+                                index >= invoices.length - 2 ? "bottom-8" : "top-8"
+                              }`}
                             >
                               <button
                                 onClick={() => onViewInvoice(invoice)}
