@@ -545,11 +545,11 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({ invoice, onClose, autoD
               <div className="border border-gray-400 md:border-gray-800 p-1 md:p-3 text-center bg-gray-50">
                 {/* Digital Signature - Clear Display */}
                 {isValidSignature(user?.signature) && !signatureError ? (
-                  <div className="mb-0.5 md:mb-2">
+                  <div className="mb-0.5 md:mb-3">
                     <img
                       src={user?.signature || "/placeholder.svg"}
                       alt="Digital Signature"
-                      className="max-h-4 md:max-h-10 max-w-full object-contain mx-auto mb-0.5 md:mb-1"
+                      className="max-h-4 md:max-h-20 max-w-full object-contain mx-auto mb-0.5 md:mb-1"
                       style={signatureImageStyle}
                       onError={handleSignatureError}
                       onLoad={() => {
