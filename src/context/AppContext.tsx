@@ -113,7 +113,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       prefix = user.fullName.replace(/\s+/g, "").substring(0, 4).toUpperCase()
     }
 
-    const baseNumber = 1;
+    const baseNumber = 1
 
     // Get the highest existing invoice number for this user with this prefix
     let maxNumber = baseNumber - 1
@@ -130,7 +130,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
     // Return the next number in sequence
     const nextNumber = String(maxNumber + 1)
-    return `${prefix}-${nextNumber}`;
+    return `${prefix}-${nextNumber}`
   }
 
   const addInvoice = async (invoiceData: Omit<Invoice, "id" | "invoiceNumber" | "createdAt">) => {
