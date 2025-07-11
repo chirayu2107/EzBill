@@ -70,6 +70,7 @@ npm run build
 
 ### Project Structure
 
+```bash
 EzBill/
 ├── public/
 ├── src/
@@ -84,7 +85,7 @@ EzBill/
 ├── tailwind.config.js
 ├── vite.config.ts
 └── package.json
-
+```
 
 ### Scripts
 
