@@ -116,7 +116,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const baseNumber = 1
 
     // Get the highest existing invoice number for this user with this prefix
-    let maxNumber = baseNumber
+    let maxNumber = baseNumber - 1
 
     invoices.forEach((invoice) => {
       if (invoice.invoiceNumber.startsWith(prefix + "-")) {
@@ -129,7 +129,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     })
 
     // Return the next number in sequence
-    return `${prefix}-${maxNumber + 1}`
+    const nextNumber = String(maxNumber + 1).padStart(5, "0")
+    return `${prefix}-${nextNumber}`
   }
 
   const addInvoice = async (invoiceData: Omit<Invoice, "id" | "invoiceNumber" | "createdAt">) => {
