@@ -436,7 +436,7 @@ const Profile: React.FC = () => {
                 </p>
                 {formData.invoicePrefix && (
                   <p className="text-xs text-emerald-400">
-                    Preview: {formData.invoicePrefix}-00001, {formData.invoicePrefix}-00002, etc.
+                    Preview: {formData.invoicePrefix}-1, {formData.invoicePrefix}-2,.... etc.
                   </p>
                 )}
               </div>
