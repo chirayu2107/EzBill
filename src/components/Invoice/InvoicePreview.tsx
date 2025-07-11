@@ -535,7 +535,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({ invoice, onClose, autoD
                 <p className="text-[7px] md:text-sm font-bold mb-0.5 md:mb-2 text-gray-900">Terms and Conditions</p>
                 <div className="text-[6px] md:text-xs space-y-0 md:space-y-0.5 leading-[7px] md:leading-normal text-gray-800">
                   <p className="break-words">
-                    1. All disputes are subject to {user?.state || "jurisdiction"} jurisdiction only
+                    1. All disputes arising out of this transaction shall be subject to the exclusive jurisdiction of courts in {user?.state || "jurisdiction"}.
                   </p>
                   <p>2. TDS Deduction will lie under Section 194C</p>
                   <p>3. Payment to Contractor (1% or 2%)</p>
