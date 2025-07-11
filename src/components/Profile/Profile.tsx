@@ -432,11 +432,11 @@ const Profile: React.FC = () => {
                 <p className="text-xs text-gray-400">
                   {isEditing
                     ? "Enter a custom prefix (2-6 characters, letters/numbers only) or click 'Auto Generate'"
-                    : `Your invoices will be numbered as: ${formData.invoicePrefix || "XUSE"}-XXXX`}
+                    : `Your invoices will be numbered as: ${formData.invoicePrefix || "XUSE"}-XXXXX`}
                 </p>
                 {formData.invoicePrefix && (
                   <p className="text-xs text-emerald-400">
-                    Preview: {formData.invoicePrefix}-0001, {formData.invoicePrefix}-0002, etc.
+                    Preview: {formData.invoicePrefix}-00001, {formData.invoicePrefix}-00002, etc.
                   </p>
                 )}
               </div>
