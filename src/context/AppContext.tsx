@@ -113,7 +113,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       prefix = user.fullName.replace(/\s+/g, "").substring(0, 4).toUpperCase()
     }
 
-    const baseNumber = 5969
+    const baseNumber = 1
 
     // Get the highest existing invoice number for this user with this prefix
     let maxNumber = baseNumber
