@@ -162,7 +162,7 @@ export const generateInvoicePDF = (invoice: Invoice, user?: User | null) => {
     currentX += colWidths[1]
 
     // HSN/SAC
-    const hsnText = item.hsnSac || "SAC300"
+    const hsnText = item.hsnSac || " "
     const hsnWidth = pdf.getTextWidth(hsnText)
     pdf.text(hsnText, currentX + (colWidths[2] - hsnWidth) / 2, itemY + 5)
     currentX += colWidths[2]
@@ -292,7 +292,7 @@ export const generateInvoicePDF = (invoice: Invoice, user?: User | null) => {
     let taxCurrentX = taxTableX
 
     // HSN/SAC
-    const hsnText = invoice.items[0]?.hsnSac || "SAC300"
+    const hsnText = invoice.items[0]?.hsnSac || " "
     pdf.text(hsnText, taxCurrentX + (taxColWidths[0] - pdf.getTextWidth(hsnText)) / 2, dataY + 5)
     taxCurrentX += taxColWidths[0]
 
@@ -318,7 +318,7 @@ export const generateInvoicePDF = (invoice: Invoice, user?: User | null) => {
     let taxCurrentX = taxTableX
 
     // HSN/SAC
-    const hsnText = invoice.items[0]?.hsnSac || "SAC300"
+    const hsnText = invoice.items[0]?.hsnSac || " "
     pdf.text(hsnText, taxCurrentX + (taxColWidths[0] - pdf.getTextWidth(hsnText)) / 2, dataY + 5)
     taxCurrentX += taxColWidths[0]
 
