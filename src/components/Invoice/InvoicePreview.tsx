@@ -315,7 +315,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({ invoice, onClose, autoD
                         {item.name.length > 30 ? `${item.name.substring(0, 30)}...` : item.name}
                       </td>
                       <td className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 text-center text-gray-800">
-                        {item.hsnSac || "SAC300"}
+                        {item.hsnSac || " "}
                       </td>
                       <td className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 text-center text-gray-800">
                         {item.quantity}
@@ -442,7 +442,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({ invoice, onClose, autoD
                 <tbody>
                   <tr className="bg-white">
                     <td className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 text-center text-gray-800">
-                      {invoice.items[0]?.hsnSac || "SAC300"}
+                      {invoice.items[0]?.hsnSac || " "}
                     </td>
                     <td className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 text-center text-gray-800">
                       {formatCurrency(invoice.subtotal).replace("₹", "")}
