@@ -221,9 +221,9 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({ invoice, onClose, autoD
             {/* Header with TAX INVOICE and ORIGINAL FOR RECIPIENT */}
             <div className="flex justify-between items-center mb-1 md:mb-4 pb-1 md:pb-2 border-b border-gray-600 md:border-gray-800">
               <h1 className="text-[12px] md:text-2xl font-bold text-gray-900">TAX INVOICE</h1>
-              <div className="border border-gray-600 md:border-gray-800 px-1 md:px-3 py-0.5 md:py-1">
+              <div className="border border-gray-600 md:border-gray-800 px-1 md:px-3 py-0.5 md:py-1 flex items-center justify-center">
                 <p className="text-[6px] md:text-sm font-bold whitespace-nowrap text-gray-900">
-                  ORIGINAL FOR RECIPIENT
+                ORIGINAL FOR RECIPIENT
                 </p>
               </div>
             </div>
@@ -315,7 +315,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({ invoice, onClose, autoD
                         {item.name.length > 30 ? `${item.name.substring(0, 30)}...` : item.name}
                       </td>
                       <td className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 text-center text-gray-800">
-                        {item.hsnSac || " "}
+                        {item.hsnSac || "SAC300"}
                       </td>
                       <td className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 text-center text-gray-800">
                         {item.quantity}
@@ -442,7 +442,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({ invoice, onClose, autoD
                 <tbody>
                   <tr className="bg-white">
                     <td className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 text-center text-gray-800">
-                      {invoice.items[0]?.hsnSac || " "}
+                      {invoice.items[0]?.hsnSac || "SAC300"}
                     </td>
                     <td className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 text-center text-gray-800">
                       {formatCurrency(invoice.subtotal).replace("₹", "")}
