@@ -178,7 +178,7 @@ const InvoicesPage: React.FC = () => {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
-                All Invoices ({filters[0].count})
+                All Invoices 
               </motion.button>
 
               <motion.button
@@ -191,7 +191,7 @@ const InvoicesPage: React.FC = () => {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
-                Paid ({filters[1].count})
+                Paid 
               </motion.button>
 
               {/* Second Row on Mobile: Unpaid, Overdue */}
@@ -205,7 +205,7 @@ const InvoicesPage: React.FC = () => {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
-                Unpaid ({filters[2].count})
+                Unpaid 
               </motion.button>
 
               <motion.button
@@ -218,7 +218,7 @@ const InvoicesPage: React.FC = () => {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
               >
-                Overdue ({filters[3].count})
+                Overdue 
               </motion.button>
             </div>
           </div>
