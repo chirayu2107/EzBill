@@ -136,7 +136,7 @@ const Login: React.FC = () => {
       <div className="hidden md:flex w-full md:w-1/2 items-center justify-end bg-gray-800 overflow-hidden px-4 md:px-0">
         <div className="rounded-xl border-[3px] border-gray-700 shadow-2xl w-full max-w-none scale-[1.10] md:ml-14">
           <img
-            src="http://res.cloudinary.com/dkoiyuyhj/image/upload/v1753035072/vdwhoevj6z59zw60xhrx.png"
+            src="http://res.cloudinary.com/dkoiyuyhj/image/upload/v1753036437/t0qlsnldzhho4aw07bbd.png"
             alt="Dashboard Preview"
             className="object-contain w-full h-full rounded-xl"
           />
