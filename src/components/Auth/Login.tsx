@@ -5,7 +5,7 @@ import { useState } from "react"
 import { Link } from "react-router-dom"
 import { useAuth } from "../../context/AuthContext"
 import { useToast } from "../../hooks/useToast"
-import { Mail, Lock, LogIn, Receipt, CheckCircle, User, FileText } from "lucide-react"
+import { Mail, Lock, LogIn, Receipt } from "lucide-react"
 import Button from "../UI/Button"
 import Card from "../UI/Card"
 
@@ -25,7 +25,6 @@ const Login: React.FC = () => {
     try {
       const success = await login(email, password)
       if (success) {
-        // Show success message in top right
         toast.success("Login Successful", "Welcome back! You have been signed in successfully.")
       } else {
         setError("Invalid email or password. Please check your credentials and try again.")
@@ -33,67 +32,17 @@ const Login: React.FC = () => {
       }
     } catch (err: any) {
       console.error("Login error:", err)
-      const errorMessage = "Login failed. Please try again."
-      setError(errorMessage)
-      toast.error("Sign In Error", errorMessage)
+      setError("Login failed. Please try again.")
+      toast.error("Sign In Error", "Login failed. Please try again.")
     } finally {
       setLoading(false)
     }
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white flex flex-col md:flex-row">
-      {/* Left Section: Features */}
-      <div className="hidden md:flex w-full md:w-1/2 flex-col justify-center px-12 py-12 bg-gray-800 text-white">
-        <h2 className="text-3xl font-bold mb-4">Professional Invoicing Made Simple</h2>
-        <p className="text-gray-400 mb-8">
-          Join thousands of content creators who've streamlined their invoicing process with our GST-compliant solution.
-        </p>
-
-        <div className="space-y-6">
-          <div className="flex items-start gap-4">
-            <CheckCircle className="text-emerald-500 mt-1" />
-            <div>
-              <h4 className="font-semibold">Auto GST Calculation</h4>
-              <p className="text-gray-400 text-sm">Automatically calculates 9% or 18% GST based on state compliance</p>
-            </div>
-          </div>
-
-          <div className="flex items-start gap-4">
-            <User className="text-emerald-500 mt-1" />
-            <div>
-              <h4 className="font-semibold">Brand Management</h4>
-              <p className="text-gray-400 text-sm">Easily manage all your brand clients in one organized place</p>
-            </div>
-          </div>
-
-          <div className="flex items-start gap-4">
-            <FileText className="text-emerald-500 mt-1" />
-            <div>
-              <h4 className="font-semibold">Instant PDF Generation</h4>
-              <p className="text-gray-400 text-sm">Generate professional invoices in seconds with preview</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="mt-10 flex gap-8 text-center">
-          <div>
-            <h3 className="text-2xl font-bold text-emerald-500">1000+</h3>
-            <p className="text-sm text-gray-400">Invoices Generated</p>
-          </div>
-          <div>
-            <h3 className="text-2xl font-bold text-emerald-500">500+</h3>
-            <p className="text-sm text-gray-400">Happy Creators</p>
-          </div>
-          <div>
-            <h3 className="text-2xl font-bold text-emerald-500">₹50L+</h3>
-            <p className="text-sm text-gray-400">Revenue Processed</p>
-          </div>
-        </div>
-      </div>
-
-      {/* Right Section: Login Form */}
-      <div className="w-full md:w-1/2 flex items-center justify-center px-4 py-12">
+    <div className="min-h-screen flex flex-col md:flex-row bg-gray-900 text-white">
+      {/* Left Side: Login Form */}
+      <div className="w-full md:w-1/2 flex items-center justify-center px-6 py-12">
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
             <div className="flex items-center justify-center gap-3 mb-4">
@@ -102,7 +51,7 @@ const Login: React.FC = () => {
               </div>
               <h1 className="text-3xl font-bold text-white">EzBill</h1>
             </div>
-            <p className="text-gray-400">Sign in to your account</p>
+            <p className="text-gray-400">Welcome back! Please enter your details.</p>
           </div>
 
           <Card>
@@ -114,7 +63,7 @@ const Login: React.FC = () => {
               )}
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Email Address</label>
+                <label className="block text-sm font-medium text-gray-300 mb-2">Email</label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                   <input
@@ -159,7 +108,7 @@ const Login: React.FC = () => {
                 type="submit"
                 icon={loading ? undefined : LogIn}
                 disabled={loading}
-                className="w-full bg-emerald-500 hover:bg-emerald-600 transition-all duration-200 relative overflow-hidden"
+                className="w-full bg-emerald-500 hover:bg-emerald-600 transition-all duration-200"
                 size="lg"
               >
                 {loading ? (
@@ -173,13 +122,24 @@ const Login: React.FC = () => {
               </Button>
 
               <div className="text-center text-sm text-gray-400">
-                Don't have an account?{" "}
+                Don’t have an account?{" "}
                 <Link to="/signup" className="text-emerald-500 hover:text-emerald-400 transition-colors">
-                  Sign up for free
+                  Sign up
                 </Link>
               </div>
             </form>
           </Card>
+        </div>
+      </div>
+
+      {/* Right Side: Dashboard UI Preview (Hidden on Mobile) */}
+      <div className="hidden md:flex w-full md:w-1/2 items-center justify-end bg-gray-800 overflow-hidden px-4 md:px-0">
+        <div className="rounded-xl border-[3px] border-gray-700 shadow-2xl w-full max-w-none scale-[1.10] md:ml-14">
+          <img
+            src="http://res.cloudinary.com/dkoiyuyhj/image/upload/v1753035072/vdwhoevj6z59zw60xhrx.png"
+            alt="Dashboard Preview"
+            className="object-contain w-full h-full rounded-xl"
+          />
         </div>
       </div>
     </div>
