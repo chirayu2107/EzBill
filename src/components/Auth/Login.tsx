@@ -2,7 +2,7 @@
 
 import type React from "react"
 import { useState } from "react"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom" // ✅ ADDED useNavigate
 import { useAuth } from "../../context/AuthContext"
 import { useToast } from "../../hooks/useToast"
 import { Mail, Lock, LogIn, Receipt } from "lucide-react"
@@ -12,6 +12,7 @@ import Card from "../UI/Card"
 const Login: React.FC = () => {
   const { login } = useAuth()
   const { toast } = useToast()
+  const navigate = useNavigate() // ✅ INITIALIZED HERE
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
@@ -26,6 +27,7 @@ const Login: React.FC = () => {
       const success = await login(email, password)
       if (success) {
         toast.success("Login Successful", "Welcome back! You have been signed in successfully.")
+        navigate("/") // ✅ REDIRECT ON SUCCESS
       } else {
         setError("Invalid email or password. Please check your credentials and try again.")
         toast.error("Sign In Failed", "Please check your email and password")
