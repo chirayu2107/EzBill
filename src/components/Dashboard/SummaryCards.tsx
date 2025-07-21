@@ -16,33 +16,37 @@ const SummaryCards: React.FC = () => {
       title: "Total Revenue",
       value: formatCurrency(summary.totalRevenue),
       icon: TrendingUp,
-      color: "text-emerald-500",
-      bgColor: "bg-emerald-500/10",
-      gradient: "from-emerald-500 to-green-600",
+      color: "text-green-400",
+      stroke: "stroke-green-400/30",
+      bgColor: "bg-green-400/10",
+      change: "+2.4%",
     },
     {
       title: "Paid Amount",
       value: formatCurrency(summary.paidAmount),
       icon: DollarSign,
-      color: "text-green-500",
-      bgColor: "bg-green-500/10",
-      gradient: "from-green-500 to-emerald-600",
+      color: "text-emerald-400",
+      stroke: "stroke-emerald-400/30",
+      bgColor: "bg-emerald-400/10",
+      change: "+8.6%",
     },
     {
       title: "Pending Amount",
       value: formatCurrency(summary.pendingAmount),
       icon: Clock,
-      color: "text-yellow-500",
-      bgColor: "bg-yellow-500/10",
-      gradient: "from-yellow-500 to-orange-500",
+      color: "text-yellow-400",
+      stroke: "stroke-yellow-400/30",
+      bgColor: "bg-yellow-400/10",
+      change: "+6.0%",
     },
     {
       title: "Overdue Amount",
       value: formatCurrency(summary.overdueAmount),
       icon: AlertCircle,
-      color: "text-red-500",
-      bgColor: "bg-red-500/10",
-      gradient: "from-red-500 to-pink-600",
+      color: "text-red-400",
+      stroke: "stroke-red-400/30",
+      bgColor: "bg-red-400/10",
+      change: "+0%",
     },
   ]
 
@@ -86,44 +90,52 @@ const SummaryCards: React.FC = () => {
           }}
           whileTap={{ scale: 0.98 }}
         >
-          <Card className="hover:bg-gray-750 transition-all duration-300 cursor-pointer relative overflow-hidden">
-            {/* Gradient Background */}
-            <div className={`absolute inset-0 bg-gradient-to-br ${card.gradient} opacity-5`}></div>
+          <Card className="relative bg-[#111827] rounded-xl p-4 md:p-6 overflow-hidden cursor-pointer hover:ring-1 hover:ring-white/10 transition">
+            <p className="text-gray-400 text-xs font-medium mb-1">{card.title}</p>
 
-            <div className="relative z-10 flex items-center justify-between">
-              <div className="flex-1 min-w-0">
-                <p className="text-gray-400 text-xs font-medium mb-1 truncate">{card.title}</p>
-                <motion.p
-                  className="text-sm md:text-2xl font-bold text-white truncate"
-                  initial={{ scale: 0.8, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{ delay: index * 0.1 + 0.2 }}
-                >
-                  {card.value}
-                </motion.p>
-              </div>
-              <motion.div
-                className={`p-1.5 md:p-3 rounded-xl ${card.bgColor} relative flex-shrink-0`}
-                whileHover={{ rotate: 5 }}
-                transition={{ duration: 0.2 }}
+            <div className="flex items-center justify-between">
+              <motion.p
+                className="text-white font-bold text-lg md:text-2xl"
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: index * 0.1 + 0.2 }}
               >
-                <card.icon className={`w-4 h-4 md:w-6 md:h-6 ${card.color}`} />
-
-                {/* Pulse effect - Reduced on mobile */}
-                <motion.div
-                  className={`absolute inset-0 rounded-xl ${card.bgColor} hidden md:block`}
-                  animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0, 0.5] }}
-                  transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
-                />
+                {card.value}
+              </motion.p>
+              <motion.div
+                className={`p-2 md:p-3 rounded-xl ${card.bgColor}`}
+                whileHover={{ rotate: 5 }}
+              >
+                <card.icon className={`w-5 h-5 md:w-6 md:h-6 ${card.color}`} />
               </motion.div>
             </div>
 
-            {/* Hover effect overlay */}
-            <motion.div
-              className="absolute inset-0 bg-white/5 opacity-0"
-              whileHover={{ opacity: 1 }}
-              transition={{ duration: 0.2 }}
-            />
+            <p className={`${card.color} text-xs mt-1`}>
+              {card.change} <span className="text-gray-400"> vs last month</span>
+            </p>
+
+            {/* Decorative Static Graph */}
+            <div className="absolute bottom-0 left-0 w-full h-8 md:h-10">
+              <svg className="w-full h-full" viewBox="0 0 100 27" preserveAspectRatio="none">
+                <path
+                  d="M0 30 
+                    L10 28 
+                    L20 25 
+                    L30 27 
+                    L40 22 
+                    L50 20 
+                    L60 18 
+                    L70 19 
+                    L80 17 
+                    L90 18 
+                    L100 15"
+                  fill="none"
+                  className={card.stroke}
+                  strokeWidth="2"
+                />
+              </svg>
+            </div>
+
           </Card>
         </motion.div>
       ))}
