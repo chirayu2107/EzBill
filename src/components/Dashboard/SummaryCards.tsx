@@ -17,7 +17,6 @@ const SummaryCards: React.FC = () => {
       value: formatCurrency(summary.totalRevenue),
       icon: TrendingUp,
       color: "text-green-400",
-      stroke: "stroke-green-400/30",
       bgColor: "bg-green-400/10",
       change: "+2.4%",
     },
@@ -26,7 +25,6 @@ const SummaryCards: React.FC = () => {
       value: formatCurrency(summary.paidAmount),
       icon: DollarSign,
       color: "text-emerald-400",
-      stroke: "stroke-emerald-400/30",
       bgColor: "bg-emerald-400/10",
       change: "+8.6%",
     },
@@ -35,7 +33,6 @@ const SummaryCards: React.FC = () => {
       value: formatCurrency(summary.pendingAmount),
       icon: Clock,
       color: "text-yellow-400",
-      stroke: "stroke-yellow-400/30",
       bgColor: "bg-yellow-400/10",
       change: "+6.0%",
     },
@@ -44,7 +41,6 @@ const SummaryCards: React.FC = () => {
       value: formatCurrency(summary.overdueAmount),
       icon: AlertCircle,
       color: "text-red-400",
-      stroke: "stroke-red-400/30",
       bgColor: "bg-red-400/10",
       change: "+0%",
     },
@@ -113,29 +109,6 @@ const SummaryCards: React.FC = () => {
             <p className={`${card.color} text-xs mt-1`}>
               {card.change} <span className="text-gray-400"> vs last month</span>
             </p>
-
-            {/* Decorative Static Graph */}
-            <div className="absolute bottom-0 left-0 w-full h-8 md:h-10">
-              <svg className="w-full h-full" viewBox="0 0 100 27" preserveAspectRatio="none">
-                <path
-                  d="M0 30 
-                    L10 28 
-                    L20 25 
-                    L30 27 
-                    L40 22 
-                    L50 20 
-                    L60 18 
-                    L70 19 
-                    L80 17 
-                    L90 18 
-                    L100 15"
-                  fill="none"
-                  className={card.stroke}
-                  strokeWidth="2"
-                />
-              </svg>
-            </div>
-
           </Card>
         </motion.div>
       ))}
