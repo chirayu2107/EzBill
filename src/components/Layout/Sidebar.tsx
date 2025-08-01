@@ -150,7 +150,7 @@ const Sidebar: React.FC = () => {
           transition={{ delay: 0.5, duration: 0.3 }}
         >
           <div className="mb-4 flex items-center gap-4">
-            <img src="http://res.cloudinary.com/dkoiyuyhj/image/upload/v1753104347/ycw80cf7djpchwd1jvuw.png" alt="QR Code" className="w-20 h-20 rounded-md border border-gray-600" />
+            
             <div>
               <p className="text-gray-400 text-sm">Signed in as</p>
               <p className="text-white font-medium break-all">{user?.fullName}</p>
