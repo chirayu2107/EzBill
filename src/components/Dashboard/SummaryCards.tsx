@@ -4,7 +4,7 @@ import type React from "react"
 import { motion } from "framer-motion"
 import { useApp } from "../../context/AppContext"
 import { formatCurrency } from "../../utils/calculations"
-import { TrendingUp, DollarSign, Clock, AlertCircle } from "lucide-react"
+import { TrendingUp, IndianRupeeIcon, Clock, AlertCircle } from "lucide-react"
 import Card from "../UI/Card"
 
 const SummaryCards: React.FC = () => {
@@ -23,7 +23,7 @@ const SummaryCards: React.FC = () => {
     {
       title: "Paid Amount",
       value: formatCurrency(summary.paidAmount),
-      icon: DollarSign,
+      icon: IndianRupeeIcon,
       color: "text-emerald-400",
       bgColor: "bg-emerald-400/10",
       change: "+8.6%",
