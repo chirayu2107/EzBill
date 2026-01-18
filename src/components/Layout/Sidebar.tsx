@@ -5,7 +5,7 @@ import { useState } from "react"
 import { Link, useLocation } from "react-router-dom"
 import { motion, AnimatePresence } from "framer-motion"
 import { useAuth } from "../../context/AuthContext"
-import { LayoutDashboard, FileText, Plus, Receipt, User, LogOut, BarChart3, Menu, X } from "lucide-react"
+import { LayoutDashboard, FileText, Plus, Receipt, User, LogOut, BarChart3, Menu, X, ShoppingBag } from "lucide-react"
 import Button from "../UI/Button"
 
 const Sidebar: React.FC = () => {
@@ -16,6 +16,7 @@ const Sidebar: React.FC = () => {
   const menuItems = [
     { path: "/", icon: LayoutDashboard, label: "Dashboard" },
     { path: "/invoices", icon: FileText, label: "Invoices" },
+    { path: "/purchase-bills", icon: ShoppingBag, label: "Purchase Bills" },
     { path: "/create-invoice", icon: Plus, label: "Create Invoice" },
     { path: "/analytics", icon: BarChart3, label: "Analytics" },
     { path: "/profile", icon: User, label: "Profile" },

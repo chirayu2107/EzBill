@@ -14,7 +14,7 @@ import {
 } from "firebase/firestore"
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, updateProfile } from "firebase/auth"
 import { auth, db } from "../config/firebase"
-import type { Invoice, User, SignupData } from "../types"
+import type { Invoice, User, SignupData, PurchaseBill } from "../types"
 
 // Auth Services
 export const signUpUser = async (userData: SignupData) => {
@@ -436,5 +436,142 @@ export const getUserInvoices = async (userId: string) => {
     }
 
     return { success: false, error: error.message, invoices: [] }
+  }
+}
+
+// Purchase Bill Services
+export const addPurchaseBill = async (billData: Omit<PurchaseBill, "id">, userId: string) => {
+  try {
+    console.log("Adding purchase bill for user:", userId, billData)
+
+    const billDoc = {
+      ...billData,
+      userId,
+      date: Timestamp.fromDate(billData.date),
+      createdAt: Timestamp.fromDate(billData.createdAt),
+    }
+
+    const docRef = await addDoc(collection(db, "purchaseBills"), billDoc)
+    console.log("Purchase bill added successfully with ID:", docRef.id)
+    return { success: true, id: docRef.id }
+  } catch (error: any) {
+    console.error("Add purchase bill error:", error)
+    return { success: false, error: error.message }
+  }
+}
+
+export const updatePurchaseBill = async (billId: string, billData: Partial<PurchaseBill>) => {
+  try {
+    console.log("Updating purchase bill:", billId, billData)
+
+    const billRef = doc(db, "purchaseBills", billId)
+
+    // Create update data with proper type handling
+    const updateData: Record<string, any> = {}
+
+    // Copy all fields except dates first
+    Object.keys(billData).forEach((key) => {
+      if (key !== "date" && key !== "createdAt") {
+        updateData[key] = (billData as any)[key]
+      }
+    })
+
+    // Handle date conversions separately
+    if (billData.date) {
+      updateData.date = billData.date instanceof Date ? Timestamp.fromDate(billData.date) : billData.date
+    }
+
+    if (billData.createdAt) {
+      updateData.createdAt =
+        billData.createdAt instanceof Date ? Timestamp.fromDate(billData.createdAt) : billData.createdAt
+    }
+
+    await updateDoc(billRef, updateData)
+    console.log("Purchase bill updated successfully")
+    return { success: true }
+  } catch (error: any) {
+    console.error("Update purchase bill error:", error)
+    return { success: false, error: error.message }
+  }
+}
+
+export const deletePurchaseBill = async (billId: string) => {
+  try {
+    console.log("Deleting purchase bill:", billId)
+    await deleteDoc(doc(db, "purchaseBills", billId))
+    console.log("Purchase bill deleted successfully")
+    return { success: true }
+  } catch (error: any) {
+    console.error("Delete purchase bill error:", error)
+    return { success: false, error: error.message }
+  }
+}
+
+export const getUserPurchaseBills = async (userId: string) => {
+  try {
+    console.log("Fetching purchase bills for user:", userId)
+
+    const billsCollection = collection(db, "purchaseBills")
+
+    // Try with ordering first (requires composite index)
+    try {
+      const q = query(billsCollection, where("userId", "==", userId), orderBy("createdAt", "desc"))
+
+      const querySnapshot = await getDocs(q)
+
+      const purchaseBills = querySnapshot.docs
+        .map((doc) => {
+          const data = doc.data()
+          try {
+            return {
+              id: doc.id,
+              ...data,
+              date: data.date?.toDate ? data.date.toDate() : new Date(data.date),
+              createdAt: data.createdAt?.toDate ? data.createdAt.toDate() : new Date(data.createdAt),
+            } as PurchaseBill
+          } catch (docError) {
+            console.error("Error processing purchase bill document:", doc.id, docError)
+            return null
+          }
+        })
+        .filter(Boolean) as PurchaseBill[]
+
+      return { success: true, purchaseBills }
+    } catch (indexError: any) {
+      console.log("Query with ordering failed (likely missing index), trying without ordering:", indexError.message)
+
+      // Fallback: Query without ordering
+      const simpleQuery = query(billsCollection, where("userId", "==", userId))
+      const querySnapshot = await getDocs(simpleQuery)
+
+      if (querySnapshot.empty) {
+        return { success: true, purchaseBills: [] }
+      }
+
+      const purchaseBills = querySnapshot.docs
+        .map((doc) => {
+          const data = doc.data()
+          try {
+            return {
+              id: doc.id,
+              ...data,
+              date: data.date?.toDate ? data.date.toDate() : new Date(data.date),
+              createdAt: data.createdAt?.toDate ? data.createdAt.toDate() : new Date(data.createdAt),
+            } as PurchaseBill
+          } catch (docError) {
+            console.error("Error processing purchase bill document:", doc.id, docError)
+            return null
+          }
+        })
+        .filter(Boolean) as PurchaseBill[]
+
+      // Sort manually
+      purchaseBills.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+
+      return { success: true, purchaseBills }
+    }
+  } catch (error: any) {
+    console.error("Get user purchase bills error:", error)
+    return { success: false, error: error.message, purchaseBills: [] }
   }
 }

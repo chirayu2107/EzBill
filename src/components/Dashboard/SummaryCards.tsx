@@ -4,7 +4,7 @@ import type React from "react"
 import { motion } from "framer-motion"
 import { useApp } from "../../context/AppContext"
 import { formatCurrency } from "../../utils/calculations"
-import { TrendingUp, IndianRupeeIcon, Clock, AlertCircle } from "lucide-react"
+import { TrendingUp, IndianRupeeIcon, Clock, ShoppingBag } from "lucide-react"
 import Card from "../UI/Card"
 
 const SummaryCards: React.FC = () => {
@@ -12,6 +12,14 @@ const SummaryCards: React.FC = () => {
   const summary = getDashboardSummary()
 
   const cards = [
+    {
+      title: "Total Purchase",
+      value: formatCurrency(summary.totalPurchase),
+      icon: ShoppingBag, // You'll need to import ShoppingBag
+      color: "text-purple-400",
+      bgColor: "bg-purple-400/10",
+      change: "+2.1%",
+    },
     {
       title: "Total Revenue",
       value: formatCurrency(summary.totalRevenue),
@@ -35,14 +43,6 @@ const SummaryCards: React.FC = () => {
       color: "text-yellow-400",
       bgColor: "bg-yellow-400/10",
       change: "+6.0%",
-    },
-    {
-      title: "Overdue Amount",
-      value: formatCurrency(summary.overdueAmount),
-      icon: AlertCircle,
-      color: "text-red-400",
-      bgColor: "bg-red-400/10",
-      change: "+0%",
     },
   ]
 

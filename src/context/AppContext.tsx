@@ -9,8 +9,12 @@ import {
   updateInvoice as updateInvoiceInFirebase,
   deleteInvoice as deleteInvoiceFromFirebase,
   getUserInvoices,
+  addPurchaseBill as addPurchaseBillToFirebase,
+  updatePurchaseBill as updatePurchaseBillInFirebase,
+  deletePurchaseBill as deletePurchaseBillFromFirebase,
+  getUserPurchaseBills,
 } from "../services/firebaseService"
-import type { Invoice, DashboardSummary } from "../types"
+import type { Invoice, DashboardSummary, PurchaseBill } from "../types"
 import { useToast } from "../hooks/useToast"
 
 interface AppContextType {
@@ -21,6 +25,12 @@ interface AppContextType {
   deleteInvoice: (id: string) => Promise<void>
   getDashboardSummary: () => DashboardSummary
   getInvoiceById: (id: string) => Invoice | undefined
+  // Purchase Bills
+  purchaseBills: PurchaseBill[]
+  addPurchaseBill: (bill: Omit<PurchaseBill, "id" | "createdAt">) => Promise<void>
+  updatePurchaseBill: (id: string, bill: Omit<PurchaseBill, "id" | "createdAt">) => Promise<void>
+  deletePurchaseBill: (id: string) => Promise<void>
+  getPurchaseBillById: (id: string) => PurchaseBill | undefined
   loading: boolean
   error: string | null
   refreshInvoices: () => Promise<void>
@@ -38,6 +48,7 @@ export const useApp = () => {
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [invoices, setInvoices] = useState<Invoice[]>([])
+  const [purchaseBills, setPurchaseBills] = useState<PurchaseBill[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const { user, isAuthenticated } = useAuth()
@@ -51,54 +62,53 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     console.log("- auth.currentUser:", auth.currentUser)
   }, [isAuthenticated, user])
 
-  // Load invoices when user is authenticated
+  // Load data when user is authenticated
   useEffect(() => {
     if (isAuthenticated && auth.currentUser) {
-      console.log("User authenticated, loading invoices...")
-      loadInvoices()
+      console.log("User authenticated, loading data...")
+      loadData()
     } else {
-      console.log("User not authenticated, clearing invoices")
+      console.log("User not authenticated, clearing data")
       setInvoices([])
+      setPurchaseBills([])
       setError(null)
     }
   }, [isAuthenticated])
 
-  const loadInvoices = async () => {
-    if (!auth.currentUser) {
-      console.log("No current user, cannot load invoices")
-      return
-    }
+  const loadData = async () => {
+    if (!auth.currentUser) return
 
     setLoading(true)
     setError(null)
 
     try {
-      console.log("Loading invoices for user:", auth.currentUser.uid)
-      const result = await getUserInvoices(auth.currentUser.uid)
-
-      console.log("Load invoices result:", result)
-
-      if (result.success) {
-        console.log("Successfully loaded invoices:", result.invoices?.length || 0)
-        setInvoices(result.invoices || [])
-        setError(null)
+      // Load Invoices
+      const invoicesResult = await getUserInvoices(auth.currentUser.uid)
+      if (invoicesResult.success) {
+        setInvoices(invoicesResult.invoices || [])
       } else {
-        console.error("Failed to load invoices:", result.error)
-        setError(result.error || "Failed to load invoices")
-        setInvoices([])
+        console.error("Failed to load invoices:", invoicesResult.error)
       }
+
+      // Load Purchase Bills
+      const billsResult = await getUserPurchaseBills(auth.currentUser.uid)
+      if (billsResult.success) {
+        setPurchaseBills(billsResult.purchaseBills || [])
+      } else {
+        console.error("Failed to load purchase bills:", billsResult.error)
+      }
+      
     } catch (error: any) {
-      console.error("Error loading invoices:", error)
-      setError(`Failed to load invoices: ${error.message}`)
-      setInvoices([])
+      console.error("Error loading data:", error)
+      setError(`Failed to load data: ${error.message}`)
     } finally {
       setLoading(false)
     }
   }
 
   const refreshInvoices = async () => {
-    console.log("Refreshing invoices...")
-    await loadInvoices()
+    console.log("Refreshing data...")
+    await loadData()
   }
 
   const generateInvoiceNumber = () => {
@@ -153,7 +163,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       const result = await addInvoiceToFirebase(newInvoice, auth.currentUser.uid)
       if (result.success) {
         console.log("Invoice added successfully, refreshing list")
-        await loadInvoices() // Reload invoices to get the latest data
+        await loadData() // Reload invoices to get the latest data
         toast.success("Invoice Created", `Invoice ${invoiceNumber} has been created successfully`)
       } else {
         console.error("Failed to add invoice:", result.error)
@@ -190,7 +200,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       const result = await updateInvoiceInFirebase(id, updateData)
       if (result.success) {
         console.log("Invoice updated successfully, refreshing list")
-        await loadInvoices() // Reload invoices to get the latest data
+        await loadData() // Reload invoices to get the latest data
         toast.success("Invoice Updated", "Invoice has been updated successfully")
       } else {
         console.error("Failed to update invoice:", result.error)
@@ -241,6 +251,78 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
   }
 
+  // Purchase Bill methods
+  const addPurchaseBill = async (billData: Omit<PurchaseBill, "id" | "createdAt">) => {
+    if (!auth.currentUser) return
+
+    try {
+      setError(null)
+      const newBill: Omit<PurchaseBill, "id"> = {
+        ...billData,
+        createdAt: new Date(),
+      }
+      
+      const result = await addPurchaseBillToFirebase(newBill, auth.currentUser.uid)
+      if (result.success) {
+        await loadData()
+        toast.success("Purchase Bill Created", "Bill added successfully")
+      } else {
+        toast.error("Failed to Add Bill", result.error || "Error adding bill")
+      }
+    } catch (error: any) {
+      console.error("Error adding purchase bill:", error)
+      setError(`Failed to add purchase bill: ${error.message}`)
+    }
+  }
+
+  const updatePurchaseBill = async (id: string, billData: Omit<PurchaseBill, "id" | "createdAt">) => {
+     try {
+      setError(null)
+      // Create a clean update object
+      const updateData: Partial<PurchaseBill> = {
+        billNumber: billData.billNumber,
+        vendorName: billData.vendorName,
+        vendorAddress: billData.vendorAddress,
+        vendorState: billData.vendorState,
+        vendorGSTIN: billData.vendorGSTIN,
+        vendorPAN: billData.vendorPAN,
+        date: billData.date,
+        items: billData.items,
+        subtotal: billData.subtotal,
+        gst: billData.gst,
+        gstBreakdown: billData.gstBreakdown,
+        total: billData.total,
+        status: billData.status,
+      }
+
+      const result = await updatePurchaseBillInFirebase(id, updateData)
+      if (result.success) {
+        await loadData()
+        toast.success("Purchase Bill Updated", "Bill updated successfully")
+      } else {
+        toast.error("Failed to Update Bill", result.error || "Error updating bill")
+      }
+    } catch (error: any) {
+      console.error("Error updating purchase bill:", error)
+      setError(`Failed to update purchase bill: ${error.message}`)
+    }
+  }
+
+  const deletePurchaseBill = async (id: string) => {
+    try {
+      setError(null)
+      const result = await deletePurchaseBillFromFirebase(id)
+      if (result.success) {
+        setPurchaseBills((prev) => prev.filter((bill) => bill.id !== id))
+        toast.success("Purchase Bill Deleted", "Bill deleted successfully")
+      } else {
+        toast.error("Failed to Delete Bill", result.error || "Error deleting bill")
+      }
+    } catch (error: any) {
+      console.error("Error deleting purchase bill:", error)
+    }
+  }
+
   const getDashboardSummary = (): DashboardSummary => {
     const totalRevenue = invoices.reduce((sum, invoice) => sum + invoice.total, 0)
     const paidAmount = invoices
@@ -252,8 +334,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const overdueAmount = invoices
       .filter((invoice) => invoice.status === "overdue")
       .reduce((sum, invoice) => sum + invoice.total, 0)
+    
+    const totalPurchase = purchaseBills.reduce((sum, bill) => sum + bill.total, 0)
 
     return {
+      totalPurchase,
       totalRevenue,
       paidAmount,
       pendingAmount,
@@ -266,6 +351,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     return invoices.find((invoice) => invoice.id === id)
   }
 
+  const getPurchaseBillById = (id: string) => {
+    return purchaseBills.find((bill) => bill.id === id)
+  }
+
   return (
     <AppContext.Provider
       value={{
@@ -276,6 +365,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         deleteInvoice,
         getDashboardSummary,
         getInvoiceById,
+        purchaseBills,
+        addPurchaseBill,
+        updatePurchaseBill,
+        deletePurchaseBill,
+        getPurchaseBillById,
         loading,
         error,
         refreshInvoices,

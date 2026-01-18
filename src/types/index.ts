@@ -33,7 +33,35 @@ export interface Invoice {
   createdAt: Date
 }
 
+export interface PurchaseBillItem {
+  id: string
+  name: string
+  hsnSac: string
+  quantity: number
+  rate: number
+  lineTotal: number
+}
+
+export interface PurchaseBill {
+  id: string
+  billNumber: string
+  vendorName: string
+  vendorAddress: string
+  vendorState: string
+  vendorGSTIN: string
+  vendorPAN: string
+  date: Date
+  items: PurchaseBillItem[]
+  subtotal: number
+  gst: number
+  gstBreakdown: GSTBreakdown
+  total: number
+  status: "paid" | "unpaid" | "overdue"
+  createdAt: Date
+}
+
 export interface DashboardSummary {
+  totalPurchase: number
   totalRevenue: number
   paidAmount: number
   pendingAmount: number
@@ -69,8 +97,8 @@ export interface AuthContextType {
 
 export interface SignupData {
   email: string
-  password: string
   fullName?: string
+  password: string
   phoneNumber?: string
   panNumber?: string
   address?: string
@@ -84,6 +112,11 @@ export interface SignupData {
 
 // Firestore document types (with Timestamps instead of Dates)
 export interface FirestoreInvoice extends Omit<Invoice, "date" | "createdAt"> {
+  date: any // Firestore Timestamp
+  createdAt: any // Firestore Timestamp
+}
+
+export interface FirestorePurchaseBill extends Omit<PurchaseBill, "date" | "createdAt"> {
   date: any // Firestore Timestamp
   createdAt: any // Firestore Timestamp
 }

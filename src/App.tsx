@@ -11,6 +11,8 @@ import InvoicesPage from "./components/Dashboard/InvoicesPage"
 import CreateInvoice from "./components/Invoice/CreateInvoice"
 import Profile from "./components/Profile/Profile"
 import Analytics from "./components/Analytics/Analytics"
+import PurchaseBillsPage from "./components/PurchaseBills/PurchaseBillsPage"
+import CreatePurchaseBill from "./components/PurchaseBills/CreatePurchaseBill"
 import ToastContainer from "./components/UI/ToastContainer"
 import { useToast } from "./hooks/useToast"
 
@@ -35,6 +37,9 @@ function AppContent() {
             <Route path="create-invoice" element={<CreateInvoice />} />
             <Route path="edit-invoice/:id" element={<CreateInvoice />} />
             <Route path="invoices" element={<InvoicesPage />} />
+            <Route path="purchase-bills" element={<PurchaseBillsPage />} />
+            <Route path="create-purchase-bill" element={<CreatePurchaseBill />} />
+            <Route path="edit-purchase-bill/:id" element={<CreatePurchaseBill />} />
             <Route path="analytics" element={<Analytics />} />
             <Route path="profile" element={<Profile />} />
           </Route>
