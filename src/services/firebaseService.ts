@@ -53,6 +53,7 @@ export const signUpUser = async (userData: SignupData) => {
       gstNumber: userData.gstNumber || "",
       invoicePrefix: invoicePrefix,
       signature: "", // Initialize signature as empty string
+      businessLogo: "", // Initialize logo field
       createdAt: Timestamp.now(),
     }
 
@@ -174,6 +175,7 @@ export const getUserData = async (uid: string) => {
         gstNumber: userData.gstNumber || "",
         invoicePrefix: userData.invoicePrefix || "XUSE",
         signature: userData.signature || "", // Handle signature field
+        businessLogo: userData.businessLogo || "", // Handle logo field
         createdAt: userData.createdAt?.toDate() || new Date(),
       }
 
@@ -259,6 +261,7 @@ export const updateUserData = async (uid: string, userData: Partial<User>) => {
         gstNumber: "",
         invoicePrefix: "XUSE",
         signature: "", // Initialize signature field
+        businessLogo: "", // Initialize logo field
         createdAt: Timestamp.now(),
         ...updateData,
       }

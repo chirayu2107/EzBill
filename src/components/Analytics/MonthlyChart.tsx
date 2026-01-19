@@ -3,6 +3,7 @@
 import type React from "react"
 import { useMemo, useState, useEffect } from "react"
 import { formatCurrency } from "../../utils/calculations"
+import { useTheme } from "../../context/ThemeContext"
 
 interface MonthlyChartProps {
   data: Array<{
@@ -32,6 +33,7 @@ const MonthlyChart: React.FC<MonthlyChartProps> = ({ data }) => {
   const [isClient, setIsClient] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
   const [RechartsComponents, setRechartsComponents] = useState<any>(null)
+  const { theme } = useTheme()
 
   useEffect(() => {
     setIsClient(true)
@@ -64,11 +66,11 @@ const MonthlyChart: React.FC<MonthlyChartProps> = ({ data }) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload
       return (
-        <div className="bg-gray-800 border border-gray-600 rounded-lg p-2 md:p-3 shadow-lg text-xs md:text-sm">
-          <p className="text-white font-medium mb-1 md:mb-2">Day {label}</p>
-          <p className="text-white mb-1">Date: {data.date}</p>
-          <p className="text-green-400 mb-1">Sales: {formatCurrency(payload[0].value)}</p>
-          <p className="text-blue-400">Invoices: {payload[1].value}</p>
+        <div className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg p-2 md:p-3 shadow-lg text-xs md:text-sm transition-colors">
+          <p className="text-gray-900 dark:text-white font-medium mb-1 md:mb-2">Day {label}</p>
+          <p className="text-gray-600 dark:text-gray-300 mb-1">Date: {data.date}</p>
+          <p className="text-green-600 dark:text-green-400 mb-1">Sales: {formatCurrency(payload[0].value)}</p>
+          <p className="text-blue-600 dark:text-blue-400">Invoices: {payload[1].value}</p>
         </div>
       )
     }
@@ -110,15 +112,15 @@ const MonthlyChart: React.FC<MonthlyChartProps> = ({ data }) => {
           data={chartData}
           margin={isMobile ? { top: 20, right: 25, left: 25, bottom: 30 } : { top: 20, right: 30, left: 20, bottom: 5 }}
         >
-          <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+          <CartesianGrid strokeDasharray="3 3" stroke={theme === "dark" ? "#374151" : "#E5E7EB"} />
           <XAxis
             dataKey="day"
-            stroke="#9CA3AF"
+            stroke={theme === "dark" ? "#9CA3AF" : "#6B7280"}
             fontSize={isMobile ? 11 : 12}
             tickLine={false}
             axisLine={false}
             interval={isMobile ? 2 : 0} // Show every 3rd day on mobile (0, 3, 6, 9, etc.)
-            tick={{ fill: "#9CA3AF" }}
+            tick={{ fill: theme === "dark" ? "#9CA3AF" : "#6B7280" }}
           />
           <YAxis
             yAxisId="sales"
@@ -145,7 +147,7 @@ const MonthlyChart: React.FC<MonthlyChartProps> = ({ data }) => {
           <Tooltip content={<CustomTooltip />} />
           <Legend
             wrapperStyle={{
-              color: "#9CA3AF",
+              color: theme === "dark" ? "#9CA3AF" : "#6B7280",
               fontSize: isMobile ? "11px" : "12px",
               paddingTop: "10px",
             }}

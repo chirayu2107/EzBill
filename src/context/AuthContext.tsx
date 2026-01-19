@@ -70,6 +70,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
               gstNumber: "",
               invoicePrefix: "XUSE",
               signature: "", // Initialize signature field
+              businessLogo: "", // Initialize logo field
               createdAt: new Date(),
             }
             setUser(basicUser)
@@ -190,10 +191,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // Show loading screen only during initial auth check
   if (!authChecked) {
     return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+      <div className="min-h-screen bg-white dark:bg-gray-900 flex items-center justify-center transition-colors">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-500 mx-auto mb-4"></div>
-          <div className="text-white text-lg">Loading...</div>
+          <div className="text-gray-900 dark:text-white text-lg transition-colors">Loading...</div>
         </div>
       </div>
     )

@@ -153,10 +153,10 @@ const CreatePurchaseBill: React.FC = () => {
             <ShoppingBag className="w-5 h-5 md:w-6 md:h-6 text-emerald-500" />
           </div>
           <div>
-            <h1 className="text-2xl md:text-3xl font-bold text-white">
+            <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white transition-colors">
               {isEditing ? "Edit Purchase Bill" : "Enter Purchase Bill"}
             </h1>
-            <p className="text-gray-400 mt-1 text-sm md:text-base">
+            <p className="text-gray-500 dark:text-gray-400 mt-1 text-sm md:text-base transition-colors">
               {isEditing ? "Update bill details" : "Record a new purchase bill from vendor"}
             </p>
           </div>
@@ -165,47 +165,47 @@ const CreatePurchaseBill: React.FC = () => {
         <form onSubmit={handleSubmit} className="space-y-6">
           <motion.div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6" variants={itemVariants}>
             <Card>
-              <h3 className="text-base md:text-lg font-semibold text-white mb-4">Vendor Information</h3>
+              <h3 className="text-base md:text-lg font-semibold text-gray-900 dark:text-white mb-4 transition-colors">Vendor Information</h3>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Vendor Name *</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 transition-colors">Vendor Name *</label>
                   <input
                     type="text"
                     value={vendorName}
                     onChange={(e) => setVendorName(e.target.value)}
-                    className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm md:text-base"
+                    className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm md:text-base transition-colors"
                     placeholder="Enter vendor name"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Vendor Address</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 transition-colors">Vendor Address</label>
                   <textarea
                     value={vendorAddress}
                     onChange={(e) => setVendorAddress(e.target.value)}
-                    className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm md:text-base"
+                    className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm md:text-base transition-colors"
                     placeholder="Enter vendor address"
                     rows={3}
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">State *</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 transition-colors">State *</label>
                   <input
                     type="text"
                     value={vendorState}
                     onChange={(e) => setVendorState(e.target.value)}
-                    className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm md:text-base"
+                    className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm md:text-base transition-colors"
                     placeholder="Enter vendor state"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">GSTIN/UIN</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 transition-colors">GSTIN/UIN</label>
                   <input
                     type="text"
                     value={vendorGSTIN}
                     onChange={(e) => setVendorGSTIN(e.target.value.toUpperCase())}
-                    className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm md:text-base"
+                    className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm md:text-base transition-colors"
                     placeholder="Enter GSTIN/UIN (optional)"
                   />
                 </div>
@@ -213,45 +213,45 @@ const CreatePurchaseBill: React.FC = () => {
             </Card>
 
             <Card>
-              <h3 className="text-base md:text-lg font-semibold text-white mb-4">Bill Details</h3>
+              <h3 className="text-base md:text-lg font-semibold text-gray-900 dark:text-white mb-4 transition-colors">Bill Details</h3>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Bill Number *</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 transition-colors">Bill Number *</label>
                   <input
                     type="text"
                     value={billNumber}
                     onChange={(e) => setBillNumber(e.target.value)}
-                    className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm md:text-base"
+                    className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm md:text-base transition-colors"
                     placeholder="Enter bill number from vendor"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Bill Date *</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 transition-colors">Bill Date *</label>
                   <input
                     type="date"
                     value={billDate}
                     onChange={(e) => setBillDate(e.target.value)}
-                    className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm md:text-base"
+                    className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm md:text-base transition-colors"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-2">Vendor PAN</label>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 transition-colors">Vendor PAN</label>
                   <input
                     type="text"
                     value={vendorPAN}
                     onChange={(e) => setVendorPAN(e.target.value.toUpperCase())}
-                    className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm md:text-base"
+                    className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm md:text-base transition-colors"
                     placeholder="Enter PAN number (optional)"
                   />
                 </div>
 
                 {/* GST Preview */}
-                <div className="bg-gray-700 p-3 md:p-4 rounded-lg">
-                  <h4 className="text-sm font-medium text-gray-300 mb-2">GST Calculation Preview</h4>
+                <div className="bg-gray-50 dark:bg-gray-700 p-3 md:p-4 rounded-lg transition-colors">
+                  <h4 className="text-sm font-medium text-gray-600 dark:text-gray-300 mb-2 transition-colors">GST Calculation Preview</h4>
                   {vendorState && user?.state ? (
-                    <div className="text-sm text-gray-400">
+                    <div className="text-sm text-gray-500 dark:text-gray-400">
                       {vendorState.toLowerCase().trim() === user.state.toLowerCase().trim() ? (
                         <p>✓ Same state ({user.state}) - CGST @ 9% + SGST @ 9% will be applied</p>
                       ) : (
@@ -262,7 +262,7 @@ const CreatePurchaseBill: React.FC = () => {
                       )}
                     </div>
                   ) : (
-                    <p className="text-sm text-gray-500">Enter vendor state to see GST calculation</p>
+                    <p className="text-sm text-gray-400 dark:text-gray-500">Enter vendor state to see GST calculation</p>
                   )}
                 </div>
               </div>
@@ -272,7 +272,7 @@ const CreatePurchaseBill: React.FC = () => {
           <motion.div variants={itemVariants}>
             <Card>
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3">
-                <h3 className="text-base md:text-lg font-semibold text-white">Items</h3>
+                <h3 className="text-base md:text-lg font-semibold text-gray-900 dark:text-white transition-colors">Items</h3>
                 <Button onClick={addItem} icon={Plus} size="sm">
                   Add Item
                 </Button>
@@ -282,7 +282,7 @@ const CreatePurchaseBill: React.FC = () => {
                 {items.map((item, index) => (
                   <motion.div
                     key={item.id}
-                    className="p-3 md:p-4 bg-gray-700 rounded-lg space-y-4"
+                    className="p-3 md:p-4 bg-gray-50 dark:bg-gray-700 border border-gray-100 dark:border-gray-600 rounded-lg space-y-4 transition-colors"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.1 }}
@@ -290,34 +290,34 @@ const CreatePurchaseBill: React.FC = () => {
                     {/* Mobile Layout */}
                     <div className="block md:hidden space-y-4">
                       <div>
-                        <label className="block text-sm font-medium text-gray-300 mb-2">Item Name *</label>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 transition-colors">Item Name *</label>
                         <input
                           type="text"
                           value={item.name}
                           onChange={(e) => updateItem(item.id, "name", e.target.value)}
-                          className="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm"
+                          className="w-full px-3 py-2 bg-white dark:bg-gray-600 border border-gray-200 dark:border-gray-500 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm transition-colors"
                           placeholder="Enter item name"
                           required
                         />
                       </div>
                       <div className="grid grid-cols-2 gap-3">
                         <div>
-                          <label className="block text-sm font-medium text-gray-300 mb-2">HSN/SAC</label>
+                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 transition-colors">HSN/SAC</label>
                           <input
                             type="text"
                             value={item.hsnSac}
                             onChange={(e) => updateItem(item.id, "hsnSac", e.target.value)}
-                            className="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm"
+                            className="w-full px-3 py-2 bg-white dark:bg-gray-600 border border-gray-200 dark:border-gray-500 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm transition-colors"
                             placeholder="HSN/SAC"
                           />
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-300 mb-2">Qty *</label>
+                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 transition-colors">Qty *</label>
                           <input
                             type="number"
                             value={item.quantity}
                             onChange={(e) => updateItem(item.id, "quantity", Number.parseInt(e.target.value) || 0)}
-                            className="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm"
+                            className="w-full px-3 py-2 bg-white dark:bg-gray-600 border border-gray-200 dark:border-gray-500 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm transition-colors"
                             min="1"
                             required
                           />
@@ -325,21 +325,21 @@ const CreatePurchaseBill: React.FC = () => {
                       </div>
                       <div className="grid grid-cols-2 gap-3">
                         <div>
-                          <label className="block text-sm font-medium text-gray-300 mb-2">Rate *</label>
+                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 transition-colors">Rate *</label>
                           <input
                             type="number"
                             placeholder="Enter rate"
                             value={item.rate === 0 ? "" : item.rate}
                             onChange={(e) => updateItem(item.id, "rate", Number.parseFloat(e.target.value) || 0)}
-                            className="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm"
+                            className="w-full px-3 py-2 bg-white dark:bg-gray-600 border border-gray-200 dark:border-gray-500 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm transition-colors"
                             min="0"
                             step="0.01"
                             required
                           />
                         </div>
                         <div>
-                          <label className="block text-sm font-medium text-gray-300 mb-2">Amount</label>
-                          <div className="px-3 py-2 bg-gray-600 border border-gray-500 rounded-lg text-white text-sm">
+                          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 transition-colors">Amount</label>
+                          <div className="px-3 py-2 bg-white dark:bg-gray-600 border border-gray-200 dark:border-gray-500 rounded-lg text-gray-900 dark:text-white text-sm transition-colors">
                             {formatCurrency(item.lineTotal)}
                           </div>
                         </div>
@@ -360,53 +360,53 @@ const CreatePurchaseBill: React.FC = () => {
                     {/* Desktop Layout */}
                     <div className="hidden md:grid md:grid-cols-12 gap-4">
                       <div className="md:col-span-4">
-                        <label className="block text-sm font-medium text-gray-300 mb-2">Item Name *</label>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 transition-colors">Item Name *</label>
                         <input
                           type="text"
                           value={item.name}
                           onChange={(e) => updateItem(item.id, "name", e.target.value)}
-                          className="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                          className="w-full px-3 py-2 bg-white dark:bg-gray-600 border border-gray-200 dark:border-gray-500 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-colors"
                           placeholder="Enter item name"
                           required
                         />
                       </div>
                       <div className="md:col-span-2">
-                        <label className="block text-sm font-medium text-gray-300 mb-2">HSN/SAC</label>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 transition-colors">HSN/SAC</label>
                         <input
                           type="text"
                           value={item.hsnSac}
                           onChange={(e) => updateItem(item.id, "hsnSac", e.target.value)}
-                          className="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                          className="w-full px-3 py-2 bg-white dark:bg-gray-600 border border-gray-200 dark:border-gray-500 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-colors"
                           placeholder="HSN/SAC"
                         />
                       </div>
                       <div className="md:col-span-1">
-                        <label className="block text-sm font-medium text-gray-300 mb-2">Qty *</label>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 transition-colors">Qty *</label>
                         <input
                           type="number"
                           value={item.quantity}
                           onChange={(e) => updateItem(item.id, "quantity", Number.parseInt(e.target.value) || 0)}
-                          className="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                          className="w-full px-3 py-2 bg-white dark:bg-gray-600 border border-gray-200 dark:border-gray-500 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-colors"
                           min="1"
                           required
                         />
                       </div>
                       <div className="md:col-span-2">
-                        <label className="block text-sm font-medium text-gray-300 mb-2">Rate *</label>
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 transition-colors">Rate *</label>
                         <input
                           type="number"
                           placeholder="Enter rate"
                           value={item.rate === 0 ? "" : item.rate}
                           onChange={(e) => updateItem(item.id, "rate", Number.parseFloat(e.target.value) || 0)}
-                          className="w-full px-3 py-2 bg-gray-600 border border-gray-500 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                          className="w-full px-3 py-2 bg-white dark:bg-gray-600 border border-gray-200 dark:border-gray-500 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-colors"
                           min="0"
                           step="0.01"
                           required
                         />
                       </div>
                       <div className="md:col-span-2">
-                        <label className="block text-sm font-medium text-gray-300 mb-2">Amount</label>
-                        <div className="px-3 py-2 bg-gray-600 border border-gray-500 rounded-lg text-white">
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 transition-colors">Amount</label>
+                        <div className="px-3 py-2 bg-white dark:bg-gray-600 border border-gray-200 dark:border-gray-500 rounded-lg text-gray-900 dark:text-white transition-colors">
                           {formatCurrency(item.lineTotal)}
                         </div>
                       </div>
@@ -430,30 +430,30 @@ const CreatePurchaseBill: React.FC = () => {
 
           <motion.div variants={itemVariants}>
             <Card>
-              <h3 className="text-base md:text-lg font-semibold text-white mb-4">Bill Summary</h3>
+              <h3 className="text-base md:text-lg font-semibold text-gray-900 dark:text-white mb-4 transition-colors">Bill Summary</h3>
               <div className="space-y-2">
-                <div className="flex justify-between text-gray-300 text-sm md:text-base">
+                <div className="flex justify-between text-gray-600 dark:text-gray-300 text-sm md:text-base transition-colors">
                   <span>Subtotal:</span>
                   <span>{formatCurrency(subtotal)}</span>
                 </div>
                 {gstBreakdown.isInterState ? (
-                  <div className="flex justify-between text-gray-300 text-sm md:text-base">
+                  <div className="flex justify-between text-gray-600 dark:text-gray-300 text-sm md:text-base transition-colors">
                     <span>IGST @ 18%:</span>
                     <span>{formatCurrency(gstBreakdown.igst)}</span>
                   </div>
                 ) : (
                   <>
-                    <div className="flex justify-between text-gray-300 text-sm md:text-base">
+                    <div className="flex justify-between text-gray-600 dark:text-gray-300 text-sm md:text-base transition-colors">
                       <span>CGST @ 9%:</span>
                       <span>{formatCurrency(gstBreakdown.cgst)}</span>
                     </div>
-                    <div className="flex justify-between text-gray-300 text-sm md:text-base">
+                    <div className="flex justify-between text-gray-600 dark:text-gray-300 text-sm md:text-base transition-colors">
                       <span>SGST @ 9%:</span>
                       <span>{formatCurrency(gstBreakdown.sgst)}</span>
                     </div>
                   </>
                 )}
-                <div className="flex justify-between text-lg md:text-xl font-semibold text-white border-t border-gray-600 pt-2">
+                <div className="flex justify-between text-lg md:text-xl font-semibold text-gray-900 dark:text-white border-t border-gray-200 dark:border-gray-600 pt-2 transition-colors">
                   <span>TOTAL:</span>
                   <span>{formatCurrency(total)}</span>
                 </div>

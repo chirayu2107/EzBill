@@ -113,7 +113,7 @@ const SignatureUpload: React.FC<SignatureUploadProps> = ({ currentSignature, onS
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <label className="block text-sm font-medium text-gray-300">Digital Signature</label>
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 transition-colors">Digital Signature</label>
         {currentSignature && !disabled && (
           <Button onClick={handleRemoveSignature} variant="danger" size="sm" icon={X}>
             Remove
@@ -123,7 +123,7 @@ const SignatureUpload: React.FC<SignatureUploadProps> = ({ currentSignature, onS
 
       {currentSignature ? (
         <div className="space-y-3">
-          <div className="bg-white rounded-lg p-4 border-2 border-gray-600">
+          <div className="bg-gray-50 dark:bg-white rounded-lg p-4 border-2 border-gray-200 dark:border-gray-600 transition-colors">
             <img
               src={currentSignature || "/placeholder.svg"}
               alt="Digital Signature"
@@ -138,7 +138,7 @@ const SignatureUpload: React.FC<SignatureUploadProps> = ({ currentSignature, onS
               }}
             />
           </div>
-          <div className="flex items-center gap-2 text-sm text-green-400">
+          <div className="flex items-center gap-2 text-sm text-green-600 dark:text-green-400 transition-colors">
             <Check className="w-4 h-4" />
             <span>Signature uploaded and ready to use</span>
           </div>
@@ -154,8 +154,8 @@ const SignatureUpload: React.FC<SignatureUploadProps> = ({ currentSignature, onS
             dragActive
               ? "border-emerald-500 bg-emerald-500/5"
               : disabled
-                ? "border-gray-600 bg-gray-700/50"
-                : "border-gray-600 hover:border-gray-500 bg-gray-700/30"
+                ? "border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50"
+                : "border-gray-200 dark:border-gray-600 hover:border-emerald-500 dark:hover:border-gray-500 bg-gray-50 dark:bg-gray-700/30"
           }`}
           onDragEnter={handleDrag}
           onDragLeave={handleDrag}
@@ -172,7 +172,7 @@ const SignatureUpload: React.FC<SignatureUploadProps> = ({ currentSignature, onS
           />
 
           <div className="space-y-4">
-            <div className="mx-auto w-12 h-12 bg-gray-600 rounded-full flex items-center justify-center">
+            <div className="mx-auto w-12 h-12 bg-gray-100 dark:bg-gray-600 rounded-full flex items-center justify-center transition-colors">
               {uploading ? (
                 <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-emerald-500"></div>
               ) : (
@@ -181,11 +181,11 @@ const SignatureUpload: React.FC<SignatureUploadProps> = ({ currentSignature, onS
             </div>
 
             <div>
-              <p className="text-white font-medium mb-1">
+              <p className="text-gray-900 dark:text-white font-medium mb-1 transition-colors">
                 {uploading ? "Uploading signature..." : "Upload your signature"}
               </p>
-              <p className="text-gray-400 text-sm mb-4">Drag and drop an image file here, or click to browse</p>
-              <p className="text-gray-500 text-xs">Supported formats: PNG, JPG, GIF • Max size: 2MB</p>
+              <p className="text-gray-500 dark:text-gray-400 text-sm mb-4 transition-colors">Drag and drop an image file here, or click to browse</p>
+              <p className="text-gray-400 dark:text-gray-500 text-xs transition-colors">Supported formats: PNG, JPG, GIF • Max size: 2MB</p>
             </div>
 
             {!disabled && !uploading && (
@@ -197,9 +197,9 @@ const SignatureUpload: React.FC<SignatureUploadProps> = ({ currentSignature, onS
         </div>
       )}
 
-      <div className="bg-gray-700 rounded-lg p-3">
-        <h4 className="text-sm font-medium text-gray-300 mb-2">💡 Signature Tips</h4>
-        <ul className="text-xs text-gray-400 space-y-1">
+      <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3 transition-colors">
+        <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 transition-colors">💡 Signature Tips</h4>
+        <ul className="text-xs text-gray-500 dark:text-gray-400 space-y-1 transition-colors">
           <li>• Use a white background for best results</li>
           <li>• Sign with a dark pen or marker</li>
           <li>• Keep the signature centered in the image</li>

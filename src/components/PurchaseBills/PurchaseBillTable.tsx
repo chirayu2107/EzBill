@@ -117,12 +117,12 @@ const PurchaseBillTable: React.FC<PurchaseBillTableProps> = ({ bills, onViewBill
             transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
             className="mb-4"
           >
-            <div className="w-12 h-12 md:w-16 md:h-16 bg-gray-700 rounded-full flex items-center justify-center mx-auto">
-              <FileX className="w-6 h-6 md:w-8 md:h-8 text-gray-400" />
+            <div className="w-12 h-12 md:w-16 md:h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto transition-colors">
+              <FileX className="w-6 h-6 md:w-8 md:h-8 text-gray-400 dark:text-gray-500 transition-colors" />
             </div>
           </motion.div>
-          <h3 className="text-lg md:text-xl font-semibold text-white mb-2">{emptyState.title}</h3>
-          <p className="text-gray-400 text-sm md:text-base">{emptyState.description}</p>
+          <h3 className="text-lg md:text-xl font-semibold text-gray-900 dark:text-white mb-2 transition-colors">{emptyState.title}</h3>
+          <p className="text-gray-500 dark:text-gray-400 text-sm md:text-base transition-colors">{emptyState.description}</p>
         </Card>
       </motion.div>
     )
@@ -142,12 +142,12 @@ const PurchaseBillTable: React.FC<PurchaseBillTableProps> = ({ bills, onViewBill
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: 20 }}
                   transition={{ delay: index * 0.05 }}
-                  className="bg-gray-700 rounded-lg p-4 relative"
+                  className="bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg p-4 relative transition-colors"
                 >
                   <div className="flex justify-between items-start mb-3">
                     <div>
-                      <h4 className="text-white font-medium">{bill.billNumber}</h4>
-                      <p className="text-gray-300 text-sm">{bill.vendorName}</p>
+                      <h4 className="text-gray-900 dark:text-white font-normal transition-colors">{bill.billNumber}</h4>
+                      <p className="text-gray-600 dark:text-gray-300 text-sm transition-colors">{bill.vendorName}</p>
                     </div>
                     <div className="flex items-center gap-2">
                       <motion.span
@@ -161,7 +161,7 @@ const PurchaseBillTable: React.FC<PurchaseBillTableProps> = ({ bills, onViewBill
                       <div className="relative">
                         <button
                           onClick={() => toggleDropdown(bill.id)}
-                          className="p-1 text-gray-400 hover:text-white rounded"
+                          className="p-1 text-gray-400 dark:text-gray-500 hover:text-gray-900 dark:hover:text-white rounded transition-colors"
                         >
                           <MoreVertical className="w-4 h-4" />
                         </button>
@@ -172,34 +172,34 @@ const PurchaseBillTable: React.FC<PurchaseBillTableProps> = ({ bills, onViewBill
                               initial={{ opacity: 0, scale: 0.95, y: -10 }}
                               animate={{ opacity: 1, scale: 1, y: 0 }}
                               exit={{ opacity: 0, scale: 0.95, y: -10 }}
-                              className={`absolute right-0 bg-gray-800 border border-gray-600 rounded-lg shadow-lg z-20 min-w-[150px] ${
+                              className={`absolute right-0 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg shadow-lg z-20 min-w-[150px] transition-colors ${
                                 index >= bills.length - 2 ? "bottom-8" : "top-8"
                               }`}
                             >
                               <button
                                 onClick={() => onViewBill(bill)}
-                                className="w-full px-3 py-2 text-left text-sm text-gray-300 hover:bg-gray-700 flex items-center gap-2"
+                                className="w-full px-3 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-2 transition-colors"
                               >
                                 <Eye className="w-4 h-4" />
                                 View
                               </button>
                               <button
                                 onClick={() => handleDownload(bill)}
-                                className="w-full px-3 py-2 text-left text-sm text-gray-300 hover:bg-gray-700 flex items-center gap-2"
+                                className="w-full px-3 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-2 transition-colors"
                               >
                                 <Download className="w-4 h-4" />
                                 Download
                               </button>
                               <button
                                 onClick={() => onEditBill(bill)}
-                                className="w-full px-3 py-2 text-left text-sm text-gray-300 hover:bg-gray-700 flex items-center gap-2"
+                                className="w-full px-3 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-2 transition-colors"
                               >
                                 <Edit className="w-4 h-4" />
                                 Edit
                               </button>
                               <button
                                 onClick={() => toggleBillStatus(bill)}
-                                className="w-full px-3 py-2 text-left text-sm text-gray-300 hover:bg-gray-700 flex items-center gap-2"
+                                className="w-full px-3 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-2 transition-colors"
                               >
                                 {bill.status === "paid" ? (
                                   <>
@@ -215,7 +215,7 @@ const PurchaseBillTable: React.FC<PurchaseBillTableProps> = ({ bills, onViewBill
                               </button>
                               <button
                                 onClick={() => handleDeleteClick(bill)}
-                                className="w-full px-3 py-2 text-left text-sm text-red-400 hover:bg-gray-700 flex items-center gap-2"
+                                className="w-full px-3 py-2 text-left text-sm text-red-500 hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-2 transition-colors"
                               >
                                 <Trash2 className="w-4 h-4" />
                                 Delete
@@ -229,12 +229,12 @@ const PurchaseBillTable: React.FC<PurchaseBillTableProps> = ({ bills, onViewBill
 
                   <div className="grid grid-cols-2 gap-4 text-sm">
                     <div>
-                      <p className="text-gray-400">Date</p>
-                      <p className="text-white">{formatDate(bill.date)}</p>
+                      <p className="text-gray-500 dark:text-gray-400 transition-colors">Date</p>
+                      <p className="text-gray-900 dark:text-white transition-colors">{formatDate(bill.date)}</p>
                     </div>
                     <div>
-                      <p className="text-gray-400">Amount</p>
-                      <p className="text-white font-medium">{formatCurrency(bill.total)}</p>
+                      <p className="text-gray-500 dark:text-gray-400 transition-colors">Amount</p>
+                      <p className="text-gray-900 dark:text-white font-medium transition-colors">{formatCurrency(bill.total)}</p>
                     </div>
                   </div>
                 </motion.div>
@@ -246,41 +246,40 @@ const PurchaseBillTable: React.FC<PurchaseBillTableProps> = ({ bills, onViewBill
           <div className="hidden md:block overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-gray-700">
-                  <th className="text-left py-4 px-4 text-gray-300 font-semibold">Bill #</th>
-                  <th className="text-left py-4 px-4 text-gray-300 font-semibold">Vendor</th>
-                  <th className="text-left py-4 px-4 text-gray-300 font-semibold">Date</th>
-                  <th className="text-left py-4 px-4 text-gray-300 font-semibold">Amount</th>
-                  <th className="text-left py-4 px-4 text-gray-300 font-semibold">GST</th>
-                  <th className="text-left py-4 px-4 text-gray-300 font-semibold">Total</th>
-                  <th className="text-left py-4 px-4 text-gray-300 font-semibold">Status</th>
-                  <th className="text-left py-4 px-4 text-gray-300 font-semibold">Actions</th>
-                </tr>
-              </thead>
+                 <tr className="border-b border-gray-100 dark:border-gray-700 transition-colors">
+                   <th className="text-left py-4 px-4 text-gray-500 dark:text-gray-400 font-normal transition-colors">Bill #</th>
+                  <th className="text-left py-4 px-4 text-gray-500 dark:text-gray-400 font-normal transition-colors">Vendor</th>
+                  <th className="text-left py-4 px-4 text-gray-500 dark:text-gray-400 font-normal transition-colors">Date</th>
+                  <th className="text-left py-4 px-4 text-gray-500 dark:text-gray-400 font-normal transition-colors">Amount</th>
+                  <th className="text-left py-4 px-4 text-gray-500 dark:text-gray-400 font-normal transition-colors">GST</th>
+                  <th className="text-left py-4 px-4 text-gray-500 dark:text-gray-400 font-normal transition-colors">Total</th>
+                  <th className="text-left py-4 px-4 text-gray-500 dark:text-gray-400 font-normal transition-colors">Status</th>
+                  <th className="text-left py-4 px-4 text-gray-500 dark:text-gray-400 font-normal transition-colors">Actions</th>
+                 </tr>
+               </thead>
               <tbody>
                 <AnimatePresence>
                   {bills.map((bill, index) => (
-                    <motion.tr
-                      key={bill.id}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: 20 }}
-                      transition={{ delay: index * 0.05 }}
-                      className="border-b border-gray-700 hover:bg-gray-750 transition-all duration-200"
-                      whileHover={{ backgroundColor: "rgba(55, 65, 81, 0.5)" }}
-                    >
-                      <td className="py-4 px-4 text-white font-medium">{bill.billNumber}</td>
-                      <td className="py-4 px-4 text-gray-300">{bill.vendorName}</td>
-                      <td className="py-4 px-4 text-gray-300">{formatDate(bill.date)}</td>
-                      <td className="py-4 px-4 text-gray-300">{formatCurrency(bill.subtotal)}</td>
-                      <td className="py-4 px-4 text-gray-300">
-                        {bill.gstBreakdown.isInterState ? (
-                          <span>{formatCurrency(bill.gstBreakdown.igst)}</span>
-                        ) : (
-                          <span>{formatCurrency(bill.gstBreakdown.cgst + bill.gstBreakdown.sgst)}</span>
-                        )}
-                      </td>
-                      <td className="py-4 px-4 text-white font-semibold">{formatCurrency(bill.total)}</td>
+                     <motion.tr
+                       key={bill.id}
+                       initial={{ opacity: 0, x: -20 }}
+                       animate={{ opacity: 1, x: 0 }}
+                       exit={{ opacity: 0, x: 20 }}
+                       transition={{ delay: index * 0.05 }}
+                       className="border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-750 transition-all duration-200"
+                     >
+                       <td className="py-4 px-4 text-gray-900 dark:text-white font-normal transition-colors">{bill.billNumber}</td>
+                       <td className="py-4 px-4 text-gray-800 dark:text-gray-300 transition-colors">{bill.vendorName}</td>
+                       <td className="py-4 px-4 text-gray-800 dark:text-gray-300 transition-colors">{formatDate(bill.date)}</td>
+                       <td className="py-4 px-4 text-gray-800 dark:text-gray-300 transition-colors">{formatCurrency(bill.subtotal)}</td>
+                       <td className="py-4 px-4 text-gray-800 dark:text-gray-300 transition-colors">
+                         {bill.gstBreakdown.isInterState ? (
+                           <span>{formatCurrency(bill.gstBreakdown.igst)}</span>
+                         ) : (
+                           <span>{formatCurrency(bill.gstBreakdown.cgst + bill.gstBreakdown.sgst)}</span>
+                         )}
+                       </td>
+                       <td className="py-4 px-4 text-gray-900 dark:text-white font-medium transition-colors">{formatCurrency(bill.total)}</td>
                       <td className="py-4 px-4">
                         <motion.span
                           className={`px-3 py-1 rounded-full text-xs font-medium capitalize border ${getStatusColor(
@@ -311,15 +310,15 @@ const PurchaseBillTable: React.FC<PurchaseBillTableProps> = ({ bills, onViewBill
                               <Download className="w-4 h-4" />
                             </button>
                           </motion.div>
-                          <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
-                            <button
-                              onClick={() => onEditBill(bill)}
-                              className="p-2 text-gray-400 hover:bg-gray-500/10 rounded-lg transition-colors"
-                              title="Edit Bill"
-                            >
-                              <Edit className="w-4 h-4" />
-                            </button>
-                          </motion.div>
+                           <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+                             <button
+                               onClick={() => onEditBill(bill)}
+                               className="p-2 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-500/10 rounded-lg transition-colors"
+                               title="Edit Bill"
+                             >
+                               <Edit className="w-4 h-4" />
+                             </button>
+                           </motion.div>
                           <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
                             <button
                               onClick={() => toggleBillStatus(bill)}
@@ -369,37 +368,37 @@ const PurchaseBillTable: React.FC<PurchaseBillTableProps> = ({ bills, onViewBill
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
-            <motion.div
-              className="bg-gray-800 rounded-xl p-4 md:p-6 max-w-md w-full border border-gray-700"
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.8, opacity: 0 }}
-              transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            >
-              <div className="flex items-center gap-4 mb-4">
-                <div className="p-3 bg-red-500/10 rounded-full">
-                  <AlertTriangle className="w-6 h-6 text-red-500" />
-                </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-white">Delete Bill</h3>
-                  <p className="text-gray-400 text-sm">Are you sure you want to delete this bill?</p>
-                </div>
-              </div>
+                    <motion.div
+               className="bg-white dark:bg-gray-800 rounded-xl p-4 md:p-6 max-w-md w-full border border-gray-200 dark:border-gray-700 shadow-xl"
+               initial={{ scale: 0.8, opacity: 0 }}
+               animate={{ scale: 1, opacity: 1 }}
+               exit={{ scale: 0.8, opacity: 0 }}
+               transition={{ type: "spring", stiffness: 300, damping: 30 }}
+             >
+               <div className="flex items-center gap-4 mb-4">
+                 <div className="p-3 bg-red-500/10 rounded-full">
+                   <AlertTriangle className="w-6 h-6 text-red-500" />
+                 </div>
+                 <div>
+                   <h3 className="text-lg font-semibold text-gray-900 dark:text-white transition-colors">Delete Bill</h3>
+                   <p className="text-gray-500 dark:text-gray-400 text-sm transition-colors">Are you sure you want to delete this bill?</p>
+                 </div>
+               </div>
 
-              <div className="bg-gray-700 rounded-lg p-3 mb-6">
-                <p className="text-sm text-gray-300">
-                  Bill:{" "}
-                  <span className="text-white font-medium">
-                    {bills.find((b) => b.id === deleteConfirm)?.billNumber}
-                  </span>
-                </p>
-                <p className="text-sm text-gray-300">
-                  Vendor:{" "}
-                  <span className="text-white font-medium">
-                    {bills.find((b) => b.id === deleteConfirm)?.vendorName}
-                  </span>
-                </p>
-              </div>
+               <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3 mb-6 transition-colors">
+                 <p className="text-sm text-gray-600 dark:text-gray-300 transition-colors">
+                   Bill:{" "}
+                   <span className="text-gray-900 dark:text-white font-medium transition-colors">
+                     {bills.find((b) => b.id === deleteConfirm)?.billNumber}
+                   </span>
+                 </p>
+                 <p className="text-sm text-gray-600 dark:text-gray-300 transition-colors">
+                   Vendor:{" "}
+                   <span className="text-gray-900 dark:text-white font-medium transition-colors">
+                     {bills.find((b) => b.id === deleteConfirm)?.vendorName}
+                   </span>
+                 </p>
+               </div>
 
               <p className="text-sm text-red-400 mb-6">
                 This action cannot be undone. The bill will be permanently deleted.

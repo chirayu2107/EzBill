@@ -86,12 +86,12 @@ const SummaryCards: React.FC = () => {
           }}
           whileTap={{ scale: 0.98 }}
         >
-          <Card className="relative bg-[#111827] rounded-xl p-4 md:p-6 overflow-hidden cursor-pointer hover:ring-1 hover:ring-white/10 transition">
-            <p className="text-gray-400 text-xs font-medium mb-1">{card.title}</p>
+          <Card className="relative rounded-xl p-4 md:p-6 overflow-hidden cursor-pointer hover:ring-1 hover:ring-emerald-500/20 dark:hover:ring-white/5 transition-all shadow-sm hover:shadow-md">
+            <p className="text-gray-600 dark:text-gray-400 text-sm font-normal mb-1 transition-colors">{card.title}</p>
 
             <div className="flex items-center justify-between">
               <motion.p
-                className="text-white font-bold text-lg md:text-2xl"
+                className="text-gray-900 dark:text-white font-semibold text-lg md:text-2xl"
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ delay: index * 0.1 + 0.2 }}
@@ -106,8 +106,8 @@ const SummaryCards: React.FC = () => {
               </motion.div>
             </div>
 
-            <p className={`${card.color} text-xs mt-1`}>
-              {card.change} <span className="text-gray-400"> vs last month</span>
+            <p className={`${card.color} text-xs mt-1 font-medium`}>
+              {card.change} <span className="text-gray-600 dark:text-gray-400"> vs last month</span>
             </p>
           </Card>
         </motion.div>

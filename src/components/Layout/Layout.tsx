@@ -4,9 +4,9 @@ import Sidebar from "./Sidebar"
 
 const Layout: React.FC = () => {
   return (
-    <div className="flex h-screen bg-gray-900">
+    <div className="flex h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
       <Sidebar />
-      <main className="flex-1 overflow-y-auto bg-gray-900">
+      <main className="flex-1 overflow-y-auto">
         <div className="p-4 md:p-8">
           <Outlet />
         </div>

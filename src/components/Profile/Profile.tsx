@@ -8,6 +8,7 @@ import { User, Mail, Phone, CreditCard, MapPin, Building, Hash, Save, AlertCircl
 import Button from "../UI/Button"
 import Card from "../UI/Card"
 import SignatureUpload from "./SignatureUpload"
+import LogoUpload from "./LogoUpload"
 
 const Profile: React.FC = () => {
   const { user, updateProfile } = useAuth()
@@ -27,6 +28,7 @@ const Profile: React.FC = () => {
     gstNumber: "",
     invoicePrefix: "",
     signature: "",
+    businessLogo: "",
   })
 
   // Sync form data with user data whenever user changes
@@ -46,6 +48,7 @@ const Profile: React.FC = () => {
         gstNumber: user.gstNumber || "",
         invoicePrefix: user.invoicePrefix || "XUSE",
         signature: user.signature || "",
+        businessLogo: user.businessLogo || "",
       }
 
       console.log("Setting form data:", newFormData)
@@ -67,6 +70,13 @@ const Profile: React.FC = () => {
     setFormData((prev) => ({
       ...prev,
       signature: signature || "",
+    }))
+  }
+
+  const handleLogoChange = (logo: string | null) => {
+    setFormData((prev) => ({
+      ...prev,
+      businessLogo: logo || "",
     }))
   }
 
@@ -121,7 +131,7 @@ const Profile: React.FC = () => {
 
     setSaving(true)
     try {
-      console.log("Saving profile data:", formData)
+      console.log("Saving profile data:", { ...formData, businessLogo: formData.businessLogo ? `(base64 length: ${formData.businessLogo.length})` : "none" })
       await updateProfile(formData)
       setIsEditing(false)
       toast.success("Profile Updated", "Your business profile has been saved successfully!")
@@ -148,6 +158,7 @@ const Profile: React.FC = () => {
         gstNumber: user.gstNumber || "",
         invoicePrefix: user.invoicePrefix || "XUSE",
         signature: user.signature || "",
+        businessLogo: user.businessLogo || "",
       })
     }
     setIsEditing(false)
@@ -171,7 +182,7 @@ const Profile: React.FC = () => {
         <div className="flex items-center justify-center py-12">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-500 mx-auto mb-4"></div>
-            <div className="text-white text-lg">Loading profile...</div>
+            <div className="text-gray-900 dark:text-white text-lg">Loading profile...</div>
           </div>
         </div>
       </div>
@@ -182,8 +193,8 @@ const Profile: React.FC = () => {
     <div className="max-w-4xl mx-auto space-y-8 select-none pt-24 md:pt-0">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-white">Business Profile</h1>
-          <p className="text-gray-400 mt-1">Manage your business information and digital signature</p>
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white transition-colors">Business Profile</h1>
+          <p className="text-gray-500 dark:text-gray-400 mt-1 transition-colors">Manage your business information and digital signature</p>
         </div>
         {!isEditing ? (
           <div className="flex gap-3">
@@ -224,8 +235,8 @@ const Profile: React.FC = () => {
               <AlertCircle className="w-5 h-5 text-yellow-500" />
             </div>
             <div className="flex-1">
-              <h3 className="text-yellow-400 font-semibold mb-1">Complete Your Profile</h3>
-              <p className="text-yellow-300 text-sm mb-3">
+              <h3 className="text-yellow-600 dark:text-yellow-400 font-semibold mb-1 transition-colors">Complete Your Profile</h3>
+              <p className="text-yellow-700 dark:text-yellow-300 text-sm mb-3 transition-colors">
                 Please complete your business profile to start creating professional invoices. Missing information may
                 affect invoice generation.
               </p>
@@ -242,63 +253,63 @@ const Profile: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Personal Details */}
         <Card>
-          <h3 className="text-lg font-semibold text-white mb-4">Personal Details</h3>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 transition-colors">Personal Details</h3>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Full Name *</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 transition-colors">Full Name *</label>
               <div className="relative">
-                <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 transition-colors" />
                 <input
                   type="text"
                   value={formData.fullName}
                   onChange={(e) => updateField("fullName", e.target.value)}
                   disabled={!isEditing}
-                  className="w-full pl-10 pr-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:opacity-50"
+                  className="w-full pl-10 pr-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:opacity-50 transition-colors"
                   placeholder="Enter your full name"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Phone Number *</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 transition-colors">Phone Number *</label>
               <div className="relative">
-                <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 transition-colors" />
                 <input
                   type="tel"
                   value={formData.phoneNumber}
                   onChange={(e) => updateField("phoneNumber", e.target.value)}
                   disabled={!isEditing}
-                  className="w-full pl-10 pr-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:opacity-50"
+                  className="w-full pl-10 pr-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:opacity-50 transition-colors"
                   placeholder="Enter your phone number"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Email Address</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 transition-colors">Email Address</label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 transition-colors" />
                 <input
                   type="email"
                   value={user?.email || ""}
                   disabled
-                  className="w-full pl-10 pr-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white opacity-75"
+                  className="w-full pl-10 pr-3 py-2 bg-gray-100 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-gray-600 dark:text-white opacity-75 transition-colors"
                   placeholder="Email address"
                 />
               </div>
-              <p className="text-xs text-gray-400 mt-1">Email cannot be changed</p>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 transition-colors">Email cannot be changed</p>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">PAN Number *</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 transition-colors">PAN Number *</label>
               <div className="relative">
-                <CreditCard className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <CreditCard className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 transition-colors" />
                 <input
                   type="text"
                   value={formData.panNumber}
                   onChange={(e) => updateField("panNumber", e.target.value.toUpperCase())}
                   disabled={!isEditing}
-                  className="w-full pl-10 pr-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:opacity-50"
+                  className="w-full pl-10 pr-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:opacity-50 transition-colors"
                   placeholder="Enter your PAN number"
                 />
               </div>
@@ -308,17 +319,17 @@ const Profile: React.FC = () => {
 
         {/* Address & Location */}
         <Card>
-          <h3 className="text-lg font-semibold text-white mb-4">Address & Location</h3>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 transition-colors">Address & Location</h3>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Address *</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 transition-colors">Address *</label>
               <div className="relative">
-                <MapPin className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
+                <MapPin className="absolute left-3 top-3 w-5 h-5 text-gray-400 transition-colors" />
                 <textarea
                   value={formData.address}
                   onChange={(e) => updateField("address", e.target.value)}
                   disabled={!isEditing}
-                  className="w-full pl-10 pr-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:opacity-50"
+                  className="w-full pl-10 pr-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:opacity-50 transition-colors"
                   rows={3}
                   placeholder="Enter your business address"
                 />
@@ -326,27 +337,27 @@ const Profile: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">State *</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 transition-colors">State *</label>
               <input
                 type="text"
                 value={formData.state}
                 onChange={(e) => updateField("state", e.target.value)}
                 disabled={!isEditing}
-                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:opacity-50"
+                className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:opacity-50 transition-colors"
                 placeholder="Enter your state"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">GST Number (optional)</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 transition-colors">GST Number (optional)</label>
               <div className="relative">
-                <Hash className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <Hash className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 transition-colors" />
                 <input
                   type="text"
                   value={formData.gstNumber}
                   onChange={(e) => updateField("gstNumber", e.target.value.toUpperCase())}
                   disabled={!isEditing}
-                  className="w-full pl-10 pr-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:opacity-50"
+                  className="w-full pl-10 pr-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:opacity-50 transition-colors"
                   placeholder="Enter GST number"
                 />
               </div>
@@ -356,43 +367,43 @@ const Profile: React.FC = () => {
 
         {/* Banking Details */}
         <Card>
-          <h3 className="text-lg font-semibold text-white mb-4">Banking Details</h3>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 transition-colors">Banking Details</h3>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Bank Name *</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 transition-colors">Bank Name *</label>
               <div className="relative">
-                <Building className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <Building className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400 transition-colors" />
                 <input
                   type="text"
                   value={formData.bankName}
                   onChange={(e) => updateField("bankName", e.target.value)}
                   disabled={!isEditing}
-                  className="w-full pl-10 pr-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:opacity-50"
+                  className="w-full pl-10 pr-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:opacity-50 transition-colors"
                   placeholder="Enter bank name"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Account Number *</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 transition-colors">Account Number *</label>
               <input
                 type="text"
                 value={formData.accountNumber}
                 onChange={(e) => updateField("accountNumber", e.target.value)}
                 disabled={!isEditing}
-                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:opacity-50"
+                className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:opacity-50 transition-colors"
                 placeholder="Enter account number"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">IFSC Code *</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 transition-colors">IFSC Code *</label>
               <input
                 type="text"
                 value={formData.ifscCode}
                 onChange={(e) => updateField("ifscCode", e.target.value.toUpperCase())}
                 disabled={!isEditing}
-                className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:opacity-50"
+                className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:opacity-50 transition-colors"
                 placeholder="Enter IFSC code"
               />
             </div>
@@ -401,17 +412,17 @@ const Profile: React.FC = () => {
 
         {/* Business Settings */}
         <Card>
-          <h3 className="text-lg font-semibold text-white mb-4">Business Settings</h3>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 transition-colors">Business Settings</h3>
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">Invoice Prefix *</label>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 transition-colors">Invoice Prefix *</label>
               <div className="flex gap-2">
                 <input
                   type="text"
                   value={formData.invoicePrefix}
                   onChange={(e) => handlePrefixChange(e.target.value)}
                   disabled={!isEditing}
-                  className="flex-1 px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:opacity-50"
+                  className="flex-1 px-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 disabled:opacity-50 transition-colors"
                   placeholder="Enter invoice prefix (e.g., ABCD)"
                   minLength={2}
                   maxLength={6}
@@ -429,54 +440,60 @@ const Profile: React.FC = () => {
                 )}
               </div>
               <div className="mt-1 space-y-1">
-                <p className="text-xs text-gray-400">
+                <p className="text-xs text-gray-500 dark:text-gray-400 transition-colors">
                   {isEditing
                     ? "Enter a custom prefix (2-6 characters, letters/numbers only) or click 'Auto Generate'"
                     : `Your invoices will be numbered as: ${formData.invoicePrefix || "XUSE"}-XXXXX`}
                 </p>
                 {formData.invoicePrefix && (
-                  <p className="text-xs text-emerald-400">
+                  <p className="text-xs text-emerald-600 dark:text-emerald-400 font-medium transition-colors">
                     Preview: {formData.invoicePrefix}-1, {formData.invoicePrefix}-2,.... etc.
                   </p>
                 )}
               </div>
             </div>
 
-            <div className="bg-gray-700 rounded-lg p-4">
-              <h4 className="text-sm font-medium text-gray-300 mb-2">Profile Completion</h4>
+            <div className="bg-gray-100 dark:bg-gray-700 rounded-lg p-4 transition-colors">
+              <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 transition-colors">Profile Completion</h4>
               <div className="space-y-2">
                 <div className="flex items-center justify-between text-xs">
-                  <span className="text-gray-400">Personal Details</span>
+                  <span className="text-gray-500 dark:text-gray-400 transition-colors">Personal Details</span>
                   <span
-                    className={`${formData.fullName && formData.phoneNumber && formData.panNumber ? "text-green-400" : "text-yellow-400"}`}
+                    className={`${formData.fullName && formData.phoneNumber && formData.panNumber ? "text-green-600 dark:text-green-400" : "text-yellow-600 dark:text-yellow-400"} font-medium transition-colors`}
                   >
                     {formData.fullName && formData.phoneNumber && formData.panNumber ? "✓ Complete" : "⚠ Incomplete"}
                   </span>
                 </div>
                 <div className="flex items-center justify-between text-xs">
-                  <span className="text-gray-400">Address & Location</span>
-                  <span className={`${formData.address && formData.state ? "text-green-400" : "text-yellow-400"}`}>
+                  <span className="text-gray-500 dark:text-gray-400 transition-colors">Address & Location</span>
+                  <span className={`${formData.address && formData.state ? "text-green-600 dark:text-green-400" : "text-yellow-600 dark:text-yellow-400"} font-medium transition-colors`}>
                     {formData.address && formData.state ? "✓ Complete" : "⚠ Incomplete"}
                   </span>
                 </div>
                 <div className="flex items-center justify-between text-xs">
-                  <span className="text-gray-400">Banking Details</span>
+                  <span className="text-gray-500 dark:text-gray-400 transition-colors">Banking Details</span>
                   <span
-                    className={`${formData.bankName && formData.accountNumber && formData.ifscCode ? "text-green-400" : "text-yellow-400"}`}
+                    className={`${formData.bankName && formData.accountNumber && formData.ifscCode ? "text-green-600 dark:text-green-400" : "text-yellow-600 dark:text-yellow-400"} font-medium transition-colors`}
                   >
                     {formData.bankName && formData.accountNumber && formData.ifscCode ? "✓ Complete" : "⚠ Incomplete"}
                   </span>
                 </div>
                 <div className="flex items-center justify-between text-xs">
-                  <span className="text-gray-400">Invoice Prefix</span>
-                  <span className={`${formData.invoicePrefix ? "text-green-400" : "text-yellow-400"}`}>
+                  <span className="text-gray-500 dark:text-gray-400 transition-colors">Invoice Prefix</span>
+                  <span className={`${formData.invoicePrefix ? "text-green-600 dark:text-green-400" : "text-yellow-600 dark:text-yellow-400"} font-medium transition-colors`}>
                     {formData.invoicePrefix ? "✓ Set" : "⚠ Not Set"}
                   </span>
                 </div>
                 <div className="flex items-center justify-between text-xs">
-                  <span className="text-gray-400">Digital Signature</span>
-                  <span className={`${formData.signature ? "text-green-400" : "text-blue-400"}`}>
+                  <span className="text-gray-500 dark:text-gray-400 transition-colors">Digital Signature</span>
+                  <span className={`${formData.signature ? "text-green-600 dark:text-green-400" : "text-blue-600 dark:text-blue-400"} font-medium transition-colors`}>
                     {formData.signature ? "✓ Uploaded" : "○ Optional"}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-gray-500 dark:text-gray-400 transition-colors">Business Logo</span>
+                  <span className={`${formData.businessLogo ? "text-green-600 dark:text-green-400" : "text-blue-600 dark:text-blue-400"} font-medium transition-colors`}>
+                    {formData.businessLogo ? "✓ Uploaded" : "○ Optional"}
                   </span>
                 </div>
               </div>
@@ -485,15 +502,25 @@ const Profile: React.FC = () => {
         </Card>
       </div>
 
-      {/* Digital Signature Section - Full Width */}
-      <Card>
-        <h3 className="text-lg font-semibold text-white mb-4">Digital Signature</h3>
-        <SignatureUpload
-          currentSignature={formData.signature || undefined}
-          onSignatureChange={handleSignatureChange}
-          disabled={!isEditing}
-        />
-      </Card>
+      {/* Digital Signature & Business Logo Section */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <Card>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 transition-colors">Business Logo</h3>
+          <LogoUpload
+            currentLogo={formData.businessLogo || undefined}
+            onLogoChange={handleLogoChange}
+            disabled={!isEditing}
+          />
+        </Card>
+        <Card>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 transition-colors">Digital Signature</h3>
+          <SignatureUpload
+            currentSignature={formData.signature || undefined}
+            onSignatureChange={handleSignatureChange}
+            disabled={!isEditing}
+          />
+        </Card>
+      </div>
     </div>
   )
 }

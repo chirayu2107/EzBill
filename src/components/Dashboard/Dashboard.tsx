@@ -84,7 +84,7 @@ const Dashboard: React.FC = () => {
         <div className="flex items-center justify-center py-12">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-500 mx-auto mb-4"></div>
-            <div className="text-white text-lg">Loading your invoices...</div>
+            <div className="text-gray-900 dark:text-white text-lg transition-colors">Loading your invoices...</div>
           </div>
         </div>
       </div>
@@ -129,7 +129,7 @@ const Dashboard: React.FC = () => {
         <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div className="flex-1">
             <motion.h1
-              className="text-2xl md:text-4xl font-bold mb-2"
+              className="text-2xl md:text-4xl font-semibold mb-2"
               initial={{ x: -20, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               transition={{ delay: 0.2, duration: 0.4 }}
@@ -213,7 +213,7 @@ const Dashboard: React.FC = () => {
               <Plus className="w-4 h-4 md:w-6 md:h-6" />
             </div>
             <div className="text-center md:text-left">
-              <h3 className="font-bold text-sm md:text-lg">Create Invoice</h3>
+              <h3 className="font-semibold text-sm md:text-lg">Create Invoice</h3>
               <p className="text-blue-100 text-xs md:text-sm">Generate new invoice</p>
             </div>
           </div>
@@ -230,7 +230,7 @@ const Dashboard: React.FC = () => {
               <FileText className="w-4 h-4 md:w-6 md:h-6" />
             </div>
             <div className="text-center md:text-left">
-              <h3 className="font-bold text-sm md:text-lg">View All Invoices</h3>
+              <h3 className="font-semibold text-sm md:text-lg">View All Invoices</h3>
               <p className="text-purple-100 text-xs md:text-sm">Manage your invoices</p>
             </div>
           </div>
@@ -247,7 +247,7 @@ const Dashboard: React.FC = () => {
               <TrendingUp className="w-4 h-4 md:w-6 md:h-6" />
             </div>
             <div className="text-center md:text-left">
-              <h3 className="font-bold text-sm md:text-lg">Business Profile</h3>
+              <h3 className="font-semibold text-sm md:text-lg">Business Profile</h3>
               <p className="text-orange-100 text-xs md:text-sm">Update your details</p>
             </div>
           </div>
@@ -258,18 +258,18 @@ const Dashboard: React.FC = () => {
       <motion.div className="space-y-4 md:space-y-6" variants={itemVariants}>
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
-            <h2 className="text-xl md:text-2xl font-bold text-white">Recent Invoices</h2>
-            <p className="text-gray-400">Your latest 5 invoices</p>
+            <h2 className="text-xl md:text-2xl font-semibold text-gray-900 dark:text-white transition-colors">Recent Invoices</h2>
+            <p className="text-gray-700 dark:text-gray-400 font-normal transition-colors">Your latest 5 invoices</p>
           </div>
           <div className="flex gap-2 w-full md:w-auto overflow-x-auto">
             {filters.map((filter) => (
               <motion.button
                 key={filter.value}
                 onClick={() => setStatusFilter(filter.value as any)}
-                className={`px-3 md:px-4 py-2 rounded-lg text-sm font-medium transition-all whitespace-nowrap ${
+                className={`px-3 md:px-4 py-2 rounded-lg text-sm font-normal transition-all whitespace-nowrap border ${
                   statusFilter === filter.value
-                    ? "bg-emerald-600 text-white shadow-lg"
-                    : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                    ? "bg-emerald-600 border-emerald-600 text-white shadow-md active:scale-95"
+                    : "bg-gray-200/50 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 active:scale-95 transition-colors"
                 }`}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -294,7 +294,11 @@ const Dashboard: React.FC = () => {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5 }}
           >
-            <Button onClick={() => navigate("/invoices")} variant="secondary" className="bg-gray-700 hover:bg-gray-600">
+            <Button 
+              onClick={() => navigate("/invoices")} 
+              variant="secondary" 
+              className="bg-gray-900 dark:bg-gray-700 text-white dark:text-gray-200 hover:bg-black dark:hover:bg-gray-600 border-none transition-all shadow-md active:scale-95 font-normal px-8"
+            >
               View All Invoices ({invoices.length})
             </Button>
           </motion.div>

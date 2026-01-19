@@ -4,6 +4,7 @@ import type React from "react"
 import { useState, useMemo } from "react"
 import { motion } from "framer-motion"
 import { useApp } from "../../context/AppContext"
+import { useTheme } from "../../context/ThemeContext"
 import { useToast } from "../../hooks/useToast"
 import { formatCurrency, formatDate } from "../../utils/calculations"
 import { BarChart3, Download, TrendingUp, FileSpreadsheet, ChevronDown } from "lucide-react"
@@ -17,6 +18,7 @@ type ViewType = "chart" | "table"
 
 const Analytics: React.FC = () => {
   const { invoices } = useApp()
+  const { theme } = useTheme()
   const { toast } = useToast()
 
   const [reportType, setReportType] = useState<ReportType>("monthly")
@@ -206,7 +208,7 @@ const Analytics: React.FC = () => {
         scale: 2, // Higher quality
         useCORS: true,
         allowTaint: true,
-        backgroundColor: "#1F2937", // Match the dark theme
+        backgroundColor: theme === "dark" ? "#1F2937" : "#FFFFFF", // Dynamic background for export
         width: chartElement.scrollWidth,
         height: chartElement.scrollHeight,
       })
@@ -288,8 +290,8 @@ const Analytics: React.FC = () => {
                 <BarChart3 className="w-6 h-6 md:w-8 md:h-8 text-blue-500" />
               </div>
               <div>
-                <h1 className="text-2xl md:text-4xl font-bold text-white">Analytics</h1>
-                <p className="text-gray-400 text-base md:text-lg">Business insights and reports</p>
+                <h1 className="text-2xl md:text-4xl font-semibold text-gray-900 dark:text-white transition-colors">Analytics</h1>
+                <p className="text-gray-500 dark:text-gray-400 text-base md:text-lg transition-colors">Business insights and reports</p>
               </div>
             </div>
           </div>
@@ -303,24 +305,24 @@ const Analytics: React.FC = () => {
             <div className="grid grid-cols-2 gap-3">
               <Card className="p-3">
                 <div className="space-y-2">
-                  <label className="block text-xs font-medium text-gray-300">Report Type</label>
+                  <label className="block text-xs font-normal text-gray-700 dark:text-gray-300 transition-colors">Report Type</label>
                   <div className="relative">
                     <select
                       value={reportType}
                       onChange={(e) => setReportType(e.target.value as ReportType)}
-                      className="w-full px-2 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none text-xs"
+                      className="w-full px-2 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none text-xs transition-colors"
                     >
                       <option value="monthly">Monthly</option>
                       <option value="financial-year">Financial Year</option>
                     </select>
-                    <ChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 w-3 h-3 text-gray-400 pointer-events-none" />
+                    <ChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 w-3 h-3 text-gray-400 dark:text-gray-500 pointer-events-none" />
                   </div>
                 </div>
               </Card>
 
               <Card className="p-3">
                 <div className="space-y-2">
-                  <label className="block text-xs font-medium text-gray-300">
+                  <label className="block text-xs font-normal text-gray-700 dark:text-gray-300 transition-colors">
                     {reportType === "monthly" ? "Select Month" : "Select FY"}
                   </label>
                   <div className="relative">
@@ -328,7 +330,7 @@ const Analytics: React.FC = () => {
                       <select
                         value={selectedMonth}
                         onChange={(e) => setSelectedMonth(e.target.value)}
-                        className="w-full px-2 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none text-xs"
+                        className="w-full px-2 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none text-xs transition-colors"
                       >
                         {availableMonths.length > 0 ? (
                           availableMonths.map((month) => {
@@ -359,7 +361,7 @@ const Analytics: React.FC = () => {
                       <select
                         value={selectedFY}
                         onChange={(e) => setSelectedFY(Number.parseInt(e.target.value))}
-                        className="w-full px-2 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none text-xs"
+                        className="w-full px-2 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none text-xs transition-colors"
                       >
                         {availableFYs.length > 0 ? (
                           availableFYs.map((fy) => (
@@ -384,12 +386,12 @@ const Analytics: React.FC = () => {
             <div className="grid grid-cols-2 gap-3">
               <Card className="p-3">
                 <div className="space-y-2">
-                  <label className="block text-xs font-medium text-gray-300">View Type</label>
+                  <label className="block text-xs font-normal text-gray-700 dark:text-gray-300 transition-colors">View Type</label>
                   <div className="flex gap-1">
                     <button
                       onClick={() => setViewType("chart")}
                       className={`flex-1 px-2 py-1.5 rounded-md text-xs font-medium transition-colors ${
-                        viewType === "chart" ? "bg-blue-600 text-white" : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                        viewType === "chart" ? "bg-blue-600 text-white" : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
                       }`}
                     >
                       Chart
@@ -397,7 +399,7 @@ const Analytics: React.FC = () => {
                     <button
                       onClick={() => setViewType("table")}
                       className={`flex-1 px-2 py-1.5 rounded-md text-xs font-medium transition-colors ${
-                        viewType === "table" ? "bg-blue-600 text-white" : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                        viewType === "table" ? "bg-blue-600 text-white" : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
                       }`}
                     >
                       Table
@@ -408,7 +410,7 @@ const Analytics: React.FC = () => {
 
               <Card className="p-3">
                 <div className="space-y-2">
-                  <label className="block text-xs font-medium text-gray-300">Export Options</label>
+                  <label className="block text-xs font-normal text-gray-700 dark:text-gray-300 transition-colors">Export Options</label>
                   <div className="flex flex-col gap-1">
                     <Button
                       onClick={handleExportExcel}
@@ -438,12 +440,12 @@ const Analytics: React.FC = () => {
           <div className="hidden md:grid md:grid-cols-4 gap-6">
             <Card>
               <div className="space-y-3">
-                <label className="block text-sm font-medium text-gray-300">Report Type</label>
+                <label className="block text-sm font-normal text-gray-800 dark:text-gray-300 transition-colors">Report Type</label>
                 <div className="relative">
                   <select
                     value={reportType}
                     onChange={(e) => setReportType(e.target.value as ReportType)}
-                    className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none text-sm"
+                    className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none text-sm transition-colors"
                   >
                     <option value="monthly">Monthly Report</option>
                     <option value="financial-year">Financial Year Report</option>
@@ -455,7 +457,7 @@ const Analytics: React.FC = () => {
 
             <Card>
               <div className="space-y-3">
-                <label className="block text-sm font-medium text-gray-300">
+                <label className="block text-sm font-normal text-gray-800 dark:text-gray-300 transition-colors">
                   {reportType === "monthly" ? "Select Month" : "Select Financial Year"}
                 </label>
                 <div className="relative">
@@ -463,7 +465,7 @@ const Analytics: React.FC = () => {
                     <select
                       value={selectedMonth}
                       onChange={(e) => setSelectedMonth(e.target.value)}
-                      className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none text-sm"
+                      className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none text-sm transition-colors"
                     >
                       {availableMonths.length > 0 ? (
                         availableMonths.map((month) => {
@@ -494,7 +496,7 @@ const Analytics: React.FC = () => {
                     <select
                       value={selectedFY}
                       onChange={(e) => setSelectedFY(Number.parseInt(e.target.value))}
-                      className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none text-sm"
+                      className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none text-sm transition-colors"
                     >
                       {availableFYs.length > 0 ? (
                         availableFYs.map((fy) => (
@@ -516,12 +518,12 @@ const Analytics: React.FC = () => {
 
             <Card>
               <div className="space-y-3">
-                <label className="block text-sm font-medium text-gray-300">View Type</label>
+                <label className="block text-sm font-normal text-gray-800 dark:text-gray-300 transition-colors">View Type</label>
                 <div className="flex gap-2">
                   <button
                     onClick={() => setViewType("chart")}
                     className={`flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                      viewType === "chart" ? "bg-blue-600 text-white" : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                      viewType === "chart" ? "bg-blue-600 text-white" : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
                     }`}
                   >
                     Chart
@@ -529,7 +531,7 @@ const Analytics: React.FC = () => {
                   <button
                     onClick={() => setViewType("table")}
                     className={`flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                      viewType === "table" ? "bg-blue-600 text-white" : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                      viewType === "table" ? "bg-blue-600 text-white" : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
                     }`}
                   >
                     Table
@@ -540,7 +542,7 @@ const Analytics: React.FC = () => {
 
             <Card>
               <div className="space-y-3">
-                <label className="block text-sm font-medium text-gray-300">Export Options</label>
+                <label className="block text-sm font-normal text-gray-800 dark:text-gray-300 transition-colors">Export Options</label>
                 <div className="flex gap-2">
                   <Button
                     onClick={handleExportExcel}
@@ -573,8 +575,8 @@ const Analytics: React.FC = () => {
             <Card className="bg-gradient-to-br from-green-500/10 to-emerald-600/10 border-green-500/20 p-3">
               <div className="flex flex-col items-center gap-2">
                 <div className="text-center min-w-0 flex-1">
-                  <p className="text-green-400 text-xs font-medium">Total Sales</p>
-                  <p className="text-sm font-bold text-white truncate">{formatCurrency(getTotalSales())}</p>
+                  <p className="text-green-600 dark:text-green-400 text-xs font-medium">Total Sales</p>
+                  <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">{formatCurrency(getTotalSales())}</p>
                 </div>
                 <div className="p-1.5 bg-green-500/10 rounded-lg flex-shrink-0">
                   <TrendingUp className="w-3 h-3 text-green-500" />
@@ -585,8 +587,8 @@ const Analytics: React.FC = () => {
             <Card className="bg-gradient-to-br from-blue-500/10 to-cyan-600/10 border-blue-500/20 p-3">
               <div className="flex flex-col items-center gap-2">
                 <div className="text-center min-w-0 flex-1">
-                  <p className="text-blue-400 text-xs font-medium">Total Invoices</p>
-                  <p className="text-sm font-bold text-white">{getTotalInvoices()}</p>
+                  <p className="text-blue-600 dark:text-blue-400 text-xs font-medium">Total Invoices</p>
+                  <p className="text-sm font-semibold text-gray-900 dark:text-white">{getTotalInvoices()}</p>
                 </div>
                 <div className="p-1.5 bg-blue-500/10 rounded-lg flex-shrink-0">
                   <FileSpreadsheet className="w-3 h-3 text-blue-500" />
@@ -597,8 +599,8 @@ const Analytics: React.FC = () => {
             <Card className="bg-gradient-to-br from-purple-500/10 to-pink-600/10 border-purple-500/20 p-3">
               <div className="flex flex-col items-center gap-2">
                 <div className="text-center min-w-0 flex-1">
-                  <p className="text-purple-400 text-xs font-medium">Average Sales</p>
-                  <p className="text-sm font-bold text-white truncate">{formatCurrency(getAverageSales())}</p>
+                  <p className="text-purple-600 dark:text-purple-400 text-xs font-medium">Average Sales</p>
+                  <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">{formatCurrency(getAverageSales())}</p>
                 </div>
                 <div className="p-1.5 bg-purple-500/10 rounded-lg flex-shrink-0">
                   <BarChart3 className="w-3 h-3 text-purple-500" />
@@ -612,8 +614,8 @@ const Analytics: React.FC = () => {
             <Card className="bg-gradient-to-br from-green-500/10 to-emerald-600/10 border-green-500/20">
               <div className="flex items-center justify-between">
                 <div className="min-w-0 flex-1">
-                  <p className="text-green-400 text-sm font-medium">Total Sales</p>
-                  <p className="text-2xl font-bold text-white truncate">{formatCurrency(getTotalSales())}</p>
+                  <p className="text-green-600 dark:text-green-400 text-sm font-medium">Total Sales</p>
+                  <p className="text-2xl font-semibold text-gray-900 dark:text-white truncate transition-colors">{formatCurrency(getTotalSales())}</p>
                 </div>
                 <div className="p-3 bg-green-500/10 rounded-lg flex-shrink-0">
                   <TrendingUp className="w-6 h-6 text-green-500" />
@@ -624,8 +626,8 @@ const Analytics: React.FC = () => {
             <Card className="bg-gradient-to-br from-blue-500/10 to-cyan-600/10 border-blue-500/20">
               <div className="flex items-center justify-between">
                 <div className="min-w-0 flex-1">
-                  <p className="text-blue-400 text-sm font-medium">Total Invoices</p>
-                  <p className="text-2xl font-bold text-white">{getTotalInvoices()}</p>
+                  <p className="text-blue-600 dark:text-blue-400 text-sm font-medium">Total Invoices</p>
+                  <p className="text-2xl font-semibold text-gray-900 dark:text-white transition-colors">{getTotalInvoices()}</p>
                 </div>
                 <div className="p-3 bg-blue-500/10 rounded-lg flex-shrink-0">
                   <FileSpreadsheet className="w-6 h-6 text-blue-500" />
@@ -636,8 +638,8 @@ const Analytics: React.FC = () => {
             <Card className="bg-gradient-to-br from-purple-500/10 to-pink-600/10 border-purple-500/20">
               <div className="flex items-center justify-between">
                 <div className="min-w-0 flex-1">
-                  <p className="text-purple-400 text-sm font-medium">Average Sales</p>
-                  <p className="text-2xl font-bold text-white truncate">{formatCurrency(getAverageSales())}</p>
+                  <p className="text-purple-600 dark:text-purple-400 text-sm font-medium">Average Sales</p>
+                  <p className="text-2xl font-semibold text-gray-900 dark:text-white truncate transition-colors">{formatCurrency(getAverageSales())}</p>
                 </div>
                 <div className="p-3 bg-purple-500/10 rounded-lg flex-shrink-0">
                   <BarChart3 className="w-6 h-6 text-purple-500" />
@@ -652,15 +654,18 @@ const Analytics: React.FC = () => {
           {viewType === "chart" ? (
             <Card>
               <div className="mb-4 md:mb-6">
-                <h3 className="text-lg md:text-xl font-semibold text-white mb-2">
+                <h3 className="text-lg md:text-xl font-semibold text-gray-900 dark:text-white mb-2 transition-colors">
                   {reportType === "monthly"
-                    ? `Daily Sales - ${new Date(selectedMonth + "-01").toLocaleDateString("en-US", { year: "numeric", month: "long" })}`
+                    ? `Daily Sales  - ${new Date(selectedMonth + "-01").toLocaleDateString("en-US", { year: "numeric", month: "long" })}`
                     : `Monthly Sales - FY ${selectedFY}-${selectedFY + 1}`}
-                </h3>
-                <p className="text-gray-400 text-sm md:text-base">
                   {reportType === "monthly"
-                    ? "Daily breakdown of sales and invoice count"
-                    : "Monthly breakdown of sales and invoice count for the financial year"}
+                    ? " Daily breakdown of sales and invoice count"
+                    : " Monthly breakdown of sales and invoice count for the financial year"}
+                </h3>
+                <p className="text-gray-500 dark:text-gray-400 text-sm md:text-base transition-colors">
+                  {reportType === "monthly"
+                    ? " Daily breakdown of sales and invoice count"
+                    : " Monthly breakdown of sales and invoice count for the financial year"}
                 </p>
               </div>
               {reportType === "monthly" ? (
@@ -672,7 +677,7 @@ const Analytics: React.FC = () => {
           ) : (
             <Card>
               <div className="mb-4 md:mb-6">
-                <h3 className="text-lg md:text-xl font-semibold text-white mb-2">
+                <h3 className="text-lg md:text-xl font-semibold text-gray-900 dark:text-white mb-2 transition-colors">
                   {reportType === "monthly"
                     ? `Daily Sales Table - ${new Date(selectedMonth + "-01").toLocaleDateString("en-US", { year: "numeric", month: "long" })}`
                     : `Monthly Sales Table - FY ${selectedFY}-${selectedFY + 1}`}
@@ -681,15 +686,15 @@ const Analytics: React.FC = () => {
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b border-gray-700">
-                      <th className="text-left py-3 px-2 md:px-4 text-gray-300 font-semibold text-sm">
+                    <tr className="border-b border-gray-200 dark:border-gray-700 transition-colors bg-gray-50/50 dark:bg-transparent">
+                      <th className="text-left py-3 px-2 md:px-4 text-gray-700 dark:text-gray-400 font-normal text-sm">
                         {reportType === "monthly" ? "Date" : "Month"}
                       </th>
-                      <th className="text-right py-3 px-2 md:px-4 text-gray-300 font-semibold text-sm">Sales Amount</th>
-                      <th className="text-right py-3 px-2 md:px-4 text-gray-300 font-semibold text-sm">
+                      <th className="text-right py-3 px-2 md:px-4 text-gray-700 dark:text-gray-300 font-normal text-sm">Sales Amount</th>
+                      <th className="text-right py-3 px-2 md:px-4 text-gray-700 dark:text-gray-300 font-normal text-sm">
                         Invoice Count
                       </th>
-                      <th className="text-right py-3 px-2 md:px-4 text-gray-300 font-semibold text-sm">
+                      <th className="text-right py-3 px-2 md:px-4 text-gray-700 dark:text-gray-300 font-normal text-sm">
                         Avg per Invoice
                       </th>
                     </tr>
@@ -697,40 +702,40 @@ const Analytics: React.FC = () => {
                   <tbody>
                     {reportType === "monthly"
                       ? monthlyData.map((item, index) => (
-                          <tr key={index} className="border-b border-gray-700 hover:bg-gray-750">
-                            <td className="py-3 px-2 md:px-4 text-white text-sm">{item.formattedDate}</td>
-                            <td className="py-3 px-2 md:px-4 text-right text-white font-medium text-sm">
+                          <tr key={index} className="border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors">
+                            <td className="py-3 px-2 md:px-4 text-gray-900 dark:text-white text-sm">{item.formattedDate}</td>
+                            <td className="py-3 px-2 md:px-4 text-right text-gray-900 dark:text-white font-medium text-sm">
                               {formatCurrency(item.sales)}
                             </td>
-                            <td className="py-3 px-2 md:px-4 text-right text-gray-300 text-sm">{item.invoices}</td>
-                            <td className="py-3 px-2 md:px-4 text-right text-gray-300 text-sm">
+                            <td className="py-3 px-2 md:px-4 text-right text-gray-700 dark:text-gray-300 text-sm">{item.invoices}</td>
+                            <td className="py-3 px-2 md:px-4 text-right text-gray-700 dark:text-gray-300 text-sm">
                               {item.invoices > 0 ? formatCurrency(item.sales / item.invoices) : formatCurrency(0)}
                             </td>
                           </tr>
                         ))
                       : financialYearData.map((item, index) => (
-                          <tr key={index} className="border-b border-gray-700 hover:bg-gray-750">
-                            <td className="py-3 px-2 md:px-4 text-white text-sm">{item.month}</td>
-                            <td className="py-3 px-2 md:px-4 text-right text-white font-medium text-sm">
+                          <tr key={index} className="border-b border-gray-50 dark:border-gray-700/50 hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors">
+                            <td className="py-3 px-2 md:px-4 text-gray-900 dark:text-white text-sm">{item.month}</td>
+                            <td className="py-3 px-2 md:px-4 text-right text-gray-900 dark:text-white font-medium text-sm">
                               {formatCurrency(item.sales)}
                             </td>
-                            <td className="py-3 px-2 md:px-4 text-right text-gray-300 text-sm">{item.invoices}</td>
-                            <td className="py-3 px-2 md:px-4 text-right text-gray-300 text-sm">
+                            <td className="py-3 px-2 md:px-4 text-right text-gray-700 dark:text-gray-300 text-sm">{item.invoices}</td>
+                            <td className="py-3 px-2 md:px-4 text-right text-gray-700 dark:text-gray-300 text-sm">
                               {item.invoices > 0 ? formatCurrency(item.sales / item.invoices) : formatCurrency(0)}
                             </td>
                           </tr>
                         ))}
                   </tbody>
                   <tfoot>
-                    <tr className="border-t-2 border-gray-600 bg-gray-750">
-                      <td className="py-3 px-2 md:px-4 text-white font-semibold text-sm">Total</td>
-                      <td className="py-3 px-2 md:px-4 text-right text-white font-semibold text-sm">
+                    <tr className="border-t-2 border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-750 transition-colors">
+                      <td className="py-3 px-2 md:px-4 text-gray-900 dark:text-white font-semibold text-sm">Total</td>
+                      <td className="py-3 px-2 md:px-4 text-right text-gray-900 dark:text-white font-semibold text-sm">
                         {formatCurrency(getTotalSales())}
                       </td>
-                      <td className="py-3 px-2 md:px-4 text-right text-white font-semibold text-sm">
+                      <td className="py-3 px-2 md:px-4 text-right text-gray-900 dark:text-white font-semibold text-sm">
                         {getTotalInvoices()}
                       </td>
-                      <td className="py-3 px-2 md:px-4 text-right text-white font-semibold text-sm">
+                      <td className="py-3 px-2 md:px-4 text-right text-gray-900 dark:text-white font-semibold text-sm">
                         {formatCurrency(getAverageSales())}
                       </td>
                     </tr>

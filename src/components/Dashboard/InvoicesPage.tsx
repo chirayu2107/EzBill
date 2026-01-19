@@ -78,8 +78,8 @@ const InvoicesPage: React.FC = () => {
               <FileText className="w-6 h-6 md:w-8 md:h-8 text-emerald-500" />
             </div>
             <div>
-              <h1 className="text-2xl md:text-4xl font-bold text-white">All Invoices</h1>
-              <p className="text-gray-400 text-sm md:text-lg">Manage and track all your invoices</p>
+              <h1 className="text-2xl md:text-4xl font-semibold text-gray-900 dark:text-white transition-colors">All Invoices</h1>
+              <p className="text-gray-700 dark:text-gray-400 font-normal text-sm md:text-lg transition-colors">Manage and track all your invoices</p>
             </div>
           </div>
         </div>
@@ -114,7 +114,7 @@ const InvoicesPage: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
           >
-            <Card className="hover:bg-gray-750 relative overflow-hidden">
+            <Card className="hover:bg-gray-50 dark:hover:bg-gray-750 relative overflow-hidden transition-colors">
               {/* Selected state overlay */}
               {statusFilter === filter.value && (
                 <motion.div
@@ -127,7 +127,7 @@ const InvoicesPage: React.FC = () => {
 
               <div className="text-center relative z-10">
                 <div
-                  className={`text-2xl md:text-3xl font-bold mb-1 md:mb-2 ${
+                  className={`text-2xl md:text-3xl font-semibold mb-1 md:mb-2 ${
                     filter.value === "paid"
                       ? "text-green-500"
                       : filter.value === "unpaid"
@@ -139,7 +139,7 @@ const InvoicesPage: React.FC = () => {
                 >
                   {filter.count}
                 </div>
-                <div className="text-gray-300 font-medium text-xs md:text-base break-words px-1">{filter.label}</div>
+                <div className="text-gray-800 dark:text-gray-300 font-normal text-sm md:text-base break-words px-1 transition-colors">{filter.label}</div>
               </div>
             </Card>
           </motion.div>
@@ -159,21 +159,20 @@ const InvoicesPage: React.FC = () => {
                   placeholder="Search invoices by customer name or invoice number..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  className="w-full pl-10 pr-4 py-3 bg-gray-50/50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-colors font-medium placeholder:text-gray-400"
                 />
               </div>
-              <Filter className="w-5 h-5 text-gray-400" />
+              <Filter className="w-5 h-5 text-gray-400 dark:text-gray-500" />
             </div>
 
             {/* Filter Buttons - 2x2 Grid on Mobile, Single Row on Desktop */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              {/* First Row on Mobile: All Invoices, Paid */}
               <motion.button
                 onClick={() => setStatusFilter("all")}
-                className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+                className={`px-3 py-2 rounded-lg text-sm font-normal transition-all border ${
                   statusFilter === "all"
-                    ? "bg-emerald-600 text-white shadow-lg"
-                    : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                    ? "bg-emerald-600 border-emerald-600 text-white shadow-md"
+                    : "bg-gray-100 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
                 }`}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
@@ -183,10 +182,10 @@ const InvoicesPage: React.FC = () => {
 
               <motion.button
                 onClick={() => setStatusFilter("paid")}
-                className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+                className={`px-3 py-2 rounded-lg text-sm font-normal transition-all border ${
                   statusFilter === "paid"
-                    ? "bg-emerald-600 text-white shadow-lg"
-                    : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                    ? "bg-emerald-600 border-emerald-600 text-white shadow-md"
+                    : "bg-gray-100 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
                 }`}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
@@ -194,13 +193,12 @@ const InvoicesPage: React.FC = () => {
                 Paid 
               </motion.button>
 
-              {/* Second Row on Mobile: Unpaid, Overdue */}
               <motion.button
                 onClick={() => setStatusFilter("unpaid")}
-                className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+                className={`px-3 py-2 rounded-lg text-sm font-normal transition-all border ${
                   statusFilter === "unpaid"
-                    ? "bg-emerald-600 text-white shadow-lg"
-                    : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                    ? "bg-emerald-600 border-emerald-600 text-white shadow-md"
+                    : "bg-gray-100 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
                 }`}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
@@ -210,10 +208,10 @@ const InvoicesPage: React.FC = () => {
 
               <motion.button
                 onClick={() => setStatusFilter("overdue")}
-                className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+                className={`px-3 py-2 rounded-lg text-sm font-normal transition-all border ${
                   statusFilter === "overdue"
-                    ? "bg-emerald-600 text-white shadow-lg"
-                    : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                    ? "bg-emerald-600 border-emerald-600 text-white shadow-md"
+                    : "bg-gray-100 dark:bg-gray-700 border-gray-200 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
                 }`}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
@@ -227,11 +225,11 @@ const InvoicesPage: React.FC = () => {
 
       {/* Results Summary */}
       <motion.div className="flex items-center justify-between" variants={itemVariants}>
-        <div className="text-gray-400">
-          Showing {filteredInvoices.length} of {invoices.length} invoices
+        <div className="text-gray-700 dark:text-gray-400 font-normal transition-colors">
+          Showing <span className="text-gray-900 dark:text-white font-semibold">{filteredInvoices.length}</span> of <span className="text-gray-900 dark:text-white font-semibold">{invoices.length}</span> invoices
           {searchTerm && (
             <span className="ml-2">
-              for "<span className="text-white">{searchTerm}</span>"
+              for "<span className="text-gray-900 dark:text-white font-semibold italic">{searchTerm}</span>"
             </span>
           )}
         </div>

@@ -2,6 +2,7 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
 import { AuthProvider } from "./context/AuthContext"
 import { AppProvider } from "./context/AppContext"
+import { ThemeProvider } from "./context/ThemeContext"
 import ProtectedRoute from "./components/Auth/ProtectedRoute"
 import Login from "./components/Auth/Login"
 import Signup from "./components/Auth/Signup"
@@ -53,9 +54,11 @@ function AppContent() {
 function App() {
   return (
     <AuthProvider>
-      <AppProvider>
-        <AppContent />
-      </AppProvider>
+      <ThemeProvider>
+        <AppProvider>
+          <AppContent />
+        </AppProvider>
+      </ThemeProvider>
     </AuthProvider>
   )
 }

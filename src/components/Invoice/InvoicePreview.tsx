@@ -231,11 +231,19 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({ invoice, onClose, autoD
             {/* Business Details and Invoice Info */}
             <div className="flex justify-between mb-1 md:mb-4 pb-1 md:pb-3 border-b border-gray-600 md:border-gray-800 gap-1 md:gap-3">
               <div className="flex gap-1 md:gap-3 flex-1">
-                {/* Initials Box */}
-                <div className="border border-gray-600 md:border-gray-800 w-6 h-6 md:w-12 md:h-12 flex items-center justify-center flex-shrink-0 bg-gray-50">
-                  <span className="text-[8px] md:text-lg font-bold text-gray-900">
-                    {getInitials(user?.fullName || "Business")}
-                  </span>
+                {/* Logo or Initials Box */}
+                <div className="border border-gray-600 md:border-gray-800 w-6 h-6 md:w-12 md:h-12 flex items-center justify-center flex-shrink-0 bg-gray-50 overflow-hidden">
+                  {user?.businessLogo ? (
+                    <img 
+                      src={user.businessLogo} 
+                      alt="Business Logo" 
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <span className="text-[8px] md:text-lg font-bold text-gray-900">
+                      {getInitials(user?.fullName || "Business")}
+                    </span>
+                  )}
                 </div>
 
                 {/* Business Details */}

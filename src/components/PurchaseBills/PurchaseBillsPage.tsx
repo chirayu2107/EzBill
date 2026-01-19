@@ -84,8 +84,8 @@ const PurchaseBillsPage: React.FC = () => {
               <ShoppingBag className="w-6 h-6 md:w-8 md:h-8 text-emerald-500" />
             </div>
             <div>
-              <h1 className="text-2xl md:text-4xl font-bold text-white">Purchase Bills</h1>
-              <p className="text-gray-400 text-sm md:text-lg">Track and manage vendor bills</p>
+              <h1 className="text-2xl md:text-4xl font-bold text-gray-900 dark:text-white transition-colors">Purchase Bills</h1>
+              <p className="text-gray-500 dark:text-gray-400 text-sm md:text-lg transition-colors">Track and manage vendor bills</p>
             </div>
           </div>
         </div>
@@ -120,7 +120,7 @@ const PurchaseBillsPage: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.1 }}
           >
-            <Card className="hover:bg-gray-750 relative overflow-hidden">
+            <Card className="hover:bg-gray-50 dark:hover:bg-gray-750 relative overflow-hidden transition-colors">
               {/* Selected state overlay */}
               {statusFilter === filter.value && (
                 <motion.div
@@ -133,19 +133,19 @@ const PurchaseBillsPage: React.FC = () => {
 
               <div className="text-center relative z-10">
                 <div
-                  className={`text-2xl md:text-3xl font-bold mb-1 md:mb-2 ${
+                  className={`text-2xl md:text-3xl font-bold mb-1 md:mb-2 transition-colors ${
                     filter.value === "paid"
-                      ? "text-green-500"
+                      ? "text-green-600 dark:text-green-500"
                       : filter.value === "unpaid"
-                        ? "text-yellow-500"
+                        ? "text-yellow-600 dark:text-yellow-500"
                         : filter.value === "overdue"
                           ? "text-red-500"
-                          : "text-emerald-500"
+                          : "text-emerald-600 dark:text-emerald-500"
                   }`}
                 >
                   {filter.count}
                 </div>
-                <div className="text-gray-300 font-medium text-xs md:text-base break-words px-1">{filter.label}</div>
+                <div className="text-gray-600 dark:text-gray-300 font-medium text-xs md:text-base break-words px-1 transition-colors">{filter.label}</div>
               </div>
             </Card>
           </motion.div>
@@ -164,10 +164,10 @@ const PurchaseBillsPage: React.FC = () => {
                   placeholder="Search by vendor or bill number..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  className="w-full pl-10 pr-4 py-3 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-colors"
                 />
               </div>
-              <Filter className="w-5 h-5 text-gray-400" />
+              <Filter className="w-5 h-5 text-gray-500 dark:text-gray-400 transition-colors" />
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -178,7 +178,7 @@ const PurchaseBillsPage: React.FC = () => {
                   className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
                     statusFilter === filter.value
                       ? "bg-emerald-600 text-white shadow-lg"
-                      : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                      : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
                   }`}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
@@ -193,11 +193,11 @@ const PurchaseBillsPage: React.FC = () => {
 
       {/* Results Summary */}
       <motion.div className="flex items-center justify-between" variants={itemVariants}>
-        <div className="text-gray-400">
+        <div className="text-gray-500 dark:text-gray-400 transition-colors">
           Showing {filteredBills.length} of {purchaseBills.length} bills
           {searchTerm && (
             <span className="ml-2">
-              for "<span className="text-white">{searchTerm}</span>"
+              for "<span className="text-gray-900 dark:text-white font-medium">{searchTerm}</span>"
             </span>
           )}
         </div>

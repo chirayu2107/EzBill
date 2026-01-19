@@ -83,6 +83,7 @@ export interface User {
   gstNumber?: string
   invoicePrefix?: string
   signature?: string // Base64 encoded signature image
+  businessLogo?: string // Base64 encoded logo image
   createdAt: Date
 }
 

@@ -117,12 +117,12 @@ const InvoiceTable: React.FC<InvoiceTableProps> = ({ invoices, onViewInvoice, on
             transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
             className="mb-4"
           >
-            <div className="w-12 h-12 md:w-16 md:h-16 bg-gray-700 rounded-full flex items-center justify-center mx-auto">
-              <FileX className="w-6 h-6 md:w-8 md:h-8 text-gray-400" />
+            <div className="w-12 h-12 md:w-16 md:h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto transition-colors">
+              <FileX className="w-6 h-6 md:w-8 md:h-8 text-gray-400 dark:text-gray-500" />
             </div>
           </motion.div>
-          <h3 className="text-lg md:text-xl font-semibold text-white mb-2">{emptyState.title}</h3>
-          <p className="text-gray-400 text-sm md:text-base">{emptyState.description}</p>
+          <h3 className="text-lg md:text-xl font-semibold text-gray-900 dark:text-white mb-2 transition-colors">{emptyState.title}</h3>
+          <p className="text-gray-500 dark:text-gray-400 text-sm md:text-base transition-colors">{emptyState.description}</p>
         </Card>
       </motion.div>
     )
@@ -142,12 +142,12 @@ const InvoiceTable: React.FC<InvoiceTableProps> = ({ invoices, onViewInvoice, on
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: 20 }}
                   transition={{ delay: index * 0.05 }}
-                  className="bg-gray-700 rounded-lg p-4 relative"
+                   className="bg-gray-50 dark:bg-gray-700/50 border border-gray-100 dark:border-gray-600 rounded-lg p-4 relative transition-colors"
                 >
                   <div className="flex justify-between items-start mb-3">
                     <div>
-                      <h4 className="text-white font-medium">{invoice.invoiceNumber}</h4>
-                      <p className="text-gray-300 text-sm">{invoice.customerName}</p>
+                      <h4 className="text-gray-900 dark:text-white font-normal">{invoice.invoiceNumber}</h4>
+                      <p className="text-gray-700 dark:text-gray-300 text-sm font-normal">{invoice.customerName}</p>
                     </div>
                     <div className="flex items-center gap-2">
                       <motion.span
@@ -159,7 +159,7 @@ const InvoiceTable: React.FC<InvoiceTableProps> = ({ invoices, onViewInvoice, on
                       <div className="relative">
                         <button
                           onClick={() => toggleDropdown(invoice.id)}
-                          className="p-1 text-gray-400 hover:text-white rounded"
+                          className="p-1 text-gray-400 dark:text-gray-400 hover:text-gray-600 dark:hover:text-white rounded transition-colors"
                         >
                           <MoreVertical className="w-4 h-4" />
                         </button>
@@ -170,34 +170,34 @@ const InvoiceTable: React.FC<InvoiceTableProps> = ({ invoices, onViewInvoice, on
                               initial={{ opacity: 0, scale: 0.95, y: -10 }}
                               animate={{ opacity: 1, scale: 1, y: 0 }}
                               exit={{ opacity: 0, scale: 0.95, y: -10 }}
-                              className={`absolute right-0 bg-gray-800 border border-gray-600 rounded-lg shadow-lg z-20 min-w-[150px] ${
+                              className={`absolute right-0 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg shadow-xl dark:shadow-2xl z-20 min-w-[170px] ${
                                 index >= invoices.length - 2 ? "bottom-8" : "top-8"
                               }`}
                             >
                               <button
                                 onClick={() => onViewInvoice(invoice)}
-                                className="w-full px-3 py-2 text-left text-sm text-gray-300 hover:bg-gray-700 flex items-center gap-2"
+                                className="w-full px-3 py-2 text-left text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-2 first:rounded-t-lg transition-colors"
                               >
                                 <Eye className="w-4 h-4" />
-                                View
+                                <span className="font-medium">View</span>
                               </button>
                               <button
                                 onClick={() => handleDownload(invoice)}
-                                className="w-full px-3 py-2 text-left text-sm text-gray-300 hover:bg-gray-700 flex items-center gap-2"
+                                className="w-full px-3 py-2 text-left text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-2 transition-colors"
                               >
                                 <Download className="w-4 h-4" />
                                 Download
                               </button>
                               <button
                                 onClick={() => onEditInvoice(invoice)}
-                                className="w-full px-3 py-2 text-left text-sm text-gray-300 hover:bg-gray-700 flex items-center gap-2"
+                                className="w-full px-3 py-2 text-left text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-2 transition-colors"
                               >
                                 <Edit className="w-4 h-4" />
                                 Edit
                               </button>
                               <button
                                 onClick={() => toggleInvoiceStatus(invoice)}
-                                className="w-full px-3 py-2 text-left text-sm text-gray-300 hover:bg-gray-700 flex items-center gap-2"
+                                className="w-full px-3 py-2 text-left text-sm text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-2 transition-colors"
                               >
                                 {invoice.status === "paid" ? (
                                   <>
@@ -213,7 +213,7 @@ const InvoiceTable: React.FC<InvoiceTableProps> = ({ invoices, onViewInvoice, on
                               </button>
                               <button
                                 onClick={() => handleDeleteClick(invoice)}
-                                className="w-full px-3 py-2 text-left text-sm text-red-400 hover:bg-gray-700 flex items-center gap-2"
+                                className="w-full px-3 py-2 text-left text-sm text-red-500 hover:bg-red-50 dark:hover:bg-gray-700 flex items-center gap-2 last:rounded-b-lg transition-colors"
                               >
                                 <Trash2 className="w-4 h-4" />
                                 Delete
@@ -225,14 +225,14 @@ const InvoiceTable: React.FC<InvoiceTableProps> = ({ invoices, onViewInvoice, on
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div className="grid grid-cols-2 gap-4 text-sm bg-white/50 dark:bg-transparent p-2 rounded-lg mt-2">
                     <div>
-                      <p className="text-gray-400">Date</p>
-                      <p className="text-white">{formatDate(invoice.date)}</p>
+                      <p className="text-gray-600 dark:text-gray-400 font-normal text-[10px] transition-colors">Date</p>
+                      <p className="text-gray-900 dark:text-white font-medium transition-colors">{formatDate(invoice.date)}</p>
                     </div>
                     <div>
-                      <p className="text-gray-400">Amount</p>
-                      <p className="text-white font-medium">{formatCurrency(invoice.total)}</p>
+                      <p className="text-gray-600 dark:text-gray-400 font-normal text-[10px] transition-colors">Amount</p>
+                      <p className="text-gray-900 dark:text-white font-bold transition-colors">{formatCurrency(invoice.total)}</p>
                     </div>
                   </div>
                 </motion.div>
@@ -244,15 +244,15 @@ const InvoiceTable: React.FC<InvoiceTableProps> = ({ invoices, onViewInvoice, on
           <div className="hidden md:block overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-gray-700">
-                  <th className="text-left py-4 px-4 text-gray-300 font-semibold">Invoice #</th>
-                  <th className="text-left py-4 px-4 text-gray-300 font-semibold">Customer</th>
-                  <th className="text-left py-4 px-4 text-gray-300 font-semibold">Date</th>
-                  <th className="text-left py-4 px-4 text-gray-300 font-semibold">Amount</th>
-                  <th className="text-left py-4 px-4 text-gray-300 font-semibold">GST</th>
-                  <th className="text-left py-4 px-4 text-gray-300 font-semibold">Total</th>
-                  <th className="text-left py-4 px-4 text-gray-300 font-semibold">Status</th>
-                  <th className="text-left py-4 px-4 text-gray-300 font-semibold">Actions</th>
+                <tr className="border-b border-gray-200 dark:border-gray-700 transition-colors bg-gray-50/50 dark:bg-transparent">
+                  <th className="text-left py-4 px-4 text-gray-700 dark:text-gray-400 font-normal text-sm">Invoice #</th>
+                  <th className="text-left py-4 px-4 text-gray-700 dark:text-gray-400 font-normal text-sm">Customer</th>
+                  <th className="text-left py-4 px-4 text-gray-700 dark:text-gray-400 font-normal text-sm">Date</th>
+                  <th className="text-left py-4 px-4 text-gray-700 dark:text-gray-400 font-normal text-sm">Amount</th>
+                  <th className="text-left py-4 px-4 text-gray-700 dark:text-gray-400 font-normal text-sm">GST</th>
+                  <th className="text-left py-4 px-4 text-gray-700 dark:text-gray-400 font-normal text-sm">Total</th>
+                  <th className="text-left py-4 px-4 text-gray-700 dark:text-gray-400 font-normal text-sm">Status</th>
+                  <th className="text-left py-4 px-4 text-gray-700 dark:text-gray-400 font-normal text-sm">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -264,21 +264,20 @@ const InvoiceTable: React.FC<InvoiceTableProps> = ({ invoices, onViewInvoice, on
                       animate={{ opacity: 1, x: 0 }}
                       exit={{ opacity: 0, x: 20 }}
                       transition={{ delay: index * 0.05 }}
-                      className="border-b border-gray-700 hover:bg-gray-750 transition-all duration-200"
-                      whileHover={{ backgroundColor: "rgba(55, 65, 81, 0.5)" }}
+                      className="border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-750 transition-all duration-200"
                     >
-                      <td className="py-4 px-4 text-white font-medium">{invoice.invoiceNumber}</td>
-                      <td className="py-4 px-4 text-gray-300">{invoice.customerName}</td>
-                      <td className="py-4 px-4 text-gray-300">{formatDate(invoice.date)}</td>
-                      <td className="py-4 px-4 text-gray-300">{formatCurrency(invoice.subtotal)}</td>
-                      <td className="py-4 px-4 text-gray-300">
+                      <td className="py-4 px-4 text-gray-900 dark:text-white font-semibold">{invoice.invoiceNumber}</td>
+                      <td className="py-4 px-4 text-gray-800 dark:text-gray-300 font-medium transition-colors">{invoice.customerName}</td>
+                      <td className="py-4 px-4 text-gray-800 dark:text-gray-300 transition-colors">{formatDate(invoice.date)}</td>
+                      <td className="py-4 px-4 text-gray-800 dark:text-gray-300 transition-colors">{formatCurrency(invoice.subtotal)}</td>
+                      <td className="py-4 px-4 text-gray-800 dark:text-gray-300 transition-colors">
                         {invoice.gstBreakdown.isInterState ? (
                           <span>{formatCurrency(invoice.gstBreakdown.igst)}</span>
                         ) : (
                           <span>{formatCurrency(invoice.gstBreakdown.cgst + invoice.gstBreakdown.sgst)}</span>
                         )}
                       </td>
-                      <td className="py-4 px-4 text-white font-semibold">{formatCurrency(invoice.total)}</td>
+                      <td className="py-4 px-4 text-emerald-600 dark:text-emerald-400 font-semibold">{formatCurrency(invoice.total)}</td>
                       <td className="py-4 px-4">
                         <motion.span
                           className={`px-3 py-1 rounded-full text-xs font-medium capitalize border ${getStatusColor(invoice.status)}`}
@@ -366,32 +365,32 @@ const InvoiceTable: React.FC<InvoiceTableProps> = ({ invoices, onViewInvoice, on
             exit={{ opacity: 0 }}
           >
             <motion.div
-              className="bg-gray-800 rounded-xl p-4 md:p-6 max-w-md w-full border border-gray-700"
+              className="bg-white dark:bg-gray-800 rounded-xl p-4 md:p-6 max-w-md w-full border border-gray-200 dark:border-gray-700 shadow-2xl"
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.8, opacity: 0 }}
               transition={{ type: "spring", stiffness: 300, damping: 30 }}
             >
               <div className="flex items-center gap-4 mb-4">
-                <div className="p-3 bg-red-500/10 rounded-full">
-                  <AlertTriangle className="w-6 h-6 text-red-500" />
+                <div className="p-3 bg-red-100 dark:bg-red-500/10 rounded-full">
+                  <AlertTriangle className="w-6 h-6 text-red-600 dark:text-red-500" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-semibold text-white">Delete Invoice</h3>
-                  <p className="text-gray-400 text-sm">Are you sure you want to delete this invoice?</p>
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Delete Invoice</h3>
+                  <p className="text-gray-500 dark:text-gray-400 text-sm">Are you sure you want to delete this invoice?</p>
                 </div>
               </div>
 
-              <div className="bg-gray-700 rounded-lg p-3 mb-6">
-                <p className="text-sm text-gray-300">
+              <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3 mb-6 border border-gray-100 dark:border-gray-600">
+                <p className="text-sm text-gray-600 dark:text-gray-300">
                   Invoice:{" "}
-                  <span className="text-white font-medium">
+                  <span className="text-gray-900 dark:text-white font-medium">
                     {invoices.find((inv) => inv.id === deleteConfirm)?.invoiceNumber}
                   </span>
                 </p>
-                <p className="text-sm text-gray-300">
+                <p className="text-sm text-gray-600 dark:text-gray-300">
                   Customer:{" "}
-                  <span className="text-white font-medium">
+                  <span className="text-gray-900 dark:text-white font-medium">
                     {invoices.find((inv) => inv.id === deleteConfirm)?.customerName}
                   </span>
                 </p>
