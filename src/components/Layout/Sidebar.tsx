@@ -102,14 +102,7 @@ const Sidebar: React.FC = () => {
             </div>
             <h1 className="text-xl font-bold text-gray-900 dark:text-white">EzBill</h1>
           </motion.div>
-          <motion.button
-            onClick={toggleTheme}
-            className="p-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            {theme === "light" ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
-          </motion.button>
+          <div className="w-10 md:hidden"></div> {/* Spacer to keep title centered */}
         </div>
       </div>
 
