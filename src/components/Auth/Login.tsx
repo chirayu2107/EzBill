@@ -42,7 +42,7 @@ const Login: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row bg-gray-900 text-white">
+    <div className="min-h-screen flex flex-col md:flex-row bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white transition-colors duration-300">
       {/* Left Side: Login Form */}
       <div className="w-full md:w-1/2 flex items-center justify-center px-6 py-12">
         <div className="w-full max-w-md">
@@ -51,9 +51,9 @@ const Login: React.FC = () => {
               <div className="w-12 h-12 bg-gradient-to-r from-emerald-500 to-green-600 rounded-lg flex items-center justify-center">
                 <Receipt className="w-6 h-6 text-white" />
               </div>
-              <h1 className="text-3xl font-bold text-white">EzBill</h1>
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">EzBill</h1>
             </div>
-            <p className="text-gray-400">Welcome back! Please enter your details.</p>
+            <p className="text-gray-500 dark:text-gray-400">Welcome back! Please enter your details.</p>
           </div>
 
           <Card>
@@ -65,14 +65,14 @@ const Login: React.FC = () => {
               )}
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Email</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Email</label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                   <input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full pl-10 pr-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all duration-200"
+                    className="w-full pl-10 pr-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all duration-200"
                     placeholder="Enter your email"
                     required
                     disabled={loading}
@@ -81,14 +81,14 @@ const Login: React.FC = () => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Password</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Password</label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                   <input
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full pl-10 pr-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all duration-200"
+                    className="w-full pl-10 pr-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all duration-200"
                     placeholder="Enter your password"
                     required
                     disabled={loading}
@@ -96,7 +96,7 @@ const Login: React.FC = () => {
                 </div>
               </div>
 
-              <div className="flex items-center justify-between text-sm text-gray-400">
+              <div className="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
                 <label className="flex items-center gap-2">
                   <input type="checkbox" className="form-checkbox text-emerald-500" disabled={loading} />
                   Remember me
@@ -123,7 +123,7 @@ const Login: React.FC = () => {
                 )}
               </Button>
 
-              <div className="text-center text-sm text-gray-400">
+              <div className="text-center text-sm text-gray-500 dark:text-gray-400">
                 Don’t have an account?{" "}
                 <Link to="/signup" className="text-emerald-500 hover:text-emerald-400 transition-colors">
                   Sign up

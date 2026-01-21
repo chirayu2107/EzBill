@@ -31,3 +31,34 @@ input, textarea, [contenteditable="true"] {
   -ms-user-select: text;
   user-select: text;
 }
+
+/* Print Styles */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  
+  .invoice-print-content,
+  .invoice-print-content * {
+    visibility: visible;
+  }
+  
+  .invoice-print-content {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    margin: 0;
+    padding: 20px;
+    background-color: white !important;
+    color: black !important;
+    border: none !important;
+  }
+  
+  /* Reset background colors for better printing */
+  .bg-gray-100, .bg-gray-50, .bg-gray-200 {
+    background-color: #f3f4f6 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}

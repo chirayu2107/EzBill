@@ -162,7 +162,7 @@ const PurchaseBillPreview: React.FC<PurchaseBillPreviewProps> = ({ bill, onClose
 
         {/* Bill Content */}
         <div
-          className="p-1 md:p-6 bg-white text-gray-900 text-[8px] md:text-sm leading-[9px] md:leading-normal font-medium"
+          className="invoice-print-content p-1 md:p-6 bg-white text-gray-900 text-[8px] md:text-sm leading-[9px] md:leading-normal font-medium"
           id={`bill-preview-${bill.id}`}
         >
           {/* Main Border */}

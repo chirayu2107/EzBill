@@ -56,7 +56,7 @@ const Signup: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row bg-black text-white">
+    <div className="min-h-screen flex flex-col md:flex-row bg-gray-50 dark:bg-black text-gray-900 dark:text-white transition-colors duration-300">
       {/* Left Side */}
       <div
         className="relative w-full md:w-1/2 h-64 md:h-auto bg-cover bg-center flex items-center justify-center px-6 py-10 md:py-16"
@@ -102,9 +102,9 @@ const Signup: React.FC = () => {
               <div className="w-12 h-12 bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-lg flex items-center justify-center">
                 <Receipt className="w-6 h-6 text-white" />
               </div>
-              <h1 className="text-3xl font-bold text-white">EzBill</h1>
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">EzBill</h1>
             </div>
-            <p className="text-gray-400 text-sm">Start your 30-day free trial</p>
+            <p className="text-gray-500 dark:text-gray-400 text-sm">Start your 30-day free trial</p>
           </div>
 
           <Card>
@@ -117,14 +117,14 @@ const Signup: React.FC = () => {
 
               {/* Name */}
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Full Name</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Full Name</label>
                 <div className="relative">
                   <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                   <input
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full pl-10 pr-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                    className="w-full pl-10 pr-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
                     placeholder="Your full name"
                     required
                     disabled={loading}
@@ -134,14 +134,14 @@ const Signup: React.FC = () => {
 
               {/* Email */}
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Email Address</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Email Address</label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                   <input
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full pl-10 pr-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                    className="w-full pl-10 pr-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
                     placeholder="Enter your email"
                     required
                     disabled={loading}
@@ -151,14 +151,14 @@ const Signup: React.FC = () => {
 
               {/* Password */}
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-2">Password</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Password</label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
                   <input
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full pl-10 pr-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                    className="w-full pl-10 pr-3 py-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500"
                     placeholder="Create a password"
                     required
                     disabled={loading}
@@ -167,7 +167,7 @@ const Signup: React.FC = () => {
               </div>
 
               {/* Terms */}
-              <div className="text-xs text-gray-400 text-center">
+              <div className="text-xs text-gray-500 dark:text-gray-400 text-center">
                 By signing up, you agree to our{" "}
                 <Link to="/terms" className="text-emerald-400 hover:underline">
                   Terms of Service
@@ -198,7 +198,7 @@ const Signup: React.FC = () => {
               </Button>
 
               {/* Link to login */}
-              <div className="text-center text-sm text-gray-400">
+              <div className="text-center text-sm text-gray-500 dark:text-gray-400">
                 Already have an account?{" "}
                 <Link to="/login" className="text-emerald-400 hover:text-emerald-300 transition-colors">
                   Sign in

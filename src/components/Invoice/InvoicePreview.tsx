@@ -208,7 +208,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({ invoice, onClose, autoD
 
         {/* Invoice Content - Optimized for Mobile Clarity */}
         <div
-          className="p-1 md:p-6 bg-white text-gray-900 text-[8px] md:text-sm leading-[9px] md:leading-normal font-medium"
+          className="invoice-print-content p-1 md:p-6 bg-white text-gray-900 text-[8px] md:text-sm leading-[9px] md:leading-normal font-medium"
           id={`invoice-preview-${invoice.id}`}
           style={{
             fontFamily: "system-ui, -apple-system, sans-serif",
