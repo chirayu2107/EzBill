@@ -10,10 +10,10 @@ import Button from "../UI/Button"
 import Card from "../UI/Card"
 
 const avatarUrls = [
-  "http://res.cloudinary.com/dkoiyuyhj/image/upload/v1753032406/n4dpb2qiwgwxpfb2kurc.jpg",
-  "http://res.cloudinary.com/dkoiyuyhj/image/upload/v1753032557/xbkz2uegcbb1k4vw6fqw.jpg",
-  "http://res.cloudinary.com/dkoiyuyhj/image/upload/v1753032858/gteqwkdcagqbxjg6aght.avif",
-  "http://res.cloudinary.com/dkoiyuyhj/image/upload/v1753033134/kcsxsijj63cbyufn5kpa.avif",
+  "https://res.cloudinary.com/dkoiyuyhj/image/upload/v1753032406/n4dpb2qiwgwxpfb2kurc.jpg",
+  "https://res.cloudinary.com/dkoiyuyhj/image/upload/v1753032557/xbkz2uegcbb1k4vw6fqw.jpg",
+  "https://res.cloudinary.com/dkoiyuyhj/image/upload/v1753032858/gteqwkdcagqbxjg6aght.avif",
+  "https://res.cloudinary.com/dkoiyuyhj/image/upload/v1753033134/kcsxsijj63cbyufn5kpa.avif",
 ]
 
 const Signup: React.FC = () => {
@@ -62,7 +62,7 @@ const Signup: React.FC = () => {
         className="relative w-full md:w-1/2 h-64 md:h-auto bg-cover bg-center flex items-center justify-center px-6 py-10 md:py-16"
         style={{
           backgroundImage:
-            "url('http://res.cloudinary.com/dkoiyuyhj/image/upload/v1753032282/kmcdusntcqaf6p6o8bqk.jpg')",
+            "url('https://res.cloudinary.com/dkoiyuyhj/image/upload/v1753032282/kmcdusntcqaf6p6o8bqk.jpg')",
         }}
       >
         <div className="absolute inset-0 bg-black bg-opacity-60 z-0"></div>

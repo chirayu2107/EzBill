@@ -139,7 +139,7 @@ const Login: React.FC = () => {
         <div className="rounded-xl border-[3px] border-gray-700 shadow-2xl w-full max-w-none scale-[1.10] md:ml-14">
           <a href="/"> {/* Replace with your actual route */}
             <img
-              src="http://res.cloudinary.com/dkoiyuyhj/image/upload/v1754549620/htp9nm9ywe8hblzrjygd.png"
+              src="https://res.cloudinary.com/dkoiyuyhj/image/upload/v1754549620/htp9nm9ywe8hblzrjygd.png"
               alt="Dashboard Preview"
               className="object-contain w-full h-full rounded-xl"
             />

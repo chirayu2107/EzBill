@@ -152,14 +152,13 @@ const Sidebar: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5, duration: 0.3 }}
         >
-          <div className="mb-6 flex items-center justify-between">
-            <div className="flex items-center gap-2">
+          <div className="mb-6 flex items-center justify-between gap-3 overflow-hidden">
+            <div className="flex items-center gap-2 min-w-0">
               <div className="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400 font-bold shrink-0">
                 {user?.fullName?.charAt(0)}
               </div>
               <div className="min-w-0">
                 <p className="text-gray-900 dark:text-white font-medium truncate text-sm">{user?.fullName}</p>
-        
               </div>
             </div>
             <motion.button
@@ -241,10 +240,10 @@ const Sidebar: React.FC = () => {
               variants={menuItemVariants}
               transition={{ delay: 0.5 }}
             >
-              <div className="mb-4 flex items-center justify-between">
-                <div>
+              <div className="mb-4 flex items-center justify-between gap-4 overflow-hidden">
+                <div className="min-w-0">
                   <p className="text-gray-500 dark:text-gray-400 text-sm">Signed in as</p>
-                  <p className="text-gray-900 dark:text-white font-medium">{user?.fullName}</p>
+                  <p className="text-gray-900 dark:text-white font-medium truncate">{user?.fullName}</p>
                 </div>
                 <motion.button
                   onClick={toggleTheme}
