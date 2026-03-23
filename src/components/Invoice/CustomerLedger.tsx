@@ -124,8 +124,6 @@ const CustomerLedger: React.FC<CustomerLedgerProps> = ({ customerName, invoices,
     return { rows, totalDebit, totalCredit, closingBalance }
   }, [filteredInvoices, fromDate])
 
-  const businessName = user?.fullName || "Your Business"
-  const businessCity = user?.address?.split(",").pop()?.trim() || user?.address || ""
   const fromDateObj = new Date(fromDate)
   const toDateObj = new Date(toDate)
   const dateRangeLabel = `${formatDateShort(fromDateObj)} to ${formatDateShort(toDateObj)}`
@@ -223,18 +221,29 @@ const CustomerLedger: React.FC<CustomerLedgerProps> = ({ customerName, invoices,
             style={{ padding: "24px 32px", fontFamily: "Arial, sans-serif" }}
           >
             {/* Ledger Header */}
-            <div style={{ textAlign: "center", marginBottom: "16px" }}>
-              <div style={{ fontWeight: "bold", fontSize: "15px", marginBottom: "2px" }}>
-                {user?.invoicePrefix || "BIZ"}
-              </div>
-              <div style={{ fontWeight: "bold", fontSize: "18px", marginBottom: "2px" }}>
-                {businessName}
-              </div>
-              <div style={{ fontSize: "13px", marginBottom: "1px" }}>Ledger Account</div>
-              {businessCity && (
-                <div style={{ fontSize: "12px", color: "#444", marginBottom: "2px" }}>{businessCity}</div>
+            <div style={{ display: "flex", alignItems: "flex-start", gap: "16px", marginBottom: "20px", borderBottom: "1px solid #eee", paddingBottom: "16px" }}>
+              {user?.businessLogo && (
+                <div style={{ width: "80px", height: "80px", flexShrink: 0, border: "1px solid #eee", padding: "4px" }}>
+                  <img src={user.businessLogo} alt="Logo" style={{ width: "100%", height: "100%", objectFit: "contain" }} />
+                </div>
               )}
-              <div style={{ fontSize: "12px", marginTop: "10px" }}>{dateRangeLabel}</div>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontWeight: "bold", fontSize: "20px", color: "#000", marginBottom: "4px", textTransform: "uppercase" }}>
+                  {user?.fullName || "Your Business"}
+                </div>
+                <div style={{ fontSize: "12px", color: "#333", lineHeight: "1.4", maxWidth: "500px" }}>
+                  {user?.address && <div>{user.address}</div>}
+                  {user?.state && <div>State: {user.state}</div>}
+                  {user?.gstNumber && <div>GSTIN: {user.gstNumber}</div>}
+                  {user?.panNumber && <div>PAN: {user.panNumber}</div>}
+                  {user?.phoneNumber && <div>Mobile: {user.phoneNumber}</div>}
+                </div>
+              </div>
+              <div style={{ textAlign: "right" }}>
+                <div style={{ fontWeight: "bold", fontSize: "14px", color: "#666" }}>{user?.invoicePrefix || "UHP"}</div>
+                <div style={{ fontSize: "16px", fontWeight: "bold", marginTop: "10px" }}>Ledger Account</div>
+                <div style={{ fontSize: "12px", color: "#666", marginTop: "4px" }}>{dateRangeLabel}</div>
+              </div>
             </div>
 
             {/* Ledger Table */}
