@@ -246,6 +246,13 @@ const CustomerLedger: React.FC<CustomerLedgerProps> = ({ customerName, invoices,
               </div>
             </div>
 
+            <div style={{ textAlign: "center", borderBottom: "1.5px solid #000", paddingBottom: "10px", marginBottom: "10px" }}>
+              <div style={{ fontSize: "14px", fontWeight: "bold", textTransform: "uppercase" }}>
+                <span style={{ fontWeight: "normal", color: "#666", marginRight: "8px" }}>Customer:</span>
+                {customerName}
+              </div>
+            </div>
+
             {/* Ledger Table */}
             <table
               style={{
