@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useMemo, useRef } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import { motion } from "framer-motion"
 import { useApp } from "../../context/AppContext"
@@ -13,7 +13,7 @@ import Button from "../UI/Button"
 import Card from "../UI/Card"
 
 const CreateInvoice: React.FC = () => {
-  const { addInvoice, updateInvoice, getInvoiceById } = useApp()
+  const { invoices, addInvoice, updateInvoice, getInvoiceById } = useApp()
   const { user } = useAuth()
   const navigate = useNavigate()
   const { id } = useParams()
@@ -25,6 +25,61 @@ const CreateInvoice: React.FC = () => {
   const [customerGSTIN, setCustomerGSTIN] = useState("")
   const [customerPAN, setCustomerPAN] = useState("")
   const [invoiceDate, setInvoiceDate] = useState(new Date().toISOString().split("T")[0])
+  const [showSuggestions, setShowSuggestions] = useState(false)
+  const nameInputRef = useRef<HTMLInputElement>(null)
+  const suggestionsRef = useRef<HTMLDivElement>(null)
+
+  // Build unique customer list from existing invoices
+  const knownCustomers = useMemo(() => {
+    const map = new Map<string, { address: string; state: string; gstin: string; pan: string }>()
+    // Sort by date desc so the most recent details win
+    ;[...invoices]
+      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+      .forEach((inv) => {
+        map.set(inv.customerName, {
+          address: inv.customerAddress,
+          state: inv.customerState,
+          gstin: inv.customerGSTIN,
+          pan: inv.customerPAN,
+        })
+      })
+    return map
+  }, [invoices])
+
+  const suggestions = useMemo(() => {
+    if (!customerName.trim() || customerName.length < 1) return []
+    return Array.from(knownCustomers.keys()).filter((name) =>
+      name.toLowerCase().includes(customerName.toLowerCase())
+    )
+  }, [customerName, knownCustomers])
+
+  // Close suggestions on outside click
+  useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      if (
+        suggestionsRef.current &&
+        !suggestionsRef.current.contains(e.target as Node) &&
+        nameInputRef.current &&
+        !nameInputRef.current.contains(e.target as Node)
+      ) {
+        setShowSuggestions(false)
+      }
+    }
+    document.addEventListener("mousedown", handleClick)
+    return () => document.removeEventListener("mousedown", handleClick)
+  }, [])
+
+  const handleSelectCustomer = (name: string) => {
+    const details = knownCustomers.get(name)
+    if (details) {
+      setCustomerName(name)
+      setCustomerAddress(details.address)
+      setCustomerState(details.state)
+      setCustomerGSTIN(details.gstin)
+      setCustomerPAN(details.pan)
+    }
+    setShowSuggestions(false)
+  }
   const [items, setItems] = useState<InvoiceItem[]>([
     { id: "1", name: "", hsnSac: "", quantity: 1, rate: 0, lineTotal: 0 },
   ])
@@ -166,14 +221,43 @@ const CreateInvoice: React.FC = () => {
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 transition-colors">Customer Name *</label>
-                  <input
-                    type="text"
-                    value={customerName}
-                    onChange={(e) => setCustomerName(e.target.value)}
-                    className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm md:text-base transition-colors"
-                    placeholder="Enter customer name"
-                    required
-                  />
+                  <div className="relative">
+                    <input
+                      ref={nameInputRef}
+                      type="text"
+                      value={customerName}
+                      onChange={(e) => {
+                        setCustomerName(e.target.value)
+                        setShowSuggestions(true)
+                      }}
+                      onFocus={() => setShowSuggestions(true)}
+                      className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm md:text-base transition-colors"
+                      placeholder="Enter customer name"
+                      required
+                      autoComplete="off"
+                    />
+                    {showSuggestions && suggestions.length > 0 && (
+                      <div
+                        ref={suggestionsRef}
+                        className="absolute z-10 top-full left-0 right-0 mt-1 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg shadow-lg overflow-hidden"
+                      >
+                        {suggestions.map((name) => (
+                          <button
+                            key={name}
+                            type="button"
+                            onMouseDown={() => handleSelectCustomer(name)}
+                            className="w-full text-left px-4 py-2.5 text-sm text-gray-900 dark:text-white hover:bg-emerald-50 dark:hover:bg-gray-700 flex items-center gap-2 transition-colors"
+                          >
+                            <span className="w-6 h-6 rounded-full bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center text-emerald-600 dark:text-emerald-400 font-semibold text-xs flex-shrink-0">
+                              {name.charAt(0).toUpperCase()}
+                            </span>
+                            <span>{name}</span>
+                            <span className="ml-auto text-xs text-gray-400">auto-fill ↵</span>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 transition-colors">Customer Address *</label>
