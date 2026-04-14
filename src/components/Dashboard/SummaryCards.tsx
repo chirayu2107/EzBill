@@ -11,14 +11,45 @@ const SummaryCards: React.FC = () => {
   const { getDashboardSummary } = useApp()
   const summary = getDashboardSummary()
 
+  const getSentiment = (card: any) => {
+    const value = summary[card.changeKey as keyof typeof summary] as number
+    if (value === 0) return "neutral"
+    
+    // Revenue and Paid are better when they go up
+    const isPositiveMetric = card.title === "Total Revenue" || card.title === "Paid Amount"
+    
+    if (isPositiveMetric) {
+      return value > 0 ? "good" : "bad"
+    } else {
+      // Pending and Purchase are better when they go down
+      return value < 0 ? "good" : "bad"
+    }
+  }
+
+  const formatDisplayChange = (card: any) => {
+    const value = summary[card.changeKey as keyof typeof summary] as number
+    const sentiment = getSentiment(card)
+    const absValue = Math.abs(value).toFixed(1)
+    
+    if (sentiment === "good") {
+      // No minus or plus sign for good news!
+      return `${absValue}%`
+    } else if (sentiment === "bad") {
+      // Keep the sign for bad news
+      const sign = value >= 0 ? "+" : "-"
+      return `${sign}${absValue}%`
+    }
+    return `${absValue}%`
+  }
+
   const cards = [
     {
       title: "Total Purchase",
       value: formatCurrency(summary.totalPurchase),
-      icon: ShoppingBag, // You'll need to import ShoppingBag
+      icon: ShoppingBag,
       color: "text-purple-400",
       bgColor: "bg-purple-400/10",
-      change: "+2.1%",
+      changeKey: "purchaseChange",
     },
     {
       title: "Total Revenue",
@@ -26,7 +57,7 @@ const SummaryCards: React.FC = () => {
       icon: TrendingUp,
       color: "text-green-400",
       bgColor: "bg-green-400/10",
-      change: "+2.4%",
+      changeKey: "revenueChange",
     },
     {
       title: "Paid Amount",
@@ -34,7 +65,7 @@ const SummaryCards: React.FC = () => {
       icon: IndianRupeeIcon,
       color: "text-emerald-400",
       bgColor: "bg-emerald-400/10",
-      change: "+8.6%",
+      changeKey: "paidChange",
     },
     {
       title: "Pending Amount",
@@ -42,7 +73,7 @@ const SummaryCards: React.FC = () => {
       icon: Clock,
       color: "text-yellow-400",
       bgColor: "bg-yellow-400/10",
-      change: "+6.0%",
+      changeKey: "pendingChange",
     },
   ]
 
@@ -106,8 +137,10 @@ const SummaryCards: React.FC = () => {
               </motion.div>
             </div>
 
-            <p className={`${card.color} text-xs mt-1 font-medium`}>
-              {card.change} <span className="text-gray-600 dark:text-gray-400"> vs last month</span>
+            <p className={`${
+              getSentiment(card) === "good" ? "text-green-500" : getSentiment(card) === "bad" ? "text-red-500" : "text-gray-500"
+            } text-xs mt-1 font-medium`}>
+              {formatDisplayChange(card)} <span className="text-gray-600 dark:text-gray-400"> vs last month</span>
             </p>
           </Card>
         </motion.div>

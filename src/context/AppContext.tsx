@@ -324,6 +324,42 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   }
 
   const getDashboardSummary = (): DashboardSummary => {
+    const now = new Date()
+    const thisMonth = now.getMonth()
+    const thisYear = now.getFullYear()
+
+    const lastMonthDate = new Date(thisYear, thisMonth - 1, 1)
+    const lastMonth = lastMonthDate.getMonth()
+    const lastYear = lastMonthDate.getFullYear()
+
+    // Helper to calculate totals for a period
+    const calculatePeriodMetrics = (invoiceList: Invoice[], billList: PurchaseBill[], month: number, year: number) => {
+      const periodInvoices = invoiceList.filter((inv) => {
+        const d = new Date(inv.date)
+        return d.getMonth() === month && d.getFullYear() === year
+      })
+
+      const periodBills = billList.filter((bill) => {
+        const d = new Date(bill.date)
+        return d.getMonth() === month && d.getFullYear() === year
+      })
+
+      return {
+        revenue: periodInvoices.reduce((sum, inv) => sum + inv.total, 0),
+        paid: periodInvoices.filter((inv) => inv.status === "paid").reduce((sum, inv) => sum + inv.total, 0),
+        pending: periodInvoices.filter((inv) => inv.status === "unpaid").reduce((sum, inv) => sum + inv.total, 0),
+        purchase: periodBills.reduce((sum, bill) => sum + bill.total, 0),
+      }
+    }
+
+    const thisMonthMetrics = calculatePeriodMetrics(invoices, purchaseBills, thisMonth, thisYear)
+    const lastMonthMetrics = calculatePeriodMetrics(invoices, purchaseBills, lastMonth, lastYear)
+
+    const calculateChange = (current: number, previous: number) => {
+      if (previous === 0) return current > 0 ? 100 : 0
+      return ((current - previous) / previous) * 100
+    }
+
     const totalRevenue = invoices.reduce((sum, invoice) => sum + invoice.total, 0)
     const paidAmount = invoices
       .filter((invoice) => invoice.status === "paid")
@@ -334,7 +370,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const overdueAmount = invoices
       .filter((invoice) => invoice.status === "overdue")
       .reduce((sum, invoice) => sum + invoice.total, 0)
-    
+
     const totalPurchase = purchaseBills.reduce((sum, bill) => sum + bill.total, 0)
 
     return {
@@ -344,6 +380,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       pendingAmount,
       overdueAmount,
       totalInvoices: invoices.length,
+      purchaseChange: calculateChange(thisMonthMetrics.purchase, lastMonthMetrics.purchase),
+      revenueChange: calculateChange(thisMonthMetrics.revenue, lastMonthMetrics.revenue),
+      paidChange: calculateChange(thisMonthMetrics.paid, lastMonthMetrics.paid),
+      pendingChange: calculateChange(thisMonthMetrics.pending, lastMonthMetrics.pending),
     }
   }
 

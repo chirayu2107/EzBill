@@ -67,6 +67,10 @@ export interface DashboardSummary {
   pendingAmount: number
   overdueAmount: number
   totalInvoices: number
+  purchaseChange: number
+  revenueChange: number
+  paidChange: number
+  pendingChange: number
 }
 
 export interface User {
