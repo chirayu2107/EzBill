@@ -6,7 +6,7 @@ import { Link, useLocation } from "react-router-dom"
 import { motion, AnimatePresence } from "framer-motion"
 import { useAuth } from "../../context/AuthContext"
 import { useTheme } from "../../context/ThemeContext"
-import { LayoutDashboard, FileText, Plus, Receipt, User, LogOut, BarChart3, Menu, X, ShoppingBag, Sun, Moon, BookOpen } from "lucide-react"
+import { LayoutDashboard, FileText, Plus, Receipt, User, LogOut, BarChart3, Menu, X, ShoppingBag, Sun, Moon, BookOpen, FileSpreadsheet } from "lucide-react"
 import Button from "../UI/Button"
 
 const Sidebar: React.FC = () => {
@@ -21,6 +21,7 @@ const Sidebar: React.FC = () => {
     { path: "/purchase-bills", icon: ShoppingBag, label: "Purchase Bills" },
     { path: "/create-invoice", icon: Plus, label: "Create Invoice" },
     { path: "/ledgers", icon: BookOpen, label: "Ledgers" },
+    { path: "/gst-reports", icon: FileSpreadsheet, label: "GST Reports" },
     { path: "/analytics", icon: BarChart3, label: "Analytics" },
     { path: "/profile", icon: User, label: "Profile" },
   ]

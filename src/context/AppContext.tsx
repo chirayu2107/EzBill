@@ -395,6 +395,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     return purchaseBills.find((bill) => bill.id === id)
   }
 
+
   return (
     <AppContext.Provider
       value={{

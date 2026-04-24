@@ -13,7 +13,11 @@ import Button from "../UI/Button"
 import Card from "../UI/Card"
 
 const CreatePurchaseBill: React.FC = () => {
-  const { addPurchaseBill, updatePurchaseBill, getPurchaseBillById } = useApp()
+  const { 
+    addPurchaseBill, 
+    updatePurchaseBill, 
+    getPurchaseBillById, 
+  } = useApp()
   const { user } = useAuth()
   const navigate = useNavigate()
   const { id } = useParams()
@@ -78,6 +82,7 @@ const CreatePurchaseBill: React.FC = () => {
       }),
     )
   }
+
 
   const subtotal = calculateSubtotal(items)
   const gstBreakdown = calculateGSTBreakdown(subtotal, user?.state || "", vendorState)
@@ -291,14 +296,14 @@ const CreatePurchaseBill: React.FC = () => {
                     <div className="block md:hidden space-y-4">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 transition-colors">Item Name *</label>
-                        <input
-                          type="text"
-                          value={item.name}
-                          onChange={(e) => updateItem(item.id, "name", e.target.value)}
-                          className="w-full px-3 py-2 bg-white dark:bg-gray-600 border border-gray-200 dark:border-gray-500 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm transition-colors"
-                          placeholder="Enter item name"
-                          required
-                        />
+                          <input
+                            type="text"
+                            value={item.name}
+                            onChange={(e) => updateItem(item.id, "name", e.target.value)}
+                            className="w-full px-3 py-2 bg-white dark:bg-gray-600 border border-gray-200 dark:border-gray-500 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 text-sm transition-colors"
+                            placeholder="Enter item name"
+                            required
+                          />
                       </div>
                       <div className="grid grid-cols-2 gap-3">
                         <div>

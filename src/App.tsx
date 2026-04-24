@@ -15,6 +15,7 @@ import Analytics from "./components/Analytics/Analytics"
 import PurchaseBillsPage from "./components/PurchaseBills/PurchaseBillsPage"
 import CreatePurchaseBill from "./components/PurchaseBills/CreatePurchaseBill"
 import LedgersPage from "./components/Invoice/LedgersPage"
+import GSTReports from "./components/Analytics/GSTReports"
 import ToastContainer from "./components/UI/ToastContainer"
 import { useToast } from "./hooks/useToast"
 
@@ -43,6 +44,7 @@ function AppContent() {
             <Route path="create-purchase-bill" element={<CreatePurchaseBill />} />
             <Route path="edit-purchase-bill/:id" element={<CreatePurchaseBill />} />
             <Route path="ledgers" element={<LedgersPage />} />
+            <Route path="gst-reports" element={<GSTReports />} />
             <Route path="analytics" element={<Analytics />} />
             <Route path="profile" element={<Profile />} />
           </Route>
