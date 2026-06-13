@@ -98,7 +98,7 @@ const LedgersPage: React.FC = () => {
             placeholder="Search customer..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-11 pr-4 py-3 bg-white dark:bg-white/[0.03] border border-gray-200 dark:border-gray-800/50 rounded-xl text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-400/40 transition-all placeholder:text-gray-400 shadow-sm"
+            className="w-full pl-11 pr-4 py-3 bg-white dark:bg-[#1F1F22] border border-gray-200 dark:border-[#2A2A2E] rounded-xl text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-400/40 transition-all placeholder:text-gray-400 shadow-sm"
           />
         </div>
       </motion.div>
@@ -132,7 +132,7 @@ const LedgersPage: React.FC = () => {
                   {filtered.map((group, idx) => (
                     <motion.tr
                       key={group.name}
-                      className="border-b border-gray-50 dark:border-gray-800/30 hover:bg-gray-50/80 dark:hover:bg-white/[0.02] transition-colors duration-150"
+                      className="border-b border-gray-50 dark:border-[#2A2A2E] hover:bg-gray-50/80 dark:hover:bg-white/[0.02] transition-colors duration-150"
                       initial={{ opacity: 0, x: -10 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: idx * 0.04 }}

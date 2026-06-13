@@ -64,7 +64,7 @@ function FormInput({
           placeholder={placeholder}
           className={`
             w-full ${Icon ? "pl-10" : "pl-3.5"} pr-3.5 py-2.5
-            bg-white dark:bg-white/[0.04] 
+            bg-white dark:bg-[#1F1F22] 
             border border-gray-200 dark:border-white/[0.08]
             rounded-xl text-[14px] text-gray-900 dark:text-white
             placeholder:text-gray-400 dark:placeholder:text-gray-600
@@ -122,7 +122,7 @@ function FormTextarea({
           rows={rows}
           className={`
             w-full ${Icon ? "pl-10" : "pl-3.5"} pr-3.5 py-2.5
-            bg-white dark:bg-white/[0.04]
+            bg-white dark:bg-[#1F1F22]
             border border-gray-200 dark:border-white/[0.08]
             rounded-xl text-[14px] text-gray-900 dark:text-white
             placeholder:text-gray-400 dark:placeholder:text-gray-600
@@ -400,7 +400,7 @@ const Profile: React.FC = () => {
                 Edit Profile
               </button>
               {/* Separator */}
-              <div className="w-px h-5 bg-gray-200 dark:bg-white/[0.08] mx-0.5" />
+              <div className="w-px h-5 bg-gray-200 dark:bg-[#2A2A2E] mx-0.5" />
               <button
                 type="button"
                 onClick={handleSignOut}
@@ -554,7 +554,7 @@ const Profile: React.FC = () => {
             {/* Section: Personal Information */}
             <div
               className="rounded-2xl border border-gray-200/80 dark:border-white/[0.06] overflow-hidden
-                         bg-white dark:bg-white/[0.02]"
+                         bg-white dark:bg-[#1A1A1E]"
               style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.02)" }}
             >
               {/* Noise texture */}
@@ -613,7 +613,7 @@ const Profile: React.FC = () => {
             {/* Section: Address */}
             <div
               className="rounded-2xl border border-gray-200/80 dark:border-white/[0.06] overflow-hidden
-                         bg-white dark:bg-white/[0.02]"
+                         bg-white dark:bg-[#1A1A1E]"
               style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.02)" }}
             >
               <div className="p-6">
@@ -662,7 +662,7 @@ const Profile: React.FC = () => {
             {/* Invoice Prefix */}
             <div
               className="rounded-2xl border border-gray-200/80 dark:border-white/[0.06] overflow-hidden
-                         bg-white dark:bg-white/[0.02]"
+                         bg-white dark:bg-[#1A1A1E]"
               style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.02)" }}
             >
               <div className="p-6">
@@ -681,7 +681,7 @@ const Profile: React.FC = () => {
                       value={formData.invoicePrefix}
                       onChange={(e) => handlePrefixChange(e.target.value)}
                       disabled={!isEditing}
-                      className="flex-1 px-3.5 py-2.5 bg-white dark:bg-white/[0.04] border border-gray-200 dark:border-white/[0.08] rounded-xl text-[14px] text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500/50 disabled:opacity-60 transition-all shadow-[inset_0_1px_2px_rgba(0,0,0,0.04)]"
+                      className="flex-1 px-3.5 py-2.5 bg-white dark:bg-[#1F1F22] border border-gray-200 dark:border-white/[0.08] rounded-xl text-[14px] text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500/50 disabled:opacity-60 transition-all shadow-[inset_0_1px_2px_rgba(0,0,0,0.04)]"
                       placeholder="e.g. ABCD"
                       minLength={2}
                       maxLength={6}
@@ -718,7 +718,7 @@ const Profile: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div
                 className="rounded-2xl border border-gray-200/80 dark:border-white/[0.06] overflow-hidden
-                           bg-white dark:bg-white/[0.02]"
+                           bg-white dark:bg-[#1A1A1E]"
                 style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.02)" }}
               >
                 <div className="p-6">
@@ -733,7 +733,7 @@ const Profile: React.FC = () => {
               </div>
               <div
                 className="rounded-2xl border border-gray-200/80 dark:border-white/[0.06] overflow-hidden
-                           bg-white dark:bg-white/[0.02]"
+                           bg-white dark:bg-[#1A1A1E]"
                 style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.02)" }}
               >
                 <div className="p-6">
@@ -751,7 +751,7 @@ const Profile: React.FC = () => {
             {/* Profile Completion */}
             <div
               className="rounded-2xl border border-gray-200/80 dark:border-white/[0.06] overflow-hidden
-                         bg-white dark:bg-white/[0.02]"
+                         bg-white dark:bg-[#1A1A1E]"
               style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.02)" }}
             >
               <div className="p-6">
@@ -766,7 +766,7 @@ const Profile: React.FC = () => {
                 </div>
 
                 {/* Progress bar */}
-                <div className="w-full h-2 bg-gray-100 dark:bg-white/[0.04] rounded-full overflow-hidden mb-5">
+                <div className="w-full h-2 bg-gray-100 dark:bg-[#1F1F22] rounded-full overflow-hidden mb-5">
                   <div
                     className="h-full rounded-full transition-all duration-700 ease-out"
                     style={{
@@ -806,7 +806,7 @@ const Profile: React.FC = () => {
           <div className="space-y-6 animate-fade-up">
             <div
               className="rounded-2xl border border-gray-200/80 dark:border-white/[0.06] overflow-hidden
-                         bg-white dark:bg-white/[0.02]"
+                         bg-white dark:bg-[#1A1A1E]"
               style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.02)" }}
             >
               <div className="p-6">

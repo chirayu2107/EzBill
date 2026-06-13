@@ -178,7 +178,7 @@ const CreatePurchaseBill: React.FC = () => {
                     type="text"
                     value={vendorName}
                     onChange={(e) => setVendorName(e.target.value)}
-                    className="w-full px-3.5 py-2.5 bg-white dark:bg-white/[0.03] border border-gray-200 dark:border-gray-800/50 rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-400/40 text-sm transition-all placeholder:text-gray-400"
+                    className="w-full px-3.5 py-2.5 bg-white dark:bg-[#1F1F22] border border-gray-200 dark:border-[#2A2A2E] rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-400/40 text-sm transition-all placeholder:text-gray-400"
                     placeholder="Enter vendor name"
                     required
                   />
@@ -188,7 +188,7 @@ const CreatePurchaseBill: React.FC = () => {
                   <textarea
                     value={vendorAddress}
                     onChange={(e) => setVendorAddress(e.target.value)}
-                    className="w-full px-3.5 py-2.5 bg-white dark:bg-white/[0.03] border border-gray-200 dark:border-gray-800/50 rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-400/40 text-sm transition-all placeholder:text-gray-400"
+                    className="w-full px-3.5 py-2.5 bg-white dark:bg-[#1F1F22] border border-gray-200 dark:border-[#2A2A2E] rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-400/40 text-sm transition-all placeholder:text-gray-400"
                     placeholder="Enter vendor address"
                     rows={3}
                   />
@@ -199,7 +199,7 @@ const CreatePurchaseBill: React.FC = () => {
                     type="text"
                     value={vendorState}
                     onChange={(e) => setVendorState(e.target.value)}
-                    className="w-full px-3.5 py-2.5 bg-white dark:bg-white/[0.03] border border-gray-200 dark:border-gray-800/50 rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-400/40 text-sm transition-all placeholder:text-gray-400"
+                    className="w-full px-3.5 py-2.5 bg-white dark:bg-[#1F1F22] border border-gray-200 dark:border-[#2A2A2E] rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-400/40 text-sm transition-all placeholder:text-gray-400"
                     placeholder="Enter vendor state"
                     required
                   />
@@ -210,7 +210,7 @@ const CreatePurchaseBill: React.FC = () => {
                     type="text"
                     value={vendorGSTIN}
                     onChange={(e) => setVendorGSTIN(e.target.value.toUpperCase())}
-                    className="w-full px-3.5 py-2.5 bg-white dark:bg-white/[0.03] border border-gray-200 dark:border-gray-800/50 rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-400/40 text-sm transition-all placeholder:text-gray-400"
+                    className="w-full px-3.5 py-2.5 bg-white dark:bg-[#1F1F22] border border-gray-200 dark:border-[#2A2A2E] rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-400/40 text-sm transition-all placeholder:text-gray-400"
                     placeholder="Enter GSTIN/UIN (optional)"
                   />
                 </div>
@@ -226,7 +226,7 @@ const CreatePurchaseBill: React.FC = () => {
                     type="text"
                     value={billNumber}
                     onChange={(e) => setBillNumber(e.target.value)}
-                    className="w-full px-3.5 py-2.5 bg-white dark:bg-white/[0.03] border border-gray-200 dark:border-gray-800/50 rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-400/40 text-sm transition-all placeholder:text-gray-400"
+                    className="w-full px-3.5 py-2.5 bg-white dark:bg-[#1F1F22] border border-gray-200 dark:border-[#2A2A2E] rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-400/40 text-sm transition-all placeholder:text-gray-400"
                     placeholder="Enter bill number from vendor"
                     required
                   />
@@ -237,7 +237,7 @@ const CreatePurchaseBill: React.FC = () => {
                     type="date"
                     value={billDate}
                     onChange={(e) => setBillDate(e.target.value)}
-                    className="w-full px-3.5 py-2.5 bg-white dark:bg-white/[0.03] border border-gray-200 dark:border-gray-800/50 rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-400/40 text-sm transition-all placeholder:text-gray-400"
+                    className="w-full px-3.5 py-2.5 bg-white dark:bg-[#1F1F22] border border-gray-200 dark:border-[#2A2A2E] rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-400/40 text-sm transition-all placeholder:text-gray-400"
                     required
                   />
                 </div>
@@ -247,7 +247,7 @@ const CreatePurchaseBill: React.FC = () => {
                     type="text"
                     value={vendorPAN}
                     onChange={(e) => setVendorPAN(e.target.value.toUpperCase())}
-                    className="w-full px-3.5 py-2.5 bg-white dark:bg-white/[0.03] border border-gray-200 dark:border-gray-800/50 rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-400/40 text-sm transition-all placeholder:text-gray-400"
+                    className="w-full px-3.5 py-2.5 bg-white dark:bg-[#1F1F22] border border-gray-200 dark:border-[#2A2A2E] rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-400/40 text-sm transition-all placeholder:text-gray-400"
                     placeholder="Enter PAN number (optional)"
                   />
                 </div>
@@ -300,7 +300,7 @@ const CreatePurchaseBill: React.FC = () => {
                             type="text"
                             value={item.name}
                             onChange={(e) => updateItem(item.id, "name", e.target.value)}
-                            className="w-full px-3.5 py-2.5 bg-white dark:bg-white/[0.03] border border-gray-200 dark:border-gray-800/50 rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-400/40 text-sm transition-all"
+                            className="w-full px-3.5 py-2.5 bg-white dark:bg-[#1F1F22] border border-gray-200 dark:border-[#2A2A2E] rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-400/40 text-sm transition-all"
                             placeholder="Enter item name"
                             required
                           />
@@ -312,7 +312,7 @@ const CreatePurchaseBill: React.FC = () => {
                             type="text"
                             value={item.hsnSac}
                             onChange={(e) => updateItem(item.id, "hsnSac", e.target.value)}
-                            className="w-full px-3.5 py-2.5 bg-white dark:bg-white/[0.03] border border-gray-200 dark:border-gray-800/50 rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-400/40 text-sm transition-all"
+                            className="w-full px-3.5 py-2.5 bg-white dark:bg-[#1F1F22] border border-gray-200 dark:border-[#2A2A2E] rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-400/40 text-sm transition-all"
                             placeholder="HSN/SAC"
                           />
                         </div>
@@ -322,7 +322,7 @@ const CreatePurchaseBill: React.FC = () => {
                             type="number"
                             value={item.quantity}
                             onChange={(e) => updateItem(item.id, "quantity", Number.parseInt(e.target.value) || 0)}
-                            className="w-full px-3.5 py-2.5 bg-white dark:bg-white/[0.03] border border-gray-200 dark:border-gray-800/50 rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-400/40 text-sm transition-all"
+                            className="w-full px-3.5 py-2.5 bg-white dark:bg-[#1F1F22] border border-gray-200 dark:border-[#2A2A2E] rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-400/40 text-sm transition-all"
                             min="1"
                             required
                           />
@@ -336,7 +336,7 @@ const CreatePurchaseBill: React.FC = () => {
                             placeholder="Enter rate"
                             value={item.rate === 0 ? "" : item.rate}
                             onChange={(e) => updateItem(item.id, "rate", Number.parseFloat(e.target.value) || 0)}
-                            className="w-full px-3.5 py-2.5 bg-white dark:bg-white/[0.03] border border-gray-200 dark:border-gray-800/50 rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-400/40 text-sm transition-all"
+                            className="w-full px-3.5 py-2.5 bg-white dark:bg-[#1F1F22] border border-gray-200 dark:border-[#2A2A2E] rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-400/40 text-sm transition-all"
                             min="0"
                             step="0.01"
                             required
@@ -344,7 +344,7 @@ const CreatePurchaseBill: React.FC = () => {
                         </div>
                         <div>
                           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 transition-colors">Amount</label>
-                          <div className="px-3.5 py-2.5 bg-gray-50 dark:bg-white/[0.02] border border-gray-200 dark:border-gray-800/50 rounded-xl text-gray-900 dark:text-white text-sm transition-all">
+                          <div className="px-3.5 py-2.5 bg-gray-50 dark:bg-[#1A1A1E] border border-gray-200 dark:border-[#2A2A2E] rounded-xl text-gray-900 dark:text-white text-sm transition-all">
                             {formatCurrency(item.lineTotal)}
                           </div>
                         </div>
@@ -370,7 +370,7 @@ const CreatePurchaseBill: React.FC = () => {
                           type="text"
                           value={item.name}
                           onChange={(e) => updateItem(item.id, "name", e.target.value)}
-                          className="w-full px-3.5 py-2.5 bg-white dark:bg-white/[0.03] border border-gray-200 dark:border-gray-800/50 rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-400/40 transition-all"
+                          className="w-full px-3.5 py-2.5 bg-white dark:bg-[#1F1F22] border border-gray-200 dark:border-[#2A2A2E] rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-400/40 transition-all"
                           placeholder="Enter item name"
                           required
                         />
@@ -381,7 +381,7 @@ const CreatePurchaseBill: React.FC = () => {
                           type="text"
                           value={item.hsnSac}
                           onChange={(e) => updateItem(item.id, "hsnSac", e.target.value)}
-                          className="w-full px-3.5 py-2.5 bg-white dark:bg-white/[0.03] border border-gray-200 dark:border-gray-800/50 rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-400/40 transition-all"
+                          className="w-full px-3.5 py-2.5 bg-white dark:bg-[#1F1F22] border border-gray-200 dark:border-[#2A2A2E] rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-400/40 transition-all"
                           placeholder="HSN/SAC"
                         />
                       </div>
@@ -391,7 +391,7 @@ const CreatePurchaseBill: React.FC = () => {
                           type="number"
                           value={item.quantity}
                           onChange={(e) => updateItem(item.id, "quantity", Number.parseInt(e.target.value) || 0)}
-                          className="w-full px-3.5 py-2.5 bg-white dark:bg-white/[0.03] border border-gray-200 dark:border-gray-800/50 rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-400/40 transition-all"
+                          className="w-full px-3.5 py-2.5 bg-white dark:bg-[#1F1F22] border border-gray-200 dark:border-[#2A2A2E] rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-400/40 transition-all"
                           min="1"
                           required
                         />
@@ -403,7 +403,7 @@ const CreatePurchaseBill: React.FC = () => {
                           placeholder="Enter rate"
                           value={item.rate === 0 ? "" : item.rate}
                           onChange={(e) => updateItem(item.id, "rate", Number.parseFloat(e.target.value) || 0)}
-                          className="w-full px-3.5 py-2.5 bg-white dark:bg-white/[0.03] border border-gray-200 dark:border-gray-800/50 rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-400/40 transition-all"
+                          className="w-full px-3.5 py-2.5 bg-white dark:bg-[#1F1F22] border border-gray-200 dark:border-[#2A2A2E] rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-400/40 transition-all"
                           min="0"
                           step="0.01"
                           required
@@ -411,7 +411,7 @@ const CreatePurchaseBill: React.FC = () => {
                       </div>
                       <div className="md:col-span-2">
                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 transition-colors">Amount</label>
-                        <div className="px-3.5 py-2.5 bg-gray-50 dark:bg-white/[0.02] border border-gray-200 dark:border-gray-800/50 rounded-xl text-gray-900 dark:text-white transition-all">
+                        <div className="px-3.5 py-2.5 bg-gray-50 dark:bg-[#1A1A1E] border border-gray-200 dark:border-[#2A2A2E] rounded-xl text-gray-900 dark:text-white transition-all">
                           {formatCurrency(item.lineTotal)}
                         </div>
                       </div>

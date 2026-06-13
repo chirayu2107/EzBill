@@ -192,7 +192,7 @@ const Dashboard: React.FC = () => {
         <div className="flex items-center gap-2 w-full md:w-auto">
           <button
             onClick={() => navigate("/dashboard/create-invoice")}
-            className="inline-flex items-center justify-center gap-2 px-4 py-2 text-xs font-semibold rounded-xl bg-white/30 dark:bg-white/[0.04] backdrop-blur-sm border border-gray-200/40 dark:border-white/[0.06] text-emerald-600 dark:text-emerald-400 hover:bg-white/50 dark:hover:bg-white/[0.08] hover:backdrop-blur-lg hover:border-gray-200/60 dark:hover:border-white/[0.12] active:bg-white/70 dark:active:bg-white/[0.12] active:scale-[0.97] active:border-gray-300/60 dark:active:border-white/[0.15] transition-all duration-200 flex-1 md:flex-none"
+            className="inline-flex items-center justify-center gap-2 px-4 py-2 text-xs font-semibold rounded-xl bg-white/30 dark:bg-[#1F1F22] backdrop-blur-sm border border-gray-200/40 dark:border-[#2A2A2E] text-emerald-600 dark:text-emerald-400 hover:bg-white/50 dark:hover:bg-[#27272A] hover:backdrop-blur-lg hover:border-gray-200/60 dark:hover:border-[#3A3A3F] active:bg-white/70 dark:active:bg-[#2E2E32] active:scale-[0.97] active:border-gray-300/60 dark:active:border-[#3A3A3F] transition-all duration-200 flex-1 md:flex-none"
           >
             <Plus className="w-4 h-4" />
             New Invoice
@@ -200,7 +200,7 @@ const Dashboard: React.FC = () => {
           <button
             onClick={handleRefresh}
             disabled={refreshing}
-            className="p-2.5 rounded-xl bg-white/30 dark:bg-white/[0.04] backdrop-blur-sm border border-gray-200/40 dark:border-white/[0.06] text-gray-600 dark:text-gray-400 hover:bg-white/50 dark:hover:bg-white/[0.08] hover:backdrop-blur-lg hover:border-gray-200/60 dark:hover:border-white/[0.12] active:bg-white/70 dark:active:bg-white/[0.12] active:scale-[0.97] active:border-gray-300/60 dark:active:border-white/[0.15] transition-all duration-200 disabled:opacity-50"
+            className="p-2.5 rounded-xl bg-white/30 dark:bg-[#1F1F22] backdrop-blur-sm border border-gray-200/40 dark:border-[#2A2A2E] text-gray-600 dark:text-[#9E9EA7] hover:bg-white/50 dark:hover:bg-[#27272A] hover:backdrop-blur-lg hover:border-gray-200/60 dark:hover:border-[#3A3A3F] active:bg-white/70 dark:active:bg-[#2E2E32] active:scale-[0.97] active:border-gray-300/60 dark:active:border-[#3A3A3F] transition-all duration-200 disabled:opacity-50"
             title="Refresh"
           >
             <RefreshCw className={`w-4 h-4 ${refreshing ? "animate-spin" : ""}`} />
@@ -296,7 +296,7 @@ const Dashboard: React.FC = () => {
               <AnimatedNumber value={summary.paidAmount} format={(n) => formatCurrency(Math.round(n))} />
             </p>
             <div className="flex items-center gap-2 mt-2">
-              <div className="flex-1 h-1.5 bg-gray-200/60 dark:bg-gray-700 rounded-full overflow-hidden">
+              <div className="flex-1 h-1.5 bg-gray-200/60 dark:bg-[#2A2A2E] rounded-full overflow-hidden">
                 <motion.div
                   className="h-full bg-emerald-500 rounded-full"
                   initial={{ width: 0 }}
@@ -333,20 +333,20 @@ const Dashboard: React.FC = () => {
         {/* Quick Links row — spans 2 cols on mobile, 2 on desktop */}
         <motion.div variants={itemVariants} className="col-span-2">
           <Card padding="sm" className="h-full">
-            <div className="grid grid-cols-3 divide-x divide-gray-100 dark:divide-gray-800">
-              <button onClick={() => navigate("/dashboard/create-invoice")} className="flex flex-col items-center gap-1.5 py-3 hover:bg-gray-50 dark:hover:bg-white/5 rounded-l-xl transition-colors">
+            <div className="grid grid-cols-3 divide-x divide-gray-100 dark:divide-[#2A2A2E]">
+              <button onClick={() => navigate("/dashboard/create-invoice")} className="flex flex-col items-center gap-1.5 py-3 hover:bg-gray-50 dark:hover:bg-[#27272A] rounded-l-xl transition-colors">
                 <div className="p-2 rounded-xl bg-emerald-50 dark:bg-emerald-500/10">
                   <Plus className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                 </div>
                 <span className="text-xs font-medium text-gray-700 dark:text-gray-300">New Invoice</span>
               </button>
-              <button onClick={() => navigate("/dashboard/invoices")} className="flex flex-col items-center gap-1.5 py-3 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
+              <button onClick={() => navigate("/dashboard/invoices")} className="flex flex-col items-center gap-1.5 py-3 hover:bg-gray-50 dark:hover:bg-[#27272A] transition-colors">
                 <div className="p-2 rounded-xl bg-violet-50 dark:bg-violet-500/10">
                   <FileText className="w-4 h-4 text-violet-600 dark:text-violet-400" />
                 </div>
                 <span className="text-xs font-medium text-gray-700 dark:text-gray-300">All Invoices</span>
               </button>
-              <button onClick={() => navigate("/dashboard/gst-reports")} className="flex flex-col items-center gap-1.5 py-3 hover:bg-gray-50 dark:hover:bg-white/5 rounded-r-xl transition-colors">
+              <button onClick={() => navigate("/dashboard/gst-reports")} className="flex flex-col items-center gap-1.5 py-3 hover:bg-gray-50 dark:hover:bg-[#27272A] rounded-r-xl transition-colors">
                 <div className="p-2 rounded-xl bg-amber-50 dark:bg-amber-500/10">
                   <BarChart3 className="w-4 h-4 text-amber-600 dark:text-amber-400" />
                 </div>
@@ -364,15 +364,15 @@ const Dashboard: React.FC = () => {
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Recent Invoices</h2>
             <p className="text-gray-500 dark:text-gray-400 text-sm">Your latest transactions</p>
           </div>
-          <div className="flex gap-1 bg-gray-100 dark:bg-white/5 rounded-lg p-0.5">
+          <div className="flex gap-1 bg-gray-100 dark:bg-[#1F1F22] rounded-lg p-0.5">
             {filters.map((filter) => (
               <button
                 key={filter.value}
                 onClick={() => setStatusFilter(filter.value as any)}
                 className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all whitespace-nowrap ${
                   statusFilter === filter.value
-                    ? "bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm"
-                    : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
+                    ? "bg-white dark:bg-[#27272A] text-gray-900 dark:text-[#ECECEF] shadow-sm"
+                    : "text-gray-500 dark:text-[#63636E] hover:text-gray-700 dark:hover:text-[#9E9EA7]"
                 }`}
               >
                 {filter.label}

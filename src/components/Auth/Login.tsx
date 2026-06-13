@@ -42,7 +42,7 @@ const Login: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row bg-surface-light dark:bg-[#0f1117] text-gray-900 dark:text-white transition-colors duration-300 relative">
+    <div className="min-h-screen flex flex-col md:flex-row bg-surface-light dark:bg-[#111113] text-gray-900 dark:text-white transition-colors duration-300 relative">
       {/* Ambient background gradients */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-1/4 left-1/4 w-[600px] h-[600px] bg-emerald-500/5 rounded-full blur-3xl" />
@@ -80,7 +80,7 @@ const Login: React.FC = () => {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full pl-10 pr-3 py-2.5 bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 rounded-xl text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500/40 transition-all placeholder:text-gray-400"
+                    className="w-full pl-10 pr-3 py-2.5 bg-gray-50 dark:bg-[#1F1F22] border border-gray-200 dark:border-[#2A2A2E] rounded-xl text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500/40 transition-all placeholder:text-gray-400 dark:placeholder:text-[#63636E]"
                     placeholder="Enter your email"
                     required
                     disabled={loading}
@@ -96,7 +96,7 @@ const Login: React.FC = () => {
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full pl-10 pr-3 py-2.5 bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 rounded-xl text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500/40 transition-all placeholder:text-gray-400"
+                    className="w-full pl-10 pr-3 py-2.5 bg-gray-50 dark:bg-[#1F1F22] border border-gray-200 dark:border-[#2A2A2E] rounded-xl text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500/40 transition-all placeholder:text-gray-400 dark:placeholder:text-[#63636E]"
                     placeholder="Enter your password"
                     required
                     disabled={loading}
@@ -144,15 +144,15 @@ const Login: React.FC = () => {
       </div>
 
       {/* Right Side: Dashboard UI Preview (Hidden on Mobile) */}
-      <div className="hidden md:flex w-full md:w-1/2 items-center justify-end bg-gray-900 dark:bg-gray-950 overflow-hidden px-4 md:px-0 relative">
+      <div className="hidden md:flex w-full md:w-1/2 items-center justify-end bg-gray-900 dark:bg-[#19191B] overflow-hidden px-4 md:px-0 relative">
         {/* Ambient gradient orbs */}
         <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-emerald-500/8 rounded-full blur-3xl" />
         <div className="absolute bottom-1/4 right-1/4 w-48 h-48 bg-green-500/6 rounded-full blur-3xl" />
         
-        <div className="rounded-2xl border border-gray-700/50 shadow-2xl shadow-black/20 w-full max-w-none scale-[1.10] md:ml-14 overflow-hidden relative z-10">
+        <div className="rounded-2xl border border-gray-700/50 dark:border-[#2A2A2E] shadow-2xl shadow-black/20 w-full max-w-none scale-[1.10] md:ml-14 overflow-hidden relative z-10">
           <a href="/">
             <img
-              src="https://res.cloudinary.com/dkoiyuyhj/image/upload/v1781378460/zc0xgzmffj78xkykvpst.png"
+              src="https://res.cloudinary.com/dkoiyuyhj/image/upload/v1781382931/b4sbmxypebypu6dgqbru.png"
               alt="Dashboard Preview"
               className="object-contain w-full h-full"
             />

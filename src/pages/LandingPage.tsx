@@ -131,13 +131,13 @@ const LandingPage: React.FC = () => {
   ]
 
   return (
-    <div className="min-h-screen bg-surface-light dark:bg-[#0b0f19] text-gray-900 dark:text-gray-100 transition-colors duration-300 overflow-x-hidden w-full">
+    <div className="min-h-screen bg-surface-light dark:bg-[#111113] text-gray-900 dark:text-gray-100 transition-colors duration-300 overflow-x-hidden w-full">
       {/* Decorative Orbs */}
       <div className="absolute top-0 left-1/4 w-[300px] md:w-[500px] h-[300px] md:h-[500px] bg-emerald-500/10 dark:bg-emerald-500/5 rounded-full blur-3xl pointer-events-none z-0" />
       <div className="absolute top-1/3 right-1/4 w-[250px] md:w-[400px] h-[250px] md:h-[400px] bg-teal-500/10 dark:bg-teal-500/5 rounded-full blur-3xl pointer-events-none z-0" />
 
       {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-white/60 dark:bg-[#0b0f19]/50 border-b border-white/20 dark:border-white/[0.06] transition-colors">
+      <header className="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-white/60 dark:bg-[#111113]/80 border-b border-white/20 dark:border-[#2A2A2E] transition-colors">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 sm:h-16 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <div className="w-9 h-9 bg-gradient-to-br from-emerald-500 to-green-600 rounded-lg flex items-center justify-center shadow-lg shadow-emerald-500/20">
@@ -160,7 +160,7 @@ const LandingPage: React.FC = () => {
             {/* Theme Toggle */}
             <button
               onClick={toggleTheme}
-              className="p-1.5 sm:p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              className="p-1.5 sm:p-2 rounded-lg text-gray-500 dark:text-[#9E9EA7] hover:bg-gray-100 dark:hover:bg-[#27272A] transition-colors"
               aria-label="Toggle Theme"
             >
               {theme === "dark" ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-indigo-600" />}
@@ -220,7 +220,7 @@ const LandingPage: React.FC = () => {
                 </Button>
               </Link>
               <Link to="/login" className="w-full sm:w-auto">
-                <Button variant="secondary" size="lg" className="w-full sm:w-auto bg-white/50 dark:bg-[#0f1422]/50 backdrop-blur-sm">
+                <Button variant="secondary" size="lg" className="w-full sm:w-auto bg-white/50 dark:bg-[#1F1F22]/80 backdrop-blur-sm">
                   Schedule Demo
                 </Button>
               </Link>
@@ -253,13 +253,13 @@ const LandingPage: React.FC = () => {
               transformOrigin: "50% 0%",
               willChange: "transform, opacity",
             }}
-            className="rounded-2xl border-2 border-emerald-300 dark:border-gray-700/60 bg-white dark:bg-gray-900/40 p-1.5 shadow-[0_20px_60px_-8px_rgba(16,185,129,0.35),0_0_0_1px_rgba(16,185,129,0.1)] dark:shadow-[0_32px_80px_-12px_rgba(0,0,0,0.6)]"
+            className="rounded-2xl border-2 border-emerald-300 dark:border-[#2A2A2E] bg-white dark:bg-[#19191B] p-1.5 shadow-[0_20px_60px_-8px_rgba(16,185,129,0.35),0_0_0_1px_rgba(16,185,129,0.1)] dark:shadow-[0_32px_80px_-12px_rgba(0,0,0,0.6)]"
           >
             <div className="rounded-xl overflow-hidden">
               <img
                 src={
                   theme === "dark"
-                    ? "https://res.cloudinary.com/dkoiyuyhj/image/upload/v1781378460/zc0xgzmffj78xkykvpst.png"
+                    ? "https://res.cloudinary.com/dkoiyuyhj/image/upload/v1781382931/b4sbmxypebypu6dgqbru.png"
                     : "https://res.cloudinary.com/dkoiyuyhj/image/upload/v1781378408/hpzq3yvz0mxuegdv9phv.png"
                 }
                 alt="EzBill SaaS App Mockup"
@@ -271,7 +271,7 @@ const LandingPage: React.FC = () => {
       </section>
 
       {/* Features Grid */}
-      <section id="features" className="py-16 sm:py-24 border-t border-gray-200/50 dark:border-gray-800/50 bg-gray-50/50 dark:bg-gray-950/20">
+      <section id="features" className="py-16 sm:py-24 border-t border-gray-200/50 dark:border-[#2A2A2E] bg-gray-50/50 dark:bg-[#19191B]/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-16">
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight mb-4 text-gray-900 dark:text-white">
@@ -288,9 +288,9 @@ const LandingPage: React.FC = () => {
               return (
                 <div
                   key={i}
-                  className="p-5 sm:p-6 rounded-2xl border border-gray-200 dark:border-gray-800/80 bg-white dark:bg-gray-900/50 hover:shadow-lg hover:shadow-emerald-500/5 dark:hover:bg-gray-900/80 hover:-translate-y-1 transition-all duration-300"
+                  className="p-5 sm:p-6 rounded-2xl border border-gray-200 dark:border-[#2A2A2E] bg-white dark:bg-[#1F1F22] hover:shadow-lg hover:shadow-emerald-500/5 dark:hover:border-[#3A3A3F] dark:hover:bg-[#27272A] hover:-translate-y-1 transition-all duration-300"
                 >
-                  <div className="w-10 h-10 bg-emerald-500/10 dark:bg-emerald-500/5 text-emerald-500 dark:text-emerald-400 rounded-lg flex items-center justify-center mb-5">
+                  <div className="w-10 h-10 bg-emerald-500/10 dark:bg-emerald-500/10 text-emerald-500 dark:text-emerald-400 rounded-lg flex items-center justify-center mb-5">
                     <Icon className="w-5 h-5" />
                   </div>
                   <h3 className="text-lg font-bold mb-2 text-gray-900 dark:text-white">{feature.title}</h3>
@@ -313,7 +313,7 @@ const LandingPage: React.FC = () => {
           </p>
 
           {/* Toggle Switch */}
-          <div className="inline-flex items-center gap-3 bg-gray-100 dark:bg-gray-900 p-1 rounded-full border border-gray-200/50 dark:border-gray-800/50">
+          <div className="inline-flex items-center gap-3 bg-gray-100 dark:bg-[#1F1F22] p-1 rounded-full border border-gray-200/50 dark:border-[#2A2A2E]">
             <button
               onClick={() => setIsAnnual(false)}
               className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all ${
@@ -343,7 +343,7 @@ const LandingPage: React.FC = () => {
         {/* Pricing Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 max-w-3xl mx-auto items-stretch">
           {/* Free Tier */}
-          <div className="p-6 sm:p-8 rounded-2xl sm:rounded-3xl border border-gray-200 dark:border-gray-800 bg-white/80 dark:bg-gray-900/50 flex flex-col justify-between">
+          <div className="p-6 sm:p-8 rounded-2xl sm:rounded-3xl border border-gray-200 dark:border-[#2A2A2E] bg-white/80 dark:bg-[#1F1F22] flex flex-col justify-between">
             <div>
               <div className="mb-6">
                 <span className="text-xs font-bold uppercase tracking-wider text-gray-500">Free Tier</span>
@@ -378,7 +378,7 @@ const LandingPage: React.FC = () => {
           </div>
 
           {/* Pro Tier (Popular) */}
-          <div className="p-6 sm:p-8 rounded-2xl sm:rounded-3xl border-2 border-emerald-500 bg-white dark:bg-gray-900 shadow-xl shadow-emerald-500/5 flex flex-col justify-between relative">
+          <div className="p-6 sm:p-8 rounded-2xl sm:rounded-3xl border-2 border-emerald-500 bg-white dark:bg-[#1F1F22] shadow-xl shadow-emerald-500/5 flex flex-col justify-between relative">
             <span className="absolute top-0 right-8 transform -translate-y-1/2 bg-emerald-500 text-white px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">
               Most Popular
             </span>
@@ -426,7 +426,7 @@ const LandingPage: React.FC = () => {
       </section>
 
       {/* Testimonials */}
-      <section className="py-16 sm:py-24 border-t border-gray-200/50 dark:border-gray-800/50 bg-gray-50/50 dark:bg-gray-950/20">
+      <section className="py-16 sm:py-24 border-t border-gray-200/50 dark:border-[#2A2A2E] bg-gray-50/50 dark:bg-[#19191B]/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-16">
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight mb-4 text-gray-900 dark:text-white">
@@ -441,7 +441,7 @@ const LandingPage: React.FC = () => {
             {testimonials.map((test, i) => (
               <div
                 key={i}
-                className="p-6 rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900/60 shadow-sm hover:shadow-md transition-all duration-300"
+                className="p-6 rounded-2xl border border-gray-200 dark:border-[#2A2A2E] bg-white dark:bg-[#1F1F22] shadow-sm hover:shadow-md dark:hover:border-[#3A3A3F] transition-all duration-300"
               >
                 <div className="flex items-center gap-1 text-amber-400 mb-4">
                   {[...Array(test.rating)].map((_, index) => (
@@ -478,11 +478,11 @@ const LandingPage: React.FC = () => {
           {faqs.map((faq, i) => (
             <div
               key={i}
-              className="border border-gray-200 dark:border-gray-800/80 rounded-2xl bg-white dark:bg-gray-900/30 overflow-hidden"
+              className="border border-gray-200 dark:border-[#2A2A2E] rounded-2xl bg-white dark:bg-[#1F1F22] overflow-hidden"
             >
               <button
                 onClick={() => setActiveFaq(activeFaq === i ? null : i)}
-                className="w-full flex items-center justify-between p-4 sm:p-5 text-left text-sm sm:text-base font-bold text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-900/40 transition-all duration-200"
+                className="w-full flex items-center justify-between p-4 sm:p-5 text-left text-sm sm:text-base font-bold text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-[#27272A] transition-all duration-200"
               >
                 <span>{faq.q}</span>
                 <ChevronDown
@@ -492,7 +492,7 @@ const LandingPage: React.FC = () => {
                 />
               </button>
               {activeFaq === i && (
-                <div className="p-4 sm:p-5 pt-0 text-xs sm:text-sm text-gray-600 dark:text-gray-400 border-t border-gray-100 dark:border-gray-800/30 leading-relaxed">
+                <div className="p-4 sm:p-5 pt-0 text-xs sm:text-sm text-gray-600 dark:text-gray-400 border-t border-gray-100 dark:border-[#2A2A2E] leading-relaxed">
                   {faq.a}
                 </div>
               )}
@@ -542,7 +542,7 @@ const LandingPage: React.FC = () => {
       </section>
 
       {/* Footer */}
-      <footer className="py-8 sm:py-12 border-t border-gray-200/50 dark:border-gray-800/50 bg-gray-50/50 dark:bg-gray-950/40">
+      <footer className="py-8 sm:py-12 border-t border-gray-200/50 dark:border-[#2A2A2E] bg-gray-50/50 dark:bg-[#19191B]/60">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col md:flex-row items-center justify-between gap-4 sm:gap-6 text-xs sm:text-sm text-gray-500 text-center md:text-left">
           <div className="flex items-center gap-2.5">
             <div className="w-7 h-7 bg-gradient-to-br from-emerald-500 to-green-600 rounded-md flex items-center justify-center">
