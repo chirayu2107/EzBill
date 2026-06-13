@@ -54,10 +54,12 @@ const Login: React.FC = () => {
         <div className="w-full max-w-md my-auto">
           <div className="text-center mb-8">
             <div className="flex items-center justify-center gap-3 mb-4">
-              <div className="w-11 h-11 bg-gradient-to-br from-emerald-500 to-green-600 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/20">
-                <Receipt className="w-5 h-5 text-white" />
-              </div>
-              <h1 className="text-2xl font-bold tracking-heading-tight text-gray-900 dark:text-white">EzBill</h1>
+              <Link to="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+                <div className="w-11 h-11 bg-gradient-to-br from-emerald-500 to-green-600 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/20">
+                  <Receipt className="w-5 h-5 text-white" />
+                </div>
+                <h1 className="text-2xl font-bold tracking-heading-tight text-gray-900 dark:text-white">EzBill</h1>
+              </Link>
             </div>
             <p className="text-gray-500 dark:text-gray-400 text-sm">Welcome back! Please enter your details.</p>
           </div>
@@ -150,7 +152,7 @@ const Login: React.FC = () => {
         <div className="rounded-2xl border border-gray-700/50 shadow-2xl shadow-black/20 w-full max-w-none scale-[1.10] md:ml-14 overflow-hidden relative z-10">
           <a href="/">
             <img
-              src="https://res.cloudinary.com/dkoiyuyhj/image/upload/v1754549620/htp9nm9ywe8hblzrjygd.png"
+              src="https://res.cloudinary.com/dkoiyuyhj/image/upload/v1781378460/zc0xgzmffj78xkykvpst.png"
               alt="Dashboard Preview"
               className="object-contain w-full h-full"
             />

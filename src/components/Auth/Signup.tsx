@@ -110,10 +110,12 @@ const Signup: React.FC = () => {
         <div className="w-full max-w-md my-auto relative z-10">
           <div className="text-center mb-8">
             <div className="flex items-center justify-center gap-3 mb-4">
-              <div className="w-11 h-11 bg-gradient-to-br from-emerald-500 to-green-600 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/20">
-                <Receipt className="w-5 h-5 text-white" />
-              </div>
-              <h1 className="text-2xl font-bold tracking-heading-tight text-gray-900 dark:text-white">EzBill</h1>
+              <Link to="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+                <div className="w-11 h-11 bg-gradient-to-br from-emerald-500 to-green-600 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/20">
+                  <Receipt className="w-5 h-5 text-white" />
+                </div>
+                <h1 className="text-2xl font-bold tracking-heading-tight text-gray-900 dark:text-white">EzBill</h1>
+              </Link>
             </div>
             <p className="text-gray-500 dark:text-gray-400 text-sm">Start your 30-day free trial</p>
           </div>

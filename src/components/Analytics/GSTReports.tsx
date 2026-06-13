@@ -5,7 +5,6 @@ import { useState, useMemo } from "react"
 import { motion } from "framer-motion"
 import { useApp } from "../../context/AppContext"
 import { 
-  FileSpreadsheet, 
   Download, 
   Building2, 
   Users, 

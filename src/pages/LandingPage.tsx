@@ -517,7 +517,7 @@ const LandingPage: React.FC = () => {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               {isAuthenticated ? (
                 <Link to="/dashboard" className="w-full sm:w-auto">
-                  <Button variant="primary" size="lg" className="w-full sm:w-auto bg-white hover:bg-emerald-50 text-emerald-700">
+                  <Button variant="primary" size="lg" className="w-full sm:w-auto !bg-white hover:!bg-gray-50 !text-emerald-700 !border-white !shadow-lg">
                     Go to Dashboard
                     <ArrowRight className="w-4 h-4" />
                   </Button>
@@ -525,7 +525,7 @@ const LandingPage: React.FC = () => {
               ) : (
                 <>
                   <Link to="/signup" className="w-full sm:w-auto">
-                    <Button variant="primary" size="lg" className="w-full sm:w-auto bg-white hover:bg-emerald-50 text-emerald-700">
+                    <Button variant="primary" size="lg" className="w-full sm:w-auto !bg-white hover:!bg-gray-50 !text-emerald-700 !border-white !shadow-lg">
                       Create Your Free Account
                     </Button>
                   </Link>

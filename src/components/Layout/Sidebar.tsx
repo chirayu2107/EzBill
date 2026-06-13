@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState, useRef, useEffect, useCallback } from "react"
+import { useState, useRef, useCallback } from "react"
 import { Link, useLocation, useNavigate } from "react-router-dom"
 import { motion, AnimatePresence } from "framer-motion"
 import { useAuth } from "../../context/AuthContext"
@@ -95,10 +95,10 @@ const Sidebar: React.FC = () => {
           >
             {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
-          <div className="flex items-center gap-2">
+          <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
             <img src="/EzBill.png" alt="EzBill" className="w-7 h-7 rounded-lg" />
             <h1 className="text-base font-semibold text-gray-900 dark:text-white">EzBill</h1>
-          </div>
+          </Link>
           <button
             onClick={toggleTheme}
             className="p-2 text-gray-500 dark:text-gray-400 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
@@ -212,7 +212,7 @@ const Sidebar: React.FC = () => {
         {/* ── Top: Logo + Nav ── */}
         <div className="flex-1 flex flex-col pt-5 pb-3 overflow-hidden">
           {/* Logo */}
-          <div className={`flex items-center shrink-0 mb-5 ${isCollapsed ? "justify-center px-0" : "gap-2.5 px-5"}`}>
+          <Link to="/" className={`flex items-center shrink-0 mb-5 hover:opacity-80 transition-opacity ${isCollapsed ? "justify-center px-0" : "gap-2.5 px-5"}`}>
             <img
               src="/EzBill.png"
               alt="EzBill"
@@ -228,7 +228,7 @@ const Sidebar: React.FC = () => {
                 EzBill
               </motion.h1>
             )}
-          </div>
+          </Link>
 
           {/* Divider */}
           <div className={`h-px bg-gray-100 dark:bg-gray-800/60 shrink-0 ${isCollapsed ? "mx-3" : "mx-5"} mb-3`} />
@@ -394,10 +394,10 @@ const Sidebar: React.FC = () => {
             exit="closed"
           >
             <div className="p-6 flex-1 overflow-y-auto">
-              <div className="flex items-center gap-2.5 mb-6 mt-14">
+              <Link to="/" className="flex items-center gap-2.5 mb-6 mt-14 hover:opacity-80 transition-opacity">
                 <img src="/EzBill.png" alt="EzBill" className="w-8 h-8 rounded-lg" />
                 <h1 className="text-base font-semibold text-gray-900 dark:text-white">EzBill</h1>
-              </div>
+              </Link>
 
               <nav className="space-y-1">
                 {menuItems.map((item, index) => {

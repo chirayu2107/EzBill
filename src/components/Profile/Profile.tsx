@@ -6,8 +6,8 @@ import { useAuth } from "../../context/AuthContext"
 import { useToast } from "../../hooks/useToast"
 import {
   User, Mail, Phone, CreditCard, MapPin, Building, Hash,
-  Save, AlertCircle, LogOut, Pen, Shield, Bell,
-  Check, ChevronRight, Briefcase,
+  Save, AlertCircle, LogOut, Pen, Shield,
+  Check, ChevronRight, Briefcase, RefreshCw,
 } from "lucide-react"
 import SignatureUpload from "./SignatureUpload"
 import LogoUpload from "./LogoUpload"
@@ -15,7 +15,7 @@ import LogoUpload from "./LogoUpload"
 /* ── Tab config ── */
 type TabId = "profile" | "business" | "banking"
 
-const TABS: { id: TabId; label: string; icon: React.ComponentType<{ size?: number; strokeWidth?: number; className?: string }> }[] = [
+const TABS: { id: TabId; label: string; icon: React.ComponentType<any> }[] = [
   { id: "profile", label: "Profile", icon: User },
   { id: "business", label: "Business", icon: Briefcase },
   { id: "banking", label: "Banking", icon: Building },
@@ -37,7 +37,7 @@ function FormInput({
   value: string
   onChange?: (v: string) => void
   disabled?: boolean
-  icon?: React.ComponentType<{ size?: number; className?: string }>
+  icon?: React.ComponentType<any>
   placeholder?: string
   type?: string
   required?: boolean
@@ -96,7 +96,7 @@ function FormTextarea({
   value: string
   onChange?: (v: string) => void
   disabled?: boolean
-  icon?: React.ComponentType<{ size?: number; className?: string }>
+  icon?: React.ComponentType<any>
   placeholder?: string
   required?: boolean
   rows?: number

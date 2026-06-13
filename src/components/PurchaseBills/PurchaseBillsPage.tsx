@@ -8,7 +8,7 @@ import { useApp } from "../../context/AppContext"
 import PurchaseBillTable from "./PurchaseBillTable"
 import PurchaseBillPreview from "./PurchaseBillPreview"
 import type { PurchaseBill } from "../../types"
-import { ShoppingBag, Plus, Search } from "lucide-react"
+import { Plus, Search } from "lucide-react"
 import Button from "../UI/Button"
 
 const PurchaseBillsPage: React.FC = () => {

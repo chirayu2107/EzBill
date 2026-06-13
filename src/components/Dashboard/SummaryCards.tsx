@@ -104,7 +104,7 @@ const SummaryCards: React.FC = () => {
       initial="hidden"
       animate="visible"
     >
-      {cards.map((card, index) => (
+      {cards.map((card) => (
         <motion.div
           key={card.title}
           variants={cardVariants}

@@ -8,9 +8,8 @@ import { useApp } from "../../context/AppContext"
 import InvoiceTable from "./InvoiceTable"
 import InvoicePreview from "../Invoice/InvoicePreview"
 import type { Invoice } from "../../types"
-import { FileText, Plus, Search } from "lucide-react"
+import { Plus, Search } from "lucide-react"
 import Button from "../UI/Button"
-import Card from "../UI/Card"
 
 const InvoicesPage: React.FC = () => {
   const { invoices } = useApp()
