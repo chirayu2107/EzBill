@@ -121,11 +121,11 @@ const PurchaseBillPreview: React.FC<PurchaseBillPreviewProps> = ({ bill, onClose
       className={`fixed inset-0 bg-black/60 flex items-center justify-center p-1 md:p-4 z-50 transition-opacity ${autoDownload ? "pointer-events-none" : ""}`}
     >
       <div
-        className={`bg-white dark:bg-gray-800 rounded-lg md:rounded-xl shadow-2xl w-full max-w-6xl max-h-[98vh] md:max-h-[90vh] overflow-y-auto transition-colors ${autoDownload ? "opacity-0" : ""}`}
+        className={`bg-white dark:bg-[#1A1A1D] rounded-lg md:rounded-xl shadow-2xl w-full max-w-6xl max-h-[98vh] md:max-h-[90vh] overflow-y-auto transition-colors ${autoDownload ? "opacity-0" : ""}`}
       >
         {/* Header Actions - Only show if not auto-downloading */}
         {!autoDownload && (
-          <div className="sticky top-0 z-10 flex flex-col sm:flex-row justify-between items-start sm:items-center p-2 md:p-4 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/95 backdrop-blur-sm gap-2 transition-colors">
+          <div className="sticky top-0 z-10 flex flex-col sm:flex-row justify-between items-start sm:items-center p-2 md:p-4 border-b border-gray-200 dark:border-white/[0.04] bg-gray-50 dark:bg-[#141416] backdrop-blur-sm gap-2 transition-colors">
             <h2 className="text-base md:text-xl font-semibold text-gray-800 dark:text-white transition-colors">Purchase Bill Preview</h2>
             <div className="flex items-center gap-1 md:gap-2 w-full sm:w-auto">
               <Button

@@ -65,7 +65,7 @@ const FinancialYearChart: React.FC<FinancialYearChartProps> = ({ data }) => {
       const data = payload[0].payload
       return (
         <div
-          className="rounded-xl p-3 text-xs border border-gray-200/60 dark:border-gray-700/60 transition-colors"
+          className="rounded-xl p-3 text-xs border border-gray-200/60 dark:border-white/[0.04] transition-colors"
           style={{
             background: theme === "dark" ? "rgba(17,24,39,0.95)" : "rgba(255,255,255,0.97)",
             backdropFilter: "blur(12px)",

@@ -157,9 +157,9 @@ const CustomerLedger: React.FC<CustomerLedgerProps> = ({ customerName, invoices,
 
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center bg-black/60 backdrop-blur-sm overflow-y-auto py-4 px-2">
-      <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-4xl transition-colors">
+      <div className="bg-white dark:bg-[#0C0C0E] rounded-2xl shadow-2xl w-full max-w-4xl transition-colors">
         {/* Modal Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-gray-700">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-white/[0.04]">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-emerald-500/10 rounded-xl">
               <BookOpen className="w-5 h-5 text-emerald-500" />
@@ -184,7 +184,7 @@ const CustomerLedger: React.FC<CustomerLedgerProps> = ({ customerName, invoices,
             </button>
             <button
               onClick={onClose}
-              className="p-2 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              className="p-2 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-[#1C1C1F] transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
@@ -192,7 +192,7 @@ const CustomerLedger: React.FC<CustomerLedgerProps> = ({ customerName, invoices,
         </div>
 
         {/* Date Range Filter */}
-        <div className="flex flex-wrap items-center gap-3 px-6 py-3 bg-gray-50 dark:bg-[#232326] border-b border-gray-200 dark:border-gray-700">
+        <div className="flex flex-wrap items-center gap-3 px-6 py-3 bg-gray-50 dark:bg-[#212124] border-b border-gray-200 dark:border-white/[0.04]">
           <Calendar className="w-4 h-4 text-gray-400" />
           <span className="text-sm text-gray-600 dark:text-gray-400 font-medium">Date Range:</span>
           <div className="flex items-center gap-2">
@@ -200,14 +200,14 @@ const CustomerLedger: React.FC<CustomerLedgerProps> = ({ customerName, invoices,
               type="date"
               value={fromDate}
               onChange={(e) => setFromDate(e.target.value)}
-              className="text-sm px-3 py-1.5 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-colors"
+              className="text-sm px-3 py-1.5 bg-white dark:bg-[#212124] border border-gray-200 dark:border-white/[0.04] rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-colors"
             />
             <span className="text-gray-400 text-sm">to</span>
             <input
               type="date"
               value={toDate}
               onChange={(e) => setToDate(e.target.value)}
-              className="text-sm px-3 py-1.5 bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-colors"
+              className="text-sm px-3 py-1.5 bg-white dark:bg-[#212124] border border-gray-200 dark:border-white/[0.04] rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-colors"
             />
           </div>
           <span className="text-xs text-gray-400 ml-auto">{filteredInvoices.length} invoice(s) in range</span>

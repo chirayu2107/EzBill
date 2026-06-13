@@ -142,7 +142,7 @@ const LogoUpload: React.FC<LogoUploadProps> = ({ currentLogo, onLogoChange, disa
 
       {currentLogo ? (
         <div className="space-y-3">
-          <div className="bg-gray-50 dark:bg-white rounded-xl p-6 border-2 border-gray-200 dark:border-gray-600 transition-colors flex items-center justify-center">
+          <div className="bg-gray-50 dark:bg-white rounded-xl p-6 border-2 border-gray-200 dark:border-white/[0.04] transition-colors flex items-center justify-center">
             <div className="w-32 h-32 relative bg-white rounded-lg shadow-inner overflow-hidden flex items-center justify-center border border-gray-100">
               <img
                 src={currentLogo}
@@ -167,8 +167,8 @@ const LogoUpload: React.FC<LogoUploadProps> = ({ currentLogo, onLogoChange, disa
             dragActive
               ? "border-emerald-500 bg-emerald-500/5"
               : disabled
-                ? "border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50"
-                : "border-gray-200 dark:border-gray-600 hover:border-emerald-500 dark:hover:border-gray-500 bg-gray-50 dark:bg-gray-700/30 cursor-pointer"
+                ? "border-gray-200 dark:border-white/[0.04] bg-gray-50 dark:bg-[#212124]"
+                : "border-gray-200 dark:border-white/[0.04] hover:border-emerald-500 dark:hover:border-white/[0.06] bg-gray-50 dark:bg-[#1A1A1D] cursor-pointer"
           }`}
           onDragEnter={handleDrag}
           onDragLeave={handleDrag}
@@ -209,7 +209,7 @@ const LogoUpload: React.FC<LogoUploadProps> = ({ currentLogo, onLogoChange, disa
             )}
             
             {disabled && !currentLogo && (
-              <div className="mt-2 py-2 px-4 bg-gray-100 dark:bg-gray-800 rounded-lg text-xs text-gray-500 dark:text-gray-400 font-medium inline-block">
+              <div className="mt-2 py-2 px-4 bg-gray-100 dark:bg-[#1A1A1D] rounded-lg text-xs text-gray-500 dark:text-gray-400 font-medium inline-block">
                 Click "Edit Profile" to upload
               </div>
             )}
@@ -217,7 +217,7 @@ const LogoUpload: React.FC<LogoUploadProps> = ({ currentLogo, onLogoChange, disa
         </div>
       )}
 
-      <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3 transition-colors">
+      <div className="bg-gray-50 dark:bg-[#212124] rounded-lg p-3 transition-colors">
         <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 transition-colors">💡 Logo Tips</h4>
         <ul className="text-xs text-gray-500 dark:text-gray-400 space-y-1 transition-colors">
           <li>• Transparent PNG works best for dark/light modes</li>

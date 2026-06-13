@@ -98,7 +98,7 @@ const LedgersPage: React.FC = () => {
             placeholder="Search customer..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-11 pr-4 py-3 bg-white dark:bg-[#1C1C1F] border border-gray-200 dark:border-white/[0.07] rounded-xl text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-400/40 transition-all placeholder:text-gray-400 shadow-sm"
+            className="w-full pl-11 pr-4 py-3 bg-white dark:bg-[#1A1A1D] border border-gray-200 dark:border-white/[0.04] rounded-xl text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-400/40 transition-all placeholder:text-gray-400 shadow-sm"
           />
         </div>
       </motion.div>
@@ -119,7 +119,7 @@ const LedgersPage: React.FC = () => {
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-gray-100 dark:border-gray-800">
+                  <tr className="border-b border-gray-100 dark:border-white/[0.03]">
                     <th className="text-left py-3 px-4 text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Customer</th>
                     <th className="text-right py-3 px-4 text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Invoices</th>
                     <th className="text-right py-3 px-4 text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider hidden sm:table-cell">Total Billed</th>
@@ -132,7 +132,7 @@ const LedgersPage: React.FC = () => {
                   {filtered.map((group, idx) => (
                     <motion.tr
                       key={group.name}
-                      className="border-b border-gray-50 dark:border-white/[0.07] hover:bg-gray-50/80 dark:hover:bg-white/[0.02] transition-colors duration-150"
+                      className="border-b border-gray-50 dark:border-white/[0.04] hover:bg-gray-50/80 dark:hover:bg-white/[0.02] transition-colors duration-150"
                       initial={{ opacity: 0, x: -10 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: idx * 0.04 }}

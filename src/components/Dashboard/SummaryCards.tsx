@@ -117,7 +117,7 @@ const SummaryCards: React.FC = () => {
               <p className="text-gray-900 dark:text-white font-semibold text-xl md:text-2xl ez-number">
                 {card.value}
               </p>
-              <div className="p-2 rounded-lg bg-gray-100 dark:bg-gray-800 flex-shrink-0">
+              <div className="p-2 rounded-lg bg-gray-100 dark:bg-[#1A1A1D] flex-shrink-0">
                 <card.icon className="w-4 h-4 text-gray-500 dark:text-gray-400" />
               </div>
             </div>

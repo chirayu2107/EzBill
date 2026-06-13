@@ -8,16 +8,16 @@
    ═══════════════════════════════════════════════════════════ */
 
 /* ─── Design Tokens (Dark) ───
-   bg-base:      #0F0F11   — deepest layer (app bg)
-   bg-surface:   #161618   — sidebar, main panels
-   bg-card:      #1C1C1F   — card background
-   bg-elevated:  #232326   — hover states, elevated surfaces
-   bg-muted:     #2B2B2F   — subtle containers, code blocks
-   border-base:  rgba(255,255,255,0.07)  — subtle borders
-   border-hover: rgba(255,255,255,0.12)  — interactive borders
-   text-primary: #F0F0F3   — headings, primary text
-   text-secondary:#A0A0AB  — body text, descriptions
-   text-muted:   #62626B   — labels, placeholders
+   bg-base:      #0C0C0E   — deepest layer (app bg)
+   bg-surface:   #141416   — sidebar, main panels
+   bg-card:      #1A1A1D   — card background
+   bg-elevated:  #212124   — hover states, elevated surfaces
+   bg-muted:     #28282C   — subtle containers
+   border-base:  rgba(255,255,255,0.04)  — nearly invisible borders
+   border-hover: rgba(255,255,255,0.08)  — interactive borders
+   text-primary: #F0F0F3   — headings
+   text-secondary:#8B8B96  — body text
+   text-muted:   #55555E   — labels, placeholders
    accent:       #10b981   — emerald brand
    ─── */
 
@@ -40,8 +40,8 @@
 
   .dark body,
   html.dark body {
-    background-color: #0F0F11;
-    color: #A0A0AB;
+    background-color: #0C0C0E;
+    color: #8B8B96;
   }
 
   ::selection {
@@ -54,7 +54,7 @@
     color: #fff;
   }
 
-  /* Scrollbar — sleek and minimal */
+  /* Scrollbar — ultra minimal */
   ::-webkit-scrollbar { width: 5px; height: 5px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb {
@@ -63,10 +63,10 @@
   }
   ::-webkit-scrollbar-thumb:hover { background-color: rgba(0,0,0,0.22); }
   .dark ::-webkit-scrollbar-thumb {
-    background-color: rgba(255,255,255,0.06);
+    background-color: rgba(255,255,255,0.05);
   }
   .dark ::-webkit-scrollbar-thumb:hover {
-    background-color: rgba(255,255,255,0.12);
+    background-color: rgba(255,255,255,0.10);
   }
 
   /* Typography */
@@ -89,7 +89,7 @@
 /* ─── Component Layer ─── */
 @layer components {
 
-  /* ═══ CARD — Premium glass surface ═══ */
+  /* ═══ CARD — Near-invisible border, subtle elevation ═══ */
   .ez-card {
     position: relative;
     background: #fff;
@@ -102,12 +102,11 @@
   }
 
   .dark .ez-card {
-    background: linear-gradient(180deg, #1C1C1F 0%, #1A1A1D 100%);
-    border-color: rgba(255, 255, 255, 0.06);
+    background: #1A1A1D;
+    border-color: rgba(255, 255, 255, 0.04);
     box-shadow:
-      0 1px 2px rgba(0, 0, 0, 0.5),
-      0 4px 16px rgba(0, 0, 0, 0.15),
-      inset 0 1px 0 rgba(255, 255, 255, 0.04);
+      0 1px 3px rgba(0, 0, 0, 0.4),
+      0 4px 16px rgba(0, 0, 0, 0.1);
   }
 
   .ez-card-hover:hover {
@@ -119,15 +118,13 @@
   }
 
   .dark .ez-card-hover:hover {
-    border-color: rgba(255, 255, 255, 0.10);
+    border-color: rgba(255, 255, 255, 0.07);
     box-shadow:
-      0 4px 24px rgba(0, 0, 0, 0.4),
-      0 0 0 1px rgba(255, 255, 255, 0.06),
-      inset 0 1px 0 rgba(255, 255, 255, 0.06);
+      0 4px 24px rgba(0, 0, 0, 0.3);
     transform: translateY(-1px);
   }
 
-  /* ═══ BENTO CARD — Rich glassmorphic variants ═══ */
+  /* ═══ BENTO CARD — Subtle tinted surfaces ═══ */
   .ez-bento-emerald {
     background: rgba(16, 185, 129, 0.06);
     backdrop-filter: blur(16px) saturate(140%);
@@ -136,12 +133,9 @@
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
   }
   .dark .ez-bento-emerald {
-    background: linear-gradient(135deg, rgba(16, 185, 129, 0.10) 0%, rgba(16, 185, 129, 0.04) 100%);
-    border-color: rgba(16, 185, 129, 0.18);
-    box-shadow:
-      inset 0 1px 0 rgba(16, 185, 129, 0.08),
-      0 0 32px rgba(16, 185, 129, 0.06),
-      0 4px 16px rgba(0, 0, 0, 0.15);
+    background: rgba(16, 185, 129, 0.06);
+    border-color: rgba(16, 185, 129, 0.08);
+    box-shadow: none;
   }
 
   .ez-bento-violet {
@@ -152,12 +146,9 @@
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
   }
   .dark .ez-bento-violet {
-    background: linear-gradient(135deg, rgba(139, 92, 246, 0.10) 0%, rgba(139, 92, 246, 0.04) 100%);
-    border-color: rgba(139, 92, 246, 0.18);
-    box-shadow:
-      inset 0 1px 0 rgba(139, 92, 246, 0.08),
-      0 0 32px rgba(139, 92, 246, 0.06),
-      0 4px 16px rgba(0, 0, 0, 0.15);
+    background: rgba(139, 92, 246, 0.06);
+    border-color: rgba(139, 92, 246, 0.08);
+    box-shadow: none;
   }
 
   .ez-bento-amber {
@@ -168,12 +159,9 @@
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
   }
   .dark .ez-bento-amber {
-    background: linear-gradient(135deg, rgba(245, 158, 11, 0.10) 0%, rgba(245, 158, 11, 0.04) 100%);
-    border-color: rgba(245, 158, 11, 0.18);
-    box-shadow:
-      inset 0 1px 0 rgba(245, 158, 11, 0.08),
-      0 0 32px rgba(245, 158, 11, 0.06),
-      0 4px 16px rgba(0, 0, 0, 0.15);
+    background: rgba(245, 158, 11, 0.06);
+    border-color: rgba(245, 158, 11, 0.08);
+    box-shadow: none;
   }
 
   .ez-bento-blue {
@@ -184,15 +172,12 @@
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
   }
   .dark .ez-bento-blue {
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.10) 0%, rgba(59, 130, 246, 0.04) 100%);
-    border-color: rgba(59, 130, 246, 0.18);
-    box-shadow:
-      inset 0 1px 0 rgba(59, 130, 246, 0.08),
-      0 0 32px rgba(59, 130, 246, 0.06),
-      0 4px 16px rgba(0, 0, 0, 0.15);
+    background: rgba(59, 130, 246, 0.06);
+    border-color: rgba(59, 130, 246, 0.08);
+    box-shadow: none;
   }
 
-  /* ═══ HERO CARD — Premium gradient with accent lighting ═══ */
+  /* ═══ HERO CARD — Premium dark gradient ═══ */
   .ez-hero-card {
     position: relative;
     overflow: hidden;
@@ -202,13 +187,11 @@
     color: white;
   }
   .dark .ez-hero-card {
-    background: linear-gradient(145deg, #161618 0%, #1C1C1F 40%, #191920 100%);
-    border-color: rgba(16, 185, 129, 0.12);
+    background: linear-gradient(145deg, #151517 0%, #1A1A1D 50%, #171719 100%);
+    border-color: rgba(255, 255, 255, 0.04);
     box-shadow:
-      0 2px 12px rgba(0, 0, 0, 0.4),
-      0 8px 32px rgba(0, 0, 0, 0.2),
-      inset 0 1px 0 rgba(255, 255, 255, 0.06),
-      0 0 40px rgba(16, 185, 129, 0.04);
+      0 2px 12px rgba(0, 0, 0, 0.3),
+      0 8px 32px rgba(0, 0, 0, 0.15);
   }
   .ez-hero-card::before {
     content: '';
@@ -218,16 +201,6 @@
     width: 60%;
     height: 100%;
     background: radial-gradient(ellipse, rgba(16, 185, 129, 0.15) 0%, transparent 70%);
-    pointer-events: none;
-  }
-  .dark .ez-hero-card::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(16, 185, 129, 0.2), transparent);
     pointer-events: none;
   }
 
@@ -250,8 +223,8 @@
   }
   .dark .ez-status-pill--paid {
     color: #6EE7A8;
-    background: rgba(34, 197, 94, 0.10);
-    border-color: rgba(34, 197, 94, 0.20);
+    background: rgba(34, 197, 94, 0.08);
+    border-color: rgba(34, 197, 94, 0.15);
   }
 
   .ez-status-pill--unpaid {
@@ -261,8 +234,8 @@
   }
   .dark .ez-status-pill--unpaid {
     color: #FEC84B;
-    background: rgba(234, 179, 8, 0.10);
-    border-color: rgba(234, 179, 8, 0.20);
+    background: rgba(234, 179, 8, 0.08);
+    border-color: rgba(234, 179, 8, 0.15);
   }
 
   .ez-status-pill--overdue {
@@ -272,8 +245,8 @@
   }
   .dark .ez-status-pill--overdue {
     color: #FDA29B;
-    background: rgba(239, 68, 68, 0.10);
-    border-color: rgba(239, 68, 68, 0.20);
+    background: rgba(239, 68, 68, 0.08);
+    border-color: rgba(239, 68, 68, 0.15);
   }
 
   .ez-status-dot {
@@ -311,7 +284,7 @@
     animation: loadingBar 1.5s ease-in-out infinite;
   }
 
-  /* ═══ MODAL — Elevated glass panel ═══ */
+  /* ═══ MODAL ═══ */
   .ez-modal {
     border-radius: 16px;
     background: #fff;
@@ -321,15 +294,13 @@
       0 20px 24px -4px rgba(16, 24, 40, 0.08);
   }
   .dark .ez-modal {
-    background: linear-gradient(180deg, #232326 0%, #1F1F22 100%);
-    border-color: rgba(255, 255, 255, 0.08);
+    background: #1E1E21;
+    border-color: rgba(255, 255, 255, 0.05);
     box-shadow:
-      0 24px 48px -12px rgba(0, 0, 0, 0.6),
-      0 0 0 1px rgba(255, 255, 255, 0.05),
-      inset 0 1px 0 rgba(255, 255, 255, 0.06);
+      0 24px 48px -12px rgba(0, 0, 0, 0.6);
   }
 
-  /* ═══ MOBILE BOTTOM NAV — Frosted glass ═══ */
+  /* ═══ MOBILE BOTTOM NAV ═══ */
   .ez-mobile-nav {
     position: fixed;
     bottom: 12px;
@@ -349,12 +320,11 @@
       inset 0 0.5px 0 rgba(255, 255, 255, 0.8);
   }
   .dark .ez-mobile-nav {
-    background: rgba(22, 22, 24, 0.88);
-    border-color: rgba(255, 255, 255, 0.06);
+    background: rgba(20, 20, 22, 0.92);
+    border-color: rgba(255, 255, 255, 0.04);
     box-shadow:
-      0 8px 40px rgba(0, 0, 0, 0.6),
-      0 2px 8px rgba(0, 0, 0, 0.4),
-      inset 0 0.5px 0 rgba(255, 255, 255, 0.05);
+      0 8px 40px rgba(0, 0, 0, 0.5),
+      0 2px 8px rgba(0, 0, 0, 0.3);
   }
 
   /* ═══ SPARKLINE CHART ═══ */

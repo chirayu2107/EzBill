@@ -260,7 +260,7 @@ const Analytics: React.FC = () => {
     },
   }
 
-  const selectClasses = "w-full px-3.5 py-2.5 bg-white dark:bg-[#1C1C1F] border border-gray-200 dark:border-white/[0.07] rounded-xl text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-400/40 appearance-none transition-all shadow-sm"
+  const selectClasses = "w-full px-3.5 py-2.5 bg-white dark:bg-[#1A1A1D] border border-gray-200 dark:border-white/[0.04] rounded-xl text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-400/40 appearance-none transition-all shadow-sm"
 
   return (
     <div className="pt-20 lg:pt-0">
@@ -370,7 +370,7 @@ const Analytics: React.FC = () => {
                     <button
                       onClick={() => setViewType("chart")}
                       className={`flex-1 px-2 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                        viewType === "chart" ? "bg-gray-900 dark:bg-white text-white dark:text-gray-900" : "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700"
+                        viewType === "chart" ? "bg-gray-900 dark:bg-white text-white dark:text-gray-900" : "bg-gray-100 dark:bg-[#1A1A1D] text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-[#212124]"
                       }`}
                     >
                       Chart
@@ -378,7 +378,7 @@ const Analytics: React.FC = () => {
                     <button
                       onClick={() => setViewType("table")}
                       className={`flex-1 px-2 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                        viewType === "table" ? "bg-gray-900 dark:bg-white text-white dark:text-gray-900" : "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700"
+                        viewType === "table" ? "bg-gray-900 dark:bg-white text-white dark:text-gray-900" : "bg-gray-100 dark:bg-[#1A1A1D] text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-[#212124]"
                       }`}
                     >
                       Table
@@ -418,7 +418,7 @@ const Analytics: React.FC = () => {
           </div>
 
           {/* Desktop Layout — inline toolbar */}
-          <div className="hidden md:flex items-end gap-4 bg-white dark:bg-[#18181B] rounded-2xl border border-gray-100 dark:border-white/[0.07] p-4 shadow-sm">
+          <div className="hidden md:flex items-end gap-4 bg-white dark:bg-[#161618] rounded-2xl border border-gray-100 dark:border-white/[0.04] p-4 shadow-sm">
             <div className="flex-1 space-y-1.5">
               <label className="text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider block">Report Type</label>
               <div className="relative">
@@ -495,11 +495,11 @@ const Analytics: React.FC = () => {
 
             <div className="space-y-1.5">
               <label className="text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider block">View Type</label>
-              <div className="flex gap-1 bg-gray-100 dark:bg-[#1C1C1F] rounded-lg p-0.5">
+              <div className="flex gap-1 bg-gray-100 dark:bg-[#1A1A1D] rounded-lg p-0.5">
                 <button
                   onClick={() => setViewType("chart")}
                   className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
-                    viewType === "chart" ? "bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm" : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
+                    viewType === "chart" ? "bg-white dark:bg-[#1A1A1D] text-gray-900 dark:text-white shadow-sm" : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
                   }`}
                 >
                   Chart
@@ -507,7 +507,7 @@ const Analytics: React.FC = () => {
                 <button
                   onClick={() => setViewType("table")}
                   className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
-                    viewType === "table" ? "bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm" : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
+                    viewType === "table" ? "bg-white dark:bg-[#1A1A1D] text-gray-900 dark:text-white shadow-sm" : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
                   }`}
                 >
                   Table
@@ -599,7 +599,7 @@ const Analytics: React.FC = () => {
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b border-gray-100 dark:border-gray-800">
+                    <tr className="border-b border-gray-100 dark:border-white/[0.03]">
                       <th className="text-left py-3 px-2 md:px-4 text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">
                         {reportType === "monthly" ? "Date" : "Month"}
                       </th>
@@ -611,7 +611,7 @@ const Analytics: React.FC = () => {
                   <tbody>
                     {reportType === "monthly"
                       ? monthlyData.map((item, index) => (
-                          <tr key={index} className="border-b border-gray-50 dark:border-white/[0.07] hover:bg-gray-50/50 dark:hover:bg-gray-800/20 transition-colors">
+                          <tr key={index} className="border-b border-gray-50 dark:border-white/[0.04] hover:bg-gray-50/50 dark:hover:bg-[#1C1C1F]/20 transition-colors">
                             <td className="py-3 px-2 md:px-4 text-gray-900 dark:text-white text-sm">{item.formattedDate}</td>
                             <td className="py-3 px-2 md:px-4 text-right text-gray-900 dark:text-white font-medium text-sm ez-number">
                               {formatCurrency(item.sales)}
@@ -623,7 +623,7 @@ const Analytics: React.FC = () => {
                           </tr>
                         ))
                       : financialYearData.map((item, index) => (
-                          <tr key={index} className="border-b border-gray-50 dark:border-white/[0.07] hover:bg-gray-50/50 dark:hover:bg-gray-800/20 transition-colors">
+                          <tr key={index} className="border-b border-gray-50 dark:border-white/[0.04] hover:bg-gray-50/50 dark:hover:bg-[#1C1C1F]/20 transition-colors">
                             <td className="py-3 px-2 md:px-4 text-gray-900 dark:text-white text-sm">{item.month}</td>
                             <td className="py-3 px-2 md:px-4 text-right text-gray-900 dark:text-white font-medium text-sm ez-number">
                               {formatCurrency(item.sales)}
@@ -636,7 +636,7 @@ const Analytics: React.FC = () => {
                         ))}
                   </tbody>
                   <tfoot>
-                    <tr className="border-t-2 border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/20">
+                    <tr className="border-t-2 border-gray-200 dark:border-white/[0.04] bg-gray-50/50 dark:bg-[#141416]">
                       <td className="py-3 px-2 md:px-4 text-gray-900 dark:text-white font-semibold text-sm">Total</td>
                       <td className="py-3 px-2 md:px-4 text-right text-gray-900 dark:text-white font-bold text-sm ez-number">
                         {formatCurrency(getTotalSales())}

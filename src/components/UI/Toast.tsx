@@ -79,7 +79,7 @@ const Toast: React.FC<ToastProps> = ({ id, type, title, message, duration = 5000
       exit={{ opacity: 0, x: 300, scale: 0.8, transition: { duration: 0.2 } }}
       transition={{ type: "spring", stiffness: 280, damping: 28 }}
       className={`
-        bg-white dark:bg-gray-900 relative flex items-start gap-3 p-4 rounded-xl border ${getColors()}
+        bg-white dark:bg-[#0C0C0E] relative flex items-start gap-3 p-4 rounded-xl border ${getColors()}
         min-w-[300px] max-w-[400px]
         shadow-ez dark:shadow-ez-dark
       `}
@@ -92,7 +92,7 @@ const Toast: React.FC<ToastProps> = ({ id, type, title, message, duration = 5000
         {message && <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 leading-body">{message}</p>}
       </div>
 
-      <button onClick={() => onClose(id)} className="flex-shrink-0 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors p-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700">
+      <button onClick={() => onClose(id)} className="flex-shrink-0 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors p-1 rounded-md hover:bg-gray-100 dark:hover:bg-[#212124]">
         <X className="w-4 h-4" />
       </button>
     </motion.div>

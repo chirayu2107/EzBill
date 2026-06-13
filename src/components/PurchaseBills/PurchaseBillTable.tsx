@@ -117,7 +117,7 @@ const PurchaseBillTable: React.FC<PurchaseBillTableProps> = ({ bills, onViewBill
             transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
             className="mb-4"
           >
-            <div className="w-12 h-12 md:w-16 md:h-16 bg-gray-100 dark:bg-gray-700 rounded-full flex items-center justify-center mx-auto transition-colors">
+            <div className="w-12 h-12 md:w-16 md:h-16 bg-gray-100 dark:bg-[#212124] rounded-full flex items-center justify-center mx-auto transition-colors">
               <FileX className="w-6 h-6 md:w-8 md:h-8 text-gray-400 dark:text-gray-500 transition-colors" />
             </div>
           </motion.div>
@@ -142,7 +142,7 @@ const PurchaseBillTable: React.FC<PurchaseBillTableProps> = ({ bills, onViewBill
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: 20 }}
                   transition={{ delay: index * 0.05 }}
-                  className="bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg p-4 relative transition-colors"
+                  className="bg-gray-50 dark:bg-[#212124] border border-gray-200 dark:border-white/[0.04] rounded-lg p-4 relative transition-colors"
                 >
                   <div className="flex justify-between items-start mb-3">
                     <div>
@@ -172,34 +172,34 @@ const PurchaseBillTable: React.FC<PurchaseBillTableProps> = ({ bills, onViewBill
                               initial={{ opacity: 0, scale: 0.95, y: -10 }}
                               animate={{ opacity: 1, scale: 1, y: 0 }}
                               exit={{ opacity: 0, scale: 0.95, y: -10 }}
-                              className={`absolute right-0 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-600 rounded-lg shadow-lg z-20 min-w-[150px] transition-colors ${
+                              className={`absolute right-0 bg-white dark:bg-[#1A1A1D] border border-gray-200 dark:border-white/[0.04] rounded-lg shadow-lg z-20 min-w-[150px] transition-colors ${
                                 index >= bills.length - 2 ? "bottom-8" : "top-8"
                               }`}
                             >
                               <button
                                 onClick={() => onViewBill(bill)}
-                                className="w-full px-3 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-2 transition-colors"
+                                className="w-full px-3 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#212124] flex items-center gap-2 transition-colors"
                               >
                                 <Eye className="w-4 h-4" />
                                 View
                               </button>
                               <button
                                 onClick={() => handleDownload(bill)}
-                                className="w-full px-3 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-2 transition-colors"
+                                className="w-full px-3 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#212124] flex items-center gap-2 transition-colors"
                               >
                                 <Download className="w-4 h-4" />
                                 Download
                               </button>
                               <button
                                 onClick={() => onEditBill(bill)}
-                                className="w-full px-3 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-2 transition-colors"
+                                className="w-full px-3 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#212124] flex items-center gap-2 transition-colors"
                               >
                                 <Edit className="w-4 h-4" />
                                 Edit
                               </button>
                               <button
                                 onClick={() => toggleBillStatus(bill)}
-                                className="w-full px-3 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-2 transition-colors"
+                                className="w-full px-3 py-2 text-left text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-[#212124] flex items-center gap-2 transition-colors"
                               >
                                 {bill.status === "paid" ? (
                                   <>
@@ -215,7 +215,7 @@ const PurchaseBillTable: React.FC<PurchaseBillTableProps> = ({ bills, onViewBill
                               </button>
                               <button
                                 onClick={() => handleDeleteClick(bill)}
-                                className="w-full px-3 py-2 text-left text-sm text-red-500 hover:bg-gray-50 dark:hover:bg-gray-700 flex items-center gap-2 transition-colors"
+                                className="w-full px-3 py-2 text-left text-sm text-red-500 hover:bg-gray-50 dark:hover:bg-[#212124] flex items-center gap-2 transition-colors"
                               >
                                 <Trash2 className="w-4 h-4" />
                                 Delete
@@ -246,7 +246,7 @@ const PurchaseBillTable: React.FC<PurchaseBillTableProps> = ({ bills, onViewBill
           <div className="hidden md:block overflow-x-auto">
             <table className="w-full">
               <thead>
-                 <tr className="border-b border-gray-100 dark:border-gray-700 transition-colors">
+                 <tr className="border-b border-gray-100 dark:border-white/[0.04] transition-colors">
                    <th className="text-left py-3 px-4 text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Bill #</th>
                   <th className="text-left py-3 px-4 text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Vendor</th>
                   <th className="text-left py-3 px-4 text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Date</th>
@@ -266,7 +266,7 @@ const PurchaseBillTable: React.FC<PurchaseBillTableProps> = ({ bills, onViewBill
                        animate={{ opacity: 1, x: 0 }}
                        exit={{ opacity: 0, x: 20 }}
                        transition={{ delay: index * 0.05 }}
-                       className="border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-750 transition-all duration-200"
+                       className="border-b border-gray-100 dark:border-white/[0.04] hover:bg-gray-50 dark:hover:bg-[#212124] transition-all duration-200"
                      >
                        <td className="py-4 px-4 text-gray-900 dark:text-white font-normal transition-colors">{bill.billNumber}</td>
                        <td className="py-4 px-4 text-gray-800 dark:text-gray-300 transition-colors">{bill.vendorName}</td>
@@ -369,7 +369,7 @@ const PurchaseBillTable: React.FC<PurchaseBillTableProps> = ({ bills, onViewBill
             exit={{ opacity: 0 }}
           >
                     <motion.div
-               className="bg-white dark:bg-gray-800 rounded-xl p-4 md:p-6 max-w-md w-full border border-gray-200 dark:border-gray-700 shadow-xl"
+               className="bg-white dark:bg-[#1A1A1D] rounded-xl p-4 md:p-6 max-w-md w-full border border-gray-200 dark:border-white/[0.04] shadow-xl"
                initial={{ scale: 0.8, opacity: 0 }}
                animate={{ scale: 1, opacity: 1 }}
                exit={{ scale: 0.8, opacity: 0 }}
@@ -385,7 +385,7 @@ const PurchaseBillTable: React.FC<PurchaseBillTableProps> = ({ bills, onViewBill
                  </div>
                </div>
 
-               <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3 mb-6 transition-colors">
+               <div className="bg-gray-50 dark:bg-[#212124] rounded-lg p-3 mb-6 transition-colors">
                  <p className="text-sm text-gray-600 dark:text-gray-300 transition-colors">
                    Bill:{" "}
                    <span className="text-gray-900 dark:text-white font-medium transition-colors">

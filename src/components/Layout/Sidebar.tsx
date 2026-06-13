@@ -87,11 +87,11 @@ const Sidebar: React.FC = () => {
   return (
     <>
       {/* ═══ MOBILE TOP BAR ═══ */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-white dark:bg-[#161618] border-b border-gray-200 dark:border-white/[0.07]">
+      <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-white dark:bg-[#141416] border-b border-gray-200 dark:border-white/[0.04]">
         <div className="flex items-center justify-between px-4 py-3">
           <button
             onClick={toggleMobileMenu}
-            className="p-2 text-gray-500 dark:text-[#A0A0AB] rounded-lg hover:bg-gray-50 dark:hover:bg-[#232326] transition-colors"
+            className="p-2 text-gray-500 dark:text-[#8B8B96] rounded-lg hover:bg-gray-50 dark:hover:bg-[#212124] transition-colors"
           >
             {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
@@ -101,7 +101,7 @@ const Sidebar: React.FC = () => {
           </Link>
           <button
             onClick={toggleTheme}
-            className="p-2 text-gray-500 dark:text-[#A0A0AB] rounded-lg hover:bg-gray-50 dark:hover:bg-[#232326] transition-colors"
+            className="p-2 text-gray-500 dark:text-[#8B8B96] rounded-lg hover:bg-gray-50 dark:hover:bg-[#212124] transition-colors"
           >
             {theme === "light" ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
           </button>
@@ -199,7 +199,7 @@ const Sidebar: React.FC = () => {
       {/* ═══ DESKTOP SIDEBAR ═══ */}
       <motion.div
         className="hidden lg:flex flex-col shrink-0 overflow-hidden cursor-pointer
-                   bg-white dark:bg-[#161618] border-r border-gray-100 dark:border-white/[0.07]"
+                   bg-white dark:bg-[#141416] border-r border-gray-100 dark:border-white/[0.04]"
         animate={{ width: isCollapsed ? COLLAPSED_W : EXPANDED_W }}
         transition={{ type: "spring", stiffness: 320, damping: 32 }}
         onClick={(e: React.MouseEvent) => {
@@ -231,7 +231,7 @@ const Sidebar: React.FC = () => {
           </Link>
 
           {/* Divider */}
-          <div className={`h-px bg-gray-100 dark:bg-[#232326] shrink-0 ${isCollapsed ? "mx-3" : "mx-5"} mb-3`} />
+          <div className={`h-px bg-gray-100 dark:bg-[#212124] shrink-0 ${isCollapsed ? "mx-3" : "mx-5"} mb-3`} />
 
           {/* Navigation */}
           <nav className={`flex-1 space-y-0.5 overflow-y-auto overflow-x-hidden ${isCollapsed ? "px-2" : "px-3"}`}>
@@ -252,7 +252,7 @@ const Sidebar: React.FC = () => {
                     } ${
                       isActive
                         ? "bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 font-semibold"
-                        : "text-gray-600 dark:text-[#A0A0AB] hover:bg-gray-50 dark:hover:bg-[#232326] hover:text-gray-900 dark:hover:text-[#ECECEF] font-medium"
+                        : "text-gray-600 dark:text-[#8B8B96] hover:bg-gray-50 dark:hover:bg-[#212124] hover:text-gray-900 dark:hover:text-[#ECECEF] font-medium"
                     }`}
                     title={isCollapsed ? item.label : undefined}
                   >
@@ -268,7 +268,7 @@ const Sidebar: React.FC = () => {
 
                     <Icon
                       className={`w-[18px] h-[18px] shrink-0 transition-colors ${
-                        isActive ? "text-emerald-600 dark:text-emerald-400" : "text-gray-400 dark:text-[#62626B] group-hover:text-gray-600 dark:group-hover:text-[#9E9EA7]"
+                        isActive ? "text-emerald-600 dark:text-emerald-400" : "text-gray-400 dark:text-[#55555E] group-hover:text-gray-600 dark:group-hover:text-[#9E9EA7]"
                       }`}
                       strokeWidth={isActive ? 2 : 1.75}
                     />
@@ -281,7 +281,7 @@ const Sidebar: React.FC = () => {
 
                     {/* Tooltip — collapsed only */}
                     {isCollapsed && (
-                      <span className="absolute left-full ml-3 px-2.5 py-1.5 rounded-lg bg-gray-900 dark:bg-[#2B2B2F] text-white text-[11px] font-medium whitespace-nowrap opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity duration-150 z-50 shadow-xl">
+                      <span className="absolute left-full ml-3 px-2.5 py-1.5 rounded-lg bg-gray-900 dark:bg-[#28282C] text-white text-[11px] font-medium whitespace-nowrap opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity duration-150 z-50 shadow-xl">
                         {item.label}
                         <span className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-gray-900 dark:border-r-[#2B2B2F]" />
                       </span>
@@ -294,7 +294,7 @@ const Sidebar: React.FC = () => {
         </div>
 
         {/* ── Bottom: User ── */}
-        <div className={`shrink-0 border-t border-gray-100 dark:border-white/[0.07] ${isCollapsed ? "px-2" : "px-3"} py-3 space-y-2`}>
+        <div className={`shrink-0 border-t border-gray-100 dark:border-white/[0.04] ${isCollapsed ? "px-2" : "px-3"} py-3 space-y-2`}>
 
           {/* User — links to profile */}
           <Link
@@ -302,7 +302,7 @@ const Sidebar: React.FC = () => {
             className={`group relative flex items-center rounded-xl transition-all duration-200 ${isCollapsed ? "justify-center h-10" : "gap-2.5 px-2 py-2"} ${
               location.pathname === "/dashboard/profile"
                 ? "bg-emerald-50 dark:bg-emerald-500/10"
-                : "hover:bg-gray-50 dark:hover:bg-[#232326]"
+                : "hover:bg-gray-50 dark:hover:bg-[#212124]"
             }`}
             title={isCollapsed ? "Profile" : undefined}
           >
@@ -328,7 +328,7 @@ const Sidebar: React.FC = () => {
                 }`}>
                   {user?.fullName}
                 </p>
-                <p className="text-[11px] text-gray-400 dark:text-[#62626B] truncate leading-tight">
+                <p className="text-[11px] text-gray-400 dark:text-[#55555E] truncate leading-tight">
                   {user?.email}
                 </p>
               </div>
@@ -336,7 +336,7 @@ const Sidebar: React.FC = () => {
             {!isCollapsed && (
               <button
                 onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleTheme(); }}
-                className="p-1.5 text-gray-400 dark:text-[#62626B] hover:text-gray-600 dark:hover:text-[#9E9EA7] hover:bg-gray-100 dark:hover:bg-[#232326] rounded-lg transition-colors shrink-0"
+                className="p-1.5 text-gray-400 dark:text-[#55555E] hover:text-gray-600 dark:hover:text-[#9E9EA7] hover:bg-gray-100 dark:hover:bg-[#212124] rounded-lg transition-colors shrink-0"
                 title={theme === "light" ? "Dark mode" : "Light mode"}
               >
                 {theme === "light" ? <Moon className="w-3.5 h-3.5" /> : <Sun className="w-3.5 h-3.5" />}
@@ -344,7 +344,7 @@ const Sidebar: React.FC = () => {
             )}
             {/* Tooltip — collapsed */}
             {isCollapsed && (
-              <span className="absolute left-full ml-3 px-2.5 py-1.5 rounded-lg bg-gray-900 dark:bg-[#2B2B2F] text-white text-[11px] font-medium whitespace-nowrap opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity duration-150 z-50 shadow-xl">
+              <span className="absolute left-full ml-3 px-2.5 py-1.5 rounded-lg bg-gray-900 dark:bg-[#28282C] text-white text-[11px] font-medium whitespace-nowrap opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity duration-150 z-50 shadow-xl">
                 Profile
                 <span className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-gray-900 dark:border-r-[#2B2B2F]" />
               </span>
@@ -355,8 +355,8 @@ const Sidebar: React.FC = () => {
           <button
             onClick={logout}
             className={`group flex items-center rounded-xl h-9 w-full
-                       border border-gray-200 dark:border-white/[0.07]
-                       text-gray-500 dark:text-[#A0A0AB]
+                       border border-gray-200 dark:border-white/[0.04]
+                       text-gray-500 dark:text-[#8B8B96]
                        hover:bg-red-50 dark:hover:bg-red-500/8 hover:text-red-600 dark:hover:text-red-400
                        hover:border-red-200 dark:hover:border-red-500/25
                        transition-all duration-200 text-[12px] font-medium
@@ -387,7 +387,7 @@ const Sidebar: React.FC = () => {
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
-            className="lg:hidden fixed left-0 top-0 h-full w-72 bg-white dark:bg-[#161618] border-r border-gray-100 dark:border-white/[0.07] flex flex-col z-50"
+            className="lg:hidden fixed left-0 top-0 h-full w-72 bg-white dark:bg-[#141416] border-r border-gray-100 dark:border-white/[0.04] flex flex-col z-50"
             variants={sidebarVariants}
             initial="closed"
             animate="open"
@@ -410,12 +410,12 @@ const Sidebar: React.FC = () => {
                         className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors text-sm ${
                           isActive
                             ? "bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 font-semibold"
-                            : "text-gray-600 dark:text-[#A0A0AB] hover:bg-gray-50 dark:hover:bg-[#232326]"
+                            : "text-gray-600 dark:text-[#8B8B96] hover:bg-gray-50 dark:hover:bg-[#212124]"
                         }`}
                       >
                         <item.icon
                           className={`w-5 h-5 ${
-                            isActive ? "text-emerald-600 dark:text-emerald-400" : "text-gray-400 dark:text-[#62626B]"
+                            isActive ? "text-emerald-600 dark:text-emerald-400" : "text-gray-400 dark:text-[#55555E]"
                           }`}
                           strokeWidth={isActive ? 2 : 1.8}
                         />
@@ -428,7 +428,7 @@ const Sidebar: React.FC = () => {
             </div>
 
             <motion.div
-              className="p-5 border-t border-gray-100 dark:border-white/[0.07]"
+              className="p-5 border-t border-gray-100 dark:border-white/[0.04]"
               variants={menuItemVariants}
               transition={{ delay: 0.4 }}
             >
@@ -446,7 +446,7 @@ const Sidebar: React.FC = () => {
               </div>
               <button
                 onClick={logout}
-                className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl border border-gray-200 dark:border-white/[0.07] text-gray-600 dark:text-[#A0A0AB] hover:bg-red-50 dark:hover:bg-red-500/8 hover:text-red-600 dark:hover:text-red-400 hover:border-red-200 dark:hover:border-red-500/25 transition-all text-xs font-medium"
+                className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl border border-gray-200 dark:border-white/[0.04] text-gray-600 dark:text-[#8B8B96] hover:bg-red-50 dark:hover:bg-red-500/8 hover:text-red-600 dark:hover:text-red-400 hover:border-red-200 dark:hover:border-red-500/25 transition-all text-xs font-medium"
               >
                 <LogOut className="w-4 h-4" />
                 Sign Out

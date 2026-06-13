@@ -51,7 +51,7 @@ const ForgotPassword: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-surface-light dark:bg-[#0F0F11] text-gray-900 dark:text-white transition-colors duration-300 relative px-4">
+    <div className="min-h-screen flex items-center justify-center bg-surface-light dark:bg-[#0C0C0E] text-gray-900 dark:text-white transition-colors duration-300 relative px-4">
       {/* Ambient background gradients */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute -top-1/4 left-1/3 w-[500px] h-[500px] bg-transparent dark:bg-emerald-500/5 rounded-full blur-3xl" />
@@ -62,7 +62,7 @@ const ForgotPassword: React.FC = () => {
         {/* Back to login */}
         <Link
           to="/login"
-          className="inline-flex items-center gap-2 text-sm text-gray-500 dark:text-[#A0A0AB] hover:text-emerald-500 dark:hover:text-emerald-400 transition-colors mb-8 group"
+          className="inline-flex items-center gap-2 text-sm text-gray-500 dark:text-[#8B8B96] hover:text-emerald-500 dark:hover:text-emerald-400 transition-colors mb-8 group"
         >
           <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
           Back to Sign In
@@ -81,7 +81,7 @@ const ForgotPassword: React.FC = () => {
           <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-1">
             {sent ? "Check your email" : "Reset your password"}
           </h2>
-          <p className="text-gray-500 dark:text-[#A0A0AB] text-sm">
+          <p className="text-gray-500 dark:text-[#8B8B96] text-sm">
             {sent
               ? "We've sent a password reset link to your email"
               : "Enter your email address and we'll send you a reset link"}
@@ -96,7 +96,7 @@ const ForgotPassword: React.FC = () => {
                 <CheckCircle className="w-8 h-8 text-emerald-500" />
               </div>
 
-              <p className="text-sm text-gray-600 dark:text-[#A0A0AB] mb-2">
+              <p className="text-sm text-gray-600 dark:text-[#8B8B96] mb-2">
                 We sent a reset link to
               </p>
               <p className="text-sm font-semibold text-gray-900 dark:text-white mb-6 ez-mono">
@@ -145,7 +145,7 @@ const ForgotPassword: React.FC = () => {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full pl-10 pr-3 py-2.5 bg-gray-50 dark:bg-[#1C1C1F] border border-gray-200 dark:border-white/[0.07] rounded-xl text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500/40 transition-all placeholder:text-gray-400 dark:placeholder:text-[#62626B]"
+                    className="w-full pl-10 pr-3 py-2.5 bg-gray-50 dark:bg-[#1A1A1D] border border-gray-200 dark:border-white/[0.04] rounded-xl text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500/40 transition-all placeholder:text-gray-400 dark:placeholder:text-[#62626B]"
                     placeholder="Enter your email address"
                     required
                     disabled={loading}
@@ -172,7 +172,7 @@ const ForgotPassword: React.FC = () => {
                 )}
               </Button>
 
-              <div className="text-center text-xs text-gray-500 dark:text-[#A0A0AB]">
+              <div className="text-center text-xs text-gray-500 dark:text-[#8B8B96]">
                 Remember your password?{" "}
                 <Link to="/login" className="text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 font-medium transition-colors">
                   Sign in

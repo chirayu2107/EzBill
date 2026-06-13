@@ -119,7 +119,7 @@ const GSTReports: React.FC = () => {
           </p>
         </div>
         <div className="flex items-center gap-3 w-full md:w-auto">
-          <div className="flex items-center bg-white dark:bg-[#1C1C1F] rounded-xl border border-gray-200 dark:border-white/[0.07] p-1 shadow-sm">
+          <div className="flex items-center bg-white dark:bg-[#1A1A1D] rounded-xl border border-gray-200 dark:border-white/[0.04] p-1 shadow-sm">
             <input 
               type="date" 
               value={dateRange.start} 
@@ -141,11 +141,11 @@ const GSTReports: React.FC = () => {
       </motion.div>
 
       {/* Tabs */}
-      <div className="flex gap-1 bg-gray-100 dark:bg-[#1C1C1F] rounded-xl p-1 w-full max-w-md">
+      <div className="flex gap-1 bg-gray-100 dark:bg-[#1A1A1D] rounded-xl p-1 w-full max-w-md">
         <button
           onClick={() => setActiveTab("b2b")}
           className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-xs font-medium transition-all ${
-            activeTab === "b2b" ? "bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm" : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
+            activeTab === "b2b" ? "bg-white dark:bg-[#1A1A1D] text-gray-900 dark:text-white shadow-sm" : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
           }`}
         >
           <Building2 className="w-3.5 h-3.5" /> B2B
@@ -153,7 +153,7 @@ const GSTReports: React.FC = () => {
         <button
           onClick={() => setActiveTab("b2c")}
           className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-xs font-medium transition-all ${
-            activeTab === "b2c" ? "bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm" : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
+            activeTab === "b2c" ? "bg-white dark:bg-[#1A1A1D] text-gray-900 dark:text-white shadow-sm" : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
           }`}
         >
           <Users className="w-3.5 h-3.5" /> B2C
@@ -161,7 +161,7 @@ const GSTReports: React.FC = () => {
         <button
           onClick={() => setActiveTab("hsn")}
           className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-xs font-medium transition-all ${
-            activeTab === "hsn" ? "bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm" : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
+            activeTab === "hsn" ? "bg-white dark:bg-[#1A1A1D] text-gray-900 dark:text-white shadow-sm" : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
           }`}
         >
           <BarChart2 className="w-3.5 h-3.5" /> HSN Summary
@@ -173,7 +173,7 @@ const GSTReports: React.FC = () => {
           {activeTab === "b2b" && (
             <table className="w-full text-left">
               <thead>
-                <tr className="border-b border-gray-100 dark:border-gray-800">
+                <tr className="border-b border-gray-100 dark:border-white/[0.03]">
                   <th className="px-4 md:px-6 py-3 text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Invoice / Customer</th>
                   <th className="px-4 md:px-6 py-3 text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">GSTIN</th>
                   <th className="px-4 md:px-6 py-3 text-right text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Taxable Value</th>
@@ -188,7 +188,7 @@ const GSTReports: React.FC = () => {
                   <tr><td colSpan={7} className="px-6 py-12 text-center text-gray-400 text-sm">No B2B transactions found in this period</td></tr>
                 ) : (
                   b2bData.map(inv => (
-                    <tr key={inv.id} className="border-b border-gray-50 dark:border-white/[0.07] hover:bg-gray-50/50 dark:hover:bg-gray-800/20 transition-colors duration-150">
+                    <tr key={inv.id} className="border-b border-gray-50 dark:border-white/[0.04] hover:bg-gray-50/50 dark:hover:bg-[#1C1C1F]/20 transition-colors duration-150">
                       <td className="px-4 md:px-6 py-3.5">
                         <div className="flex flex-col">
                           <span className="text-sm font-semibold text-gray-900 dark:text-white ez-mono">{inv.invoiceNumber}</span>
@@ -211,7 +211,7 @@ const GSTReports: React.FC = () => {
           {activeTab === "b2c" && (
             <table className="w-full text-left">
               <thead>
-                <tr className="border-b border-gray-100 dark:border-gray-800">
+                <tr className="border-b border-gray-100 dark:border-white/[0.03]">
                   <th className="px-4 md:px-6 py-3 text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Invoice / Customer</th>
                   <th className="px-4 md:px-6 py-3 text-right text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Taxable Value</th>
                   <th className="px-4 md:px-6 py-3 text-right text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">IGST</th>
@@ -220,12 +220,12 @@ const GSTReports: React.FC = () => {
                   <th className="px-4 md:px-6 py-3 text-right text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Total</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-50 dark:divide-gray-700/50">
+              <tbody className="divide-y divide-gray-50 dark:divide-white/[0.03]/50">
                 {b2cData.length === 0 ? (
                   <tr><td colSpan={6} className="px-6 py-12 text-center text-gray-400">No B2C transactions found in this period</td></tr>
                 ) : (
                   b2cData.map(inv => (
-                    <tr key={inv.id} className="hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors">
+                    <tr key={inv.id} className="hover:bg-gray-50/50 dark:hover:bg-[#1C1C1F]/30 transition-colors">
                       <td className="px-6 py-4">
                         <div className="flex flex-col">
                           <span className="text-sm font-bold text-gray-900 dark:text-white uppercase tracking-tighter">{inv.invoiceNumber}</span>
@@ -247,7 +247,7 @@ const GSTReports: React.FC = () => {
           {activeTab === "hsn" && (
             <table className="w-full text-left">
               <thead>
-                <tr className="border-b border-gray-100 dark:border-gray-800">
+                <tr className="border-b border-gray-100 dark:border-white/[0.03]">
                   <th className="px-4 md:px-6 py-3 text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">HSN / SAC</th>
                   <th className="px-4 md:px-6 py-3 text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Total Qty</th>
                   <th className="px-4 md:px-6 py-3 text-right text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Taxable Value</th>
@@ -257,12 +257,12 @@ const GSTReports: React.FC = () => {
                   <th className="px-4 md:px-6 py-3 text-right text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Total</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-50 dark:divide-gray-700/50">
+              <tbody className="divide-y divide-gray-50 dark:divide-white/[0.03]/50">
                 {hsnSummary.length === 0 ? (
                   <tr><td colSpan={7} className="px-6 py-12 text-center text-gray-400">No HSN data found in this period</td></tr>
                 ) : (
                   hsnSummary.map(row => (
-                    <tr key={row.hsn} className="hover:bg-gray-50/50 dark:hover:bg-gray-800/30 transition-colors">
+                    <tr key={row.hsn} className="hover:bg-gray-50/50 dark:hover:bg-[#1C1C1F]/30 transition-colors">
                       <td className="px-6 py-4 font-bold text-gray-900 dark:text-white">{row.hsn}</td>
                       <td className="px-6 py-4 text-sm">{row.qty}</td>
                       <td className="px-6 py-4 text-right text-sm font-medium">{formatCurrency(row.taxableValue)}</td>

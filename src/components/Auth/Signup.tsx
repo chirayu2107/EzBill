@@ -56,7 +56,7 @@ const Signup: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row bg-surface-light dark:bg-[#0F0F11] text-gray-900 dark:text-white transition-colors duration-300">
+    <div className="min-h-screen flex flex-col md:flex-row bg-surface-light dark:bg-[#0C0C0E] text-gray-900 dark:text-white transition-colors duration-300">
       {/* Left Side */}
       <div
         className="relative w-full md:w-1/2 h-64 md:h-auto bg-cover bg-center flex items-center justify-center px-6 py-10 md:py-16"
@@ -137,7 +137,7 @@ const Signup: React.FC = () => {
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full pl-10 pr-3 py-2.5 bg-gray-50 dark:bg-[#1C1C1F] border border-gray-200 dark:border-white/[0.07] rounded-xl text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500/40 transition-all placeholder:text-gray-400 dark:placeholder:text-[#63636E]"
+                    className="w-full pl-10 pr-3 py-2.5 bg-gray-50 dark:bg-[#1A1A1D] border border-gray-200 dark:border-white/[0.04] rounded-xl text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500/40 transition-all placeholder:text-gray-400 dark:placeholder:text-[#63636E]"
                     placeholder="Your full name"
                     required
                     disabled={loading}
@@ -154,7 +154,7 @@ const Signup: React.FC = () => {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full pl-10 pr-3 py-2.5 bg-gray-50 dark:bg-[#1C1C1F] border border-gray-200 dark:border-white/[0.07] rounded-xl text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500/40 transition-all placeholder:text-gray-400 dark:placeholder:text-[#63636E]"
+                    className="w-full pl-10 pr-3 py-2.5 bg-gray-50 dark:bg-[#1A1A1D] border border-gray-200 dark:border-white/[0.04] rounded-xl text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500/40 transition-all placeholder:text-gray-400 dark:placeholder:text-[#63636E]"
                     placeholder="Enter your email"
                     required
                     disabled={loading}
@@ -171,7 +171,7 @@ const Signup: React.FC = () => {
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full pl-10 pr-3 py-2.5 bg-gray-50 dark:bg-[#1C1C1F] border border-gray-200 dark:border-white/[0.07] rounded-xl text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500/40 transition-all placeholder:text-gray-400 dark:placeholder:text-[#63636E]"
+                    className="w-full pl-10 pr-3 py-2.5 bg-gray-50 dark:bg-[#1A1A1D] border border-gray-200 dark:border-white/[0.04] rounded-xl text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500/40 transition-all placeholder:text-gray-400 dark:placeholder:text-[#63636E]"
                     placeholder="Create a password"
                     required
                     disabled={loading}

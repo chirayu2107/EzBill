@@ -115,7 +115,7 @@ const SignatureUpload: React.FC<SignatureUploadProps> = ({ currentSignature, onS
 
       {currentSignature ? (
         <div className="space-y-3">
-          <div className="bg-gray-50 dark:bg-white rounded-lg p-4 border-2 border-gray-200 dark:border-gray-600 transition-colors">
+          <div className="bg-gray-50 dark:bg-white rounded-lg p-4 border-2 border-gray-200 dark:border-white/[0.04] transition-colors">
             <img
               src={currentSignature || "/placeholder.svg"}
               alt="Digital Signature"
@@ -145,8 +145,8 @@ const SignatureUpload: React.FC<SignatureUploadProps> = ({ currentSignature, onS
             dragActive
               ? "border-emerald-500 bg-emerald-500/5"
               : disabled
-                ? "border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700/50"
-                : "border-gray-200 dark:border-gray-600 hover:border-emerald-500 dark:hover:border-gray-500 bg-gray-50 dark:bg-gray-700/30"
+                ? "border-gray-200 dark:border-white/[0.04] bg-gray-50 dark:bg-[#212124]"
+                : "border-gray-200 dark:border-white/[0.04] hover:border-emerald-500 dark:hover:border-white/[0.06] bg-gray-50 dark:bg-[#1A1A1D]"
           }`}
           onDragEnter={handleDrag}
           onDragLeave={handleDrag}
@@ -188,7 +188,7 @@ const SignatureUpload: React.FC<SignatureUploadProps> = ({ currentSignature, onS
         </div>
       )}
 
-      <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-3 transition-colors">
+      <div className="bg-gray-50 dark:bg-[#212124] rounded-lg p-3 transition-colors">
         <h4 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 transition-colors">💡 Signature Tips</h4>
         <ul className="text-xs text-gray-500 dark:text-gray-400 space-y-1 transition-colors">
           <li>• Use a white background for best results</li>

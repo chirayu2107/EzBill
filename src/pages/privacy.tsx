@@ -99,9 +99,9 @@ const PrivacyPage = () => {
   }, [])
 
   return (
-    <div className="min-h-screen bg-white dark:bg-[#0F0F11] text-gray-900 dark:text-gray-100 transition-colors duration-300">
+    <div className="min-h-screen bg-white dark:bg-[#0C0C0E] text-gray-900 dark:text-gray-100 transition-colors duration-300">
       {/* Header */}
-      <header className="sticky top-0 z-50 backdrop-blur-xl bg-white/80 dark:bg-[#0F0F11]/80 border-b border-gray-100 dark:border-white/[0.06]">
+      <header className="sticky top-0 z-50 backdrop-blur-xl bg-white/80 dark:bg-[#0C0C0E]/80 border-b border-gray-100 dark:border-white/[0.04]">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
             <div className="w-7 h-7 bg-gradient-to-br from-emerald-500 to-green-600 rounded-lg flex items-center justify-center">
@@ -109,7 +109,7 @@ const PrivacyPage = () => {
             </div>
             <span className="font-bold text-gray-900 dark:text-white">EzBill</span>
           </Link>
-          <Link to="/" className="flex items-center gap-1.5 text-xs font-medium text-gray-500 dark:text-[#A0A0AB] hover:text-gray-900 dark:hover:text-white transition-colors group">
+          <Link to="/" className="flex items-center gap-1.5 text-xs font-medium text-gray-500 dark:text-[#8B8B96] hover:text-gray-900 dark:hover:text-white transition-colors group">
             <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" />
             Home
           </Link>
@@ -118,7 +118,7 @@ const PrivacyPage = () => {
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Hero */}
-        <div className="pt-12 sm:pt-20 pb-10 sm:pb-14 border-b border-gray-100 dark:border-white/[0.06]">
+        <div className="pt-12 sm:pt-20 pb-10 sm:pb-14 border-b border-gray-100 dark:border-white/[0.04]">
           <div className="flex items-center gap-2 mb-4">
             <Shield className="w-5 h-5 text-emerald-500" />
             <span className="text-xs font-semibold uppercase tracking-widest text-emerald-600 dark:text-emerald-400">
@@ -128,10 +128,10 @@ const PrivacyPage = () => {
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-gray-900 dark:text-white mb-4 leading-[1.1]">
             How we handle your data
           </h1>
-          <p className="text-base sm:text-lg text-gray-500 dark:text-[#A0A0AB] max-w-2xl leading-relaxed">
+          <p className="text-base sm:text-lg text-gray-500 dark:text-[#8B8B96] max-w-2xl leading-relaxed">
             Transparency is core to how we build EzBill. This policy explains exactly what data we collect, how we use it, and the controls you have.
           </p>
-          <p className="text-xs text-gray-400 dark:text-[#62626B] mt-4 font-medium">
+          <p className="text-xs text-gray-400 dark:text-[#55555E] mt-4 font-medium">
             Last updated — {new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
           </p>
         </div>
@@ -140,7 +140,7 @@ const PrivacyPage = () => {
         <div className="flex gap-12 lg:gap-16 py-10 sm:py-14">
           {/* Sidebar — Table of Contents */}
           <nav className="hidden lg:block w-56 shrink-0 sticky top-20 self-start">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-[#62626B] mb-3">On this page</p>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-[#55555E] mb-3">On this page</p>
             <ul className="space-y-0.5">
               {sections.map(s => (
                 <li key={s.id}>
@@ -149,7 +149,7 @@ const PrivacyPage = () => {
                     className={`block px-3 py-1.5 rounded-lg text-[13px] font-medium transition-all duration-200 ${
                       activeSection === s.id
                         ? "text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/8"
-                        : "text-gray-500 dark:text-[#62626B] hover:text-gray-900 dark:hover:text-[#A0A0AB]"
+                        : "text-gray-500 dark:text-[#55555E] hover:text-gray-900 dark:hover:text-[#A0A0AB]"
                     }`}
                   >
                     {s.title}
@@ -165,14 +165,14 @@ const PrivacyPage = () => {
               <section
                 key={section.id}
                 id={section.id}
-                className={`${i > 0 ? "mt-12 pt-12 border-t border-gray-100 dark:border-white/[0.05]" : ""}`}
+                className={`${i > 0 ? "mt-12 pt-12 border-t border-gray-100 dark:border-white/[0.03]" : ""}`}
               >
                 <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white mb-5 tracking-tight">
                   {section.title}
                 </h2>
                 <div className="space-y-4">
                   {section.paragraphs.map((p, j) => (
-                    <p key={j} className="text-[15px] leading-[1.75] text-gray-600 dark:text-[#A0A0AB]">
+                    <p key={j} className="text-[15px] leading-[1.75] text-gray-600 dark:text-[#8B8B96]">
                       {p}
                     </p>
                   ))}
@@ -181,9 +181,9 @@ const PrivacyPage = () => {
             ))}
 
             {/* Contact */}
-            <div className="mt-16 p-6 sm:p-8 rounded-2xl bg-gray-50 dark:bg-[#161618] border border-gray-100 dark:border-white/[0.06]">
+            <div className="mt-16 p-6 sm:p-8 rounded-2xl bg-gray-50 dark:bg-[#141416] border border-gray-100 dark:border-white/[0.04]">
               <p className="text-sm font-bold text-gray-900 dark:text-white mb-1.5">Questions about your privacy?</p>
-              <p className="text-sm text-gray-500 dark:text-[#A0A0AB] mb-3">
+              <p className="text-sm text-gray-500 dark:text-[#8B8B96] mb-3">
                 We're happy to clarify anything. Reach out anytime.
               </p>
               <a
@@ -198,8 +198,8 @@ const PrivacyPage = () => {
       </div>
 
       {/* Footer */}
-      <footer className="border-t border-gray-100 dark:border-white/[0.06] py-6 mt-8">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between text-xs text-gray-400 dark:text-[#62626B]">
+      <footer className="border-t border-gray-100 dark:border-white/[0.04] py-6 mt-8">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between text-xs text-gray-400 dark:text-[#55555E]">
           <span>© {new Date().getFullYear()} EzBill. All rights reserved.</span>
           <div className="flex gap-6">
             <Link to="/terms" className="hover:text-gray-900 dark:hover:text-white transition-colors">Terms</Link>

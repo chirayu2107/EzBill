@@ -33,7 +33,7 @@ const Button: React.FC<ButtonProps> = ({
     // Accent: Brand gradient with glow
     accent: "bg-gradient-to-r from-emerald-500 via-green-500 to-teal-500 text-white hover:shadow-lg hover:shadow-emerald-500/20 focus:ring-emerald-500 hover:scale-[1.02] active:scale-[0.98]",
     // Secondary: Transparent with border
-    secondary: "bg-transparent border border-gray-200 dark:border-white/[0.07] text-gray-700 dark:text-[#A0A0AB] hover:bg-gray-50 dark:hover:bg-[#232326] hover:border-gray-300 dark:hover:border-white/[0.12] focus:ring-gray-500",
+    secondary: "bg-transparent border border-gray-200 dark:border-white/[0.04] text-gray-700 dark:text-[#8B8B96] hover:bg-gray-50 dark:hover:bg-[#212124] hover:border-gray-300 dark:hover:border-white/[0.06] focus:ring-gray-500",
     // Success
     success: "bg-green-600 text-white hover:bg-green-700 focus:ring-green-500 shadow-sm",
     // Danger: With subtle glow
