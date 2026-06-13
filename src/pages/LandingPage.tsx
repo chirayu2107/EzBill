@@ -131,14 +131,14 @@ const LandingPage: React.FC = () => {
   ]
 
   return (
-    <div className="min-h-screen bg-surface-light dark:bg-[#0b0f19] text-gray-900 dark:text-gray-100 transition-colors duration-300 overflow-x-hidden">
+    <div className="min-h-screen bg-surface-light dark:bg-[#0b0f19] text-gray-900 dark:text-gray-100 transition-colors duration-300 overflow-x-hidden w-full">
       {/* Decorative Orbs */}
-      <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-emerald-500/10 dark:bg-emerald-500/5 rounded-full blur-3xl pointer-events-none z-0" />
-      <div className="absolute top-1/3 right-1/4 w-[400px] h-[400px] bg-teal-500/10 dark:bg-teal-500/5 rounded-full blur-3xl pointer-events-none z-0" />
+      <div className="absolute top-0 left-1/4 w-[300px] md:w-[500px] h-[300px] md:h-[500px] bg-emerald-500/10 dark:bg-emerald-500/5 rounded-full blur-3xl pointer-events-none z-0" />
+      <div className="absolute top-1/3 right-1/4 w-[250px] md:w-[400px] h-[250px] md:h-[400px] bg-teal-500/10 dark:bg-teal-500/5 rounded-full blur-3xl pointer-events-none z-0" />
 
       {/* Header */}
       <header className="sticky top-0 z-50 backdrop-blur-md bg-surface-light/80 dark:bg-[#0b0f19]/80 border-b border-gray-200/50 dark:border-gray-800/50 transition-colors">
-        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 sm:h-16 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <div className="w-9 h-9 bg-gradient-to-br from-emerald-500 to-green-600 rounded-lg flex items-center justify-center shadow-lg shadow-emerald-500/20">
               <Receipt className="w-4.5 h-4.5 text-white" />
@@ -156,11 +156,11 @@ const LandingPage: React.FC = () => {
           </nav>
 
           {/* Right Controls */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-4">
             {/* Theme Toggle */}
             <button
               onClick={toggleTheme}
-              className="p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+              className="p-1.5 sm:p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
               aria-label="Toggle Theme"
             >
               {theme === "dark" ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-indigo-600" />}
@@ -169,13 +169,13 @@ const LandingPage: React.FC = () => {
             {isAuthenticated ? (
               <Link to="/dashboard">
                 <Button variant="accent" size="sm">
-                  Go to Dashboard
+                  <span className="hidden sm:inline">Go to </span>Dashboard
                   <ArrowRight className="w-3.5 h-3.5" />
                 </Button>
               </Link>
             ) : (
-              <div className="flex items-center gap-3">
-                <Link to="/login" className="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-emerald-500 dark:hover:text-emerald-400 transition-colors">
+              <div className="flex items-center gap-2 sm:gap-3">
+                <Link to="/login" className="hidden sm:inline text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-emerald-500 dark:hover:text-emerald-400 transition-colors">
                   Sign In
                 </Link>
                 <Link to="/signup">
@@ -190,20 +190,20 @@ const LandingPage: React.FC = () => {
       </header>
 
       {/* Hero Section */}
-      <section className="relative pt-20 pb-24 md:pt-28 md:pb-32 px-6 max-w-7xl mx-auto z-10 text-center">
+      <section className="relative pt-14 pb-16 sm:pt-20 sm:pb-24 md:pt-28 md:pb-32 px-4 sm:px-6 max-w-7xl mx-auto z-10 text-center">
 
-        <h1 style={{ fontFamily: "'Outfit', sans-serif" }} className="text-5xl md:text-[4.5rem] font-black tracking-[-0.03em] mb-6 max-w-3xl mx-auto leading-[1.08] bg-gradient-to-br from-gray-900 via-gray-800 to-gray-600 dark:from-white dark:via-gray-100 dark:to-gray-400 bg-clip-text text-transparent">
+        <h1 style={{ fontFamily: "'Outfit', sans-serif" }} className="text-3xl sm:text-5xl md:text-[4.5rem] font-black tracking-[-0.02em] sm:tracking-[-0.03em] mb-4 sm:mb-6 max-w-3xl mx-auto leading-[1.12] sm:leading-[1.08] bg-gradient-to-br from-gray-900 via-gray-800 to-gray-600 dark:from-white dark:via-gray-100 dark:to-gray-400 bg-clip-text text-transparent">
           Professional Invoicing{" "}
           <br className="hidden sm:block" />
           &amp; GST{" "}
           <span className="bg-gradient-to-r from-emerald-500 to-green-400 bg-clip-text text-transparent whitespace-nowrap">Billing Made Simple</span>
         </h1>
 
-        <p className="text-gray-600 dark:text-gray-400 text-base md:text-lg max-w-2xl mx-auto mb-10 leading-relaxed">
+        <p className="text-gray-600 dark:text-gray-400 text-sm sm:text-base md:text-lg max-w-2xl mx-auto mb-8 sm:mb-10 leading-relaxed px-2 sm:px-0">
           Create premium invoices, track purchase bills, manage client ledger sheets, and export automated GST reports in a unified SaaS interface.
         </p>
 
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 mb-10 sm:mb-16 px-2 sm:px-0">
           {isAuthenticated ? (
             <Link to="/dashboard" className="w-full sm:w-auto">
               <Button variant="accent" size="lg" className="w-full sm:w-auto">
@@ -232,7 +232,7 @@ const LandingPage: React.FC = () => {
         <div
           ref={mockupRef}
           style={{ perspective: "1200px" }}
-          className="relative mx-auto max-w-5xl"
+          className="relative mx-auto max-w-5xl px-2 sm:px-0"
         >
           {/* Glow base — visible in both modes */}
           <div
@@ -271,10 +271,10 @@ const LandingPage: React.FC = () => {
       </section>
 
       {/* Features Grid */}
-      <section id="features" className="py-24 border-t border-gray-200/50 dark:border-gray-800/50 bg-gray-50/50 dark:bg-gray-950/20">
-        <div className="max-w-7xl mx-auto px-6">
+      <section id="features" className="py-16 sm:py-24 border-t border-gray-200/50 dark:border-gray-800/50 bg-gray-50/50 dark:bg-gray-950/20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-4 text-gray-900 dark:text-white">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight mb-4 text-gray-900 dark:text-white">
               Everything you need to power your business
             </h2>
             <p className="text-gray-600 dark:text-gray-400 max-w-xl mx-auto text-sm md:text-base">
@@ -282,13 +282,13 @@ const LandingPage: React.FC = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
             {features.map((feature, i) => {
               const Icon = feature.icon
               return (
                 <div
                   key={i}
-                  className="p-6 rounded-2xl border border-gray-200 dark:border-gray-800/80 bg-white dark:bg-gray-900/50 hover:shadow-lg hover:shadow-emerald-500/5 dark:hover:bg-gray-900/80 hover:-translate-y-1 transition-all duration-300"
+                  className="p-5 sm:p-6 rounded-2xl border border-gray-200 dark:border-gray-800/80 bg-white dark:bg-gray-900/50 hover:shadow-lg hover:shadow-emerald-500/5 dark:hover:bg-gray-900/80 hover:-translate-y-1 transition-all duration-300"
                 >
                   <div className="w-10 h-10 bg-emerald-500/10 dark:bg-emerald-500/5 text-emerald-500 dark:text-emerald-400 rounded-lg flex items-center justify-center mb-5">
                     <Icon className="w-5 h-5" />
@@ -303,9 +303,9 @@ const LandingPage: React.FC = () => {
       </section>
 
       {/* Interactive Pricing Toggle */}
-      <section id="pricing" className="py-24 max-w-7xl mx-auto px-6">
+      <section id="pricing" className="py-16 sm:py-24 max-w-7xl mx-auto px-4 sm:px-6">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-4 text-gray-900 dark:text-white">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight mb-4 text-gray-900 dark:text-white">
             Transparent Pricing Plans
           </h2>
           <p className="text-gray-600 dark:text-gray-400 max-w-md mx-auto text-sm mb-8">
@@ -341,9 +341,9 @@ const LandingPage: React.FC = () => {
         </div>
 
         {/* Pricing Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-3xl mx-auto items-stretch">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 max-w-3xl mx-auto items-stretch">
           {/* Free Tier */}
-          <div className="p-8 rounded-3xl border border-gray-200 dark:border-gray-800 bg-white/80 dark:bg-gray-900/50 flex flex-col justify-between">
+          <div className="p-6 sm:p-8 rounded-2xl sm:rounded-3xl border border-gray-200 dark:border-gray-800 bg-white/80 dark:bg-gray-900/50 flex flex-col justify-between">
             <div>
               <div className="mb-6">
                 <span className="text-xs font-bold uppercase tracking-wider text-gray-500">Free Tier</span>
@@ -378,7 +378,7 @@ const LandingPage: React.FC = () => {
           </div>
 
           {/* Pro Tier (Popular) */}
-          <div className="p-8 rounded-3xl border-2 border-emerald-500 bg-white dark:bg-gray-900 shadow-xl shadow-emerald-500/5 flex flex-col justify-between relative">
+          <div className="p-6 sm:p-8 rounded-2xl sm:rounded-3xl border-2 border-emerald-500 bg-white dark:bg-gray-900 shadow-xl shadow-emerald-500/5 flex flex-col justify-between relative">
             <span className="absolute top-0 right-8 transform -translate-y-1/2 bg-emerald-500 text-white px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">
               Most Popular
             </span>
@@ -426,10 +426,10 @@ const LandingPage: React.FC = () => {
       </section>
 
       {/* Testimonials */}
-      <section className="py-24 border-t border-gray-200/50 dark:border-gray-800/50 bg-gray-50/50 dark:bg-gray-950/20">
-        <div className="max-w-7xl mx-auto px-6">
+      <section className="py-16 sm:py-24 border-t border-gray-200/50 dark:border-gray-800/50 bg-gray-50/50 dark:bg-gray-950/20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-4 text-gray-900 dark:text-white">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight mb-4 text-gray-900 dark:text-white">
               Trusted by 500+ businesses worldwide
             </h2>
             <p className="text-gray-600 dark:text-gray-400 max-w-md mx-auto text-sm">
@@ -437,7 +437,7 @@ const LandingPage: React.FC = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
             {testimonials.map((test, i) => (
               <div
                 key={i}
@@ -469,8 +469,8 @@ const LandingPage: React.FC = () => {
       </section>
 
       {/* Accordion FAQs */}
-      <section id="faq" className="py-24 max-w-4xl mx-auto px-6">
-        <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-8 text-center text-gray-900 dark:text-white">
+      <section id="faq" className="py-16 sm:py-24 max-w-4xl mx-auto px-4 sm:px-6">
+        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight mb-6 sm:mb-8 text-center text-gray-900 dark:text-white">
           Frequently Asked Questions
         </h2>
 
@@ -482,7 +482,7 @@ const LandingPage: React.FC = () => {
             >
               <button
                 onClick={() => setActiveFaq(activeFaq === i ? null : i)}
-                className="w-full flex items-center justify-between p-5 text-left font-bold text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-900/40 transition-all duration-200"
+                className="w-full flex items-center justify-between p-4 sm:p-5 text-left text-sm sm:text-base font-bold text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-900/40 transition-all duration-200"
               >
                 <span>{faq.q}</span>
                 <ChevronDown
@@ -492,7 +492,7 @@ const LandingPage: React.FC = () => {
                 />
               </button>
               {activeFaq === i && (
-                <div className="p-5 pt-0 text-sm text-gray-600 dark:text-gray-400 border-t border-gray-100 dark:border-gray-800/30 leading-relaxed">
+                <div className="p-4 sm:p-5 pt-0 text-xs sm:text-sm text-gray-600 dark:text-gray-400 border-t border-gray-100 dark:border-gray-800/30 leading-relaxed">
                   {faq.a}
                 </div>
               )}
@@ -502,16 +502,16 @@ const LandingPage: React.FC = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 px-6 max-w-5xl mx-auto">
-        <div className="p-8 md:p-16 rounded-3xl bg-gradient-to-br from-emerald-500 to-green-600 dark:from-emerald-600 dark:to-green-700 text-white text-center relative overflow-hidden shadow-xl shadow-emerald-500/10">
+      <section className="py-14 sm:py-20 px-4 sm:px-6 max-w-5xl mx-auto">
+        <div className="p-6 sm:p-8 md:p-16 rounded-2xl sm:rounded-3xl bg-gradient-to-br from-emerald-500 to-green-600 dark:from-emerald-600 dark:to-green-700 text-white text-center relative overflow-hidden shadow-xl shadow-emerald-500/10">
           <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-white/5 rounded-full blur-3xl pointer-events-none" />
           <div className="absolute -bottom-1/3 -left-10 w-[300px] h-[300px] bg-black/10 rounded-full blur-3xl pointer-events-none" />
 
           <div className="relative z-10 max-w-2xl mx-auto">
-            <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-6 leading-tight text-white">
+            <h2 className="text-2xl sm:text-3xl md:text-5xl font-extrabold tracking-tight mb-4 sm:mb-6 leading-tight text-white">
               Ready to automate your billing process?
             </h2>
-            <p className="text-emerald-50/90 mb-10 max-w-lg mx-auto text-sm md:text-base leading-relaxed">
+            <p className="text-emerald-50/90 mb-8 sm:mb-10 max-w-lg mx-auto text-xs sm:text-sm md:text-base leading-relaxed">
               Join hundreds of merchants who spend less time doing accounting and more time growing their sales numbers.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -542,8 +542,8 @@ const LandingPage: React.FC = () => {
       </section>
 
       {/* Footer */}
-      <footer className="py-12 border-t border-gray-200/50 dark:border-gray-800/50 bg-gray-50/50 dark:bg-gray-950/40">
-        <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-6 text-sm text-gray-500">
+      <footer className="py-8 sm:py-12 border-t border-gray-200/50 dark:border-gray-800/50 bg-gray-50/50 dark:bg-gray-950/40">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col md:flex-row items-center justify-between gap-4 sm:gap-6 text-xs sm:text-sm text-gray-500 text-center md:text-left">
           <div className="flex items-center gap-2.5">
             <div className="w-7 h-7 bg-gradient-to-br from-emerald-500 to-green-600 rounded-md flex items-center justify-center">
               <Receipt className="w-3.5 h-3.5 text-white" />
@@ -551,7 +551,7 @@ const LandingPage: React.FC = () => {
             <span className="font-bold text-gray-700 dark:text-gray-300">EzBill</span>
           </div>
 
-          <div className="flex flex-wrap items-center justify-center gap-8">
+          <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-8">
             <Link to="/privacy" className="hover:text-emerald-500 dark:hover:text-emerald-400 transition-colors">Privacy Policy</Link>
             <Link to="/terms" className="hover:text-emerald-500 dark:hover:text-emerald-400 transition-colors">Terms of Service</Link>
             <a href="mailto:support@ezbill.app" className="hover:text-emerald-500 dark:hover:text-emerald-400 transition-colors">Contact Support</a>
