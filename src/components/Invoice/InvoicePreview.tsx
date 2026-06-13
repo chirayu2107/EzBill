@@ -141,14 +141,6 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({ invoice, onClose, autoD
     const base64Pattern = /^data:image\/(png|jpg|jpeg|gif|webp);base64,/i
     const isValidBase64 = base64Pattern.test(signature)
 
-    console.log("Signature validation:", {
-      exists: !!signature,
-      length: signature.length,
-      startsWithData: signature.startsWith("data:"),
-      isValidBase64,
-      preview: signature.substring(0, 50) + "...",
-    })
-
     return isValidBase64
   }
 
@@ -561,7 +553,6 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({ invoice, onClose, autoD
                       style={signatureImageStyle}
                       onError={handleSignatureError}
                       onLoad={() => {
-                        console.log("Signature loaded successfully in invoice preview")
                         setSignatureError(false)
                       }}
                       crossOrigin="anonymous"

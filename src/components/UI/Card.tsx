@@ -4,17 +4,18 @@ interface CardProps {
   children: React.ReactNode;
   className?: string;
   padding?: 'sm' | 'md' | 'lg';
+  hoverable?: boolean;
 }
 
-const Card: React.FC<CardProps> = ({ children, className = '', padding = 'md' }) => {
+const Card: React.FC<CardProps> = ({ children, className = '', padding = 'md', hoverable = false }) => {
   const paddingClasses = {
     sm: 'p-4',
-    md: 'p-6',
-    lg: 'p-8',
+    md: 'p-5',
+    lg: 'p-6',
   };
   
   return (
-    <div className={`bg-white dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700 shadow-md shadow-gray-200/50 dark:shadow-none transition-all duration-300 ${paddingClasses[padding]} ${className}`}>
+    <div className={`ez-card ${hoverable ? 'ez-card-hover cursor-pointer' : ''} ${paddingClasses[padding]} ${className}`}>
       {children}
     </div>
   );

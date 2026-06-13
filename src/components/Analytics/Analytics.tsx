@@ -65,13 +65,11 @@ const Analytics: React.FC = () => {
 
     const dailyData: { [key: string]: { sales: number; invoices: number } } = {}
 
-    // Initialize all days of the month
     for (let day = 1; day <= endDate.getDate(); day++) {
       const dateKey = `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`
       dailyData[dateKey] = { sales: 0, invoices: 0 }
     }
 
-    // Populate with actual data
     invoices.forEach((invoice) => {
       const invoiceDate = new Date(invoice.date)
       if (invoiceDate >= startDate && invoiceDate <= endDate) {
@@ -94,12 +92,11 @@ const Analytics: React.FC = () => {
 
   // Financial Year data (monthly breakdown)
   const financialYearData = useMemo(() => {
-    const fyStart = new Date(selectedFY, 3, 1) // April 1st
-    const fyEnd = new Date(selectedFY + 1, 2, 31) // March 31st
+    const fyStart = new Date(selectedFY, 3, 1)
+    const fyEnd = new Date(selectedFY + 1, 2, 31)
 
     const monthlyData: { [key: string]: { sales: number; invoices: number } } = {}
 
-    // Initialize all months of the FY
     const months = ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar"]
     months.forEach((_, index) => {
       const actualMonth = index < 9 ? index + 4 : index - 8
@@ -108,7 +105,6 @@ const Analytics: React.FC = () => {
       monthlyData[monthKey] = { sales: 0, invoices: 0 }
     })
 
-    // Populate with actual data
     invoices.forEach((invoice) => {
       const invoiceDate = new Date(invoice.date)
       if (invoiceDate >= fyStart && invoiceDate <= fyEnd) {
@@ -138,7 +134,6 @@ const Analytics: React.FC = () => {
 
   const handleExportExcel = async () => {
     try {
-      // Dynamic import to avoid SSR issues
       const XLSX = await import("xlsx")
       const filename =
         reportType === "monthly"
@@ -164,20 +159,15 @@ const Analytics: React.FC = () => {
         }))
       }
 
-      // Create workbook and worksheet
       const workbook = XLSX.utils.book_new()
       const worksheet = XLSX.utils.json_to_sheet(worksheetData)
 
-      // Auto-size columns
       const colWidths = Object.keys(worksheetData[0] || {}).map((key) => ({
         wch: Math.max(key.length, ...worksheetData.map((row) => String(row[key] || "").length)) + 2,
       }))
       worksheet["!cols"] = colWidths
 
-      // Add worksheet to workbook
       XLSX.utils.book_append_sheet(workbook, worksheet, reportType === "monthly" ? "Daily Sales" : "Monthly Sales")
-
-      // Write file
       XLSX.writeFile(workbook, filename)
 
       toast.success(
@@ -192,7 +182,6 @@ const Analytics: React.FC = () => {
 
   const handleExportChart = async () => {
     try {
-      // Dynamic import to avoid SSR issues
       const html2canvas = (await import("html2canvas")).default
       const chartId = reportType === "monthly" ? "monthly-chart" : "fy-chart"
       const filename =
@@ -203,22 +192,19 @@ const Analytics: React.FC = () => {
         throw new Error("Chart element not found")
       }
 
-      // Create canvas from the chart element
       const canvas = await html2canvas(chartElement, {
-        scale: 2, // Higher quality
+        scale: 2,
         useCORS: true,
         allowTaint: true,
-        backgroundColor: theme === "dark" ? "#1F2937" : "#FFFFFF", // Dynamic background for export
+        backgroundColor: theme === "dark" ? "#1F2937" : "#FFFFFF",
         width: chartElement.scrollWidth,
         height: chartElement.scrollHeight,
       })
 
-      // Create download link
       const link = document.createElement("a")
       link.download = filename
       link.href = canvas.toDataURL("image/png")
 
-      // Trigger download
       document.body.appendChild(link)
       link.click()
       document.body.removeChild(link)
@@ -257,72 +243,66 @@ const Analytics: React.FC = () => {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1,
+        staggerChildren: 0.08,
       },
     },
   }
 
   const itemVariants = {
-    hidden: { y: 30, opacity: 0 },
+    hidden: { y: 8, opacity: 0 },
     visible: {
       y: 0,
       opacity: 1,
       transition: {
         duration: 0.4,
-        ease: "easeOut",
+        ease: [0.4, 0, 0.2, 1],
       },
     },
   }
 
+  const selectClasses = "w-full px-3.5 py-2.5 bg-white dark:bg-white/[0.03] border border-gray-200 dark:border-gray-800/50 rounded-xl text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-400/40 appearance-none transition-all shadow-sm"
+
   return (
-    <div className="pt-24 md:pt-0">
+    <div className="pt-20 md:pt-0">
       <motion.div
         className="max-w-7xl mx-auto space-y-6 md:space-y-8"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
       >
-        {/* Header */}
+        {/* ═══ PAGE HEADER ═══ */}
         <motion.div className="flex flex-col md:flex-row justify-between items-start gap-4" variants={itemVariants}>
           <div>
-            <div className="flex items-center gap-3 md:gap-4 mb-2">
-              <div className="p-2 md:p-3 bg-blue-500/10 rounded-xl">
-                <BarChart3 className="w-6 h-6 md:w-8 md:h-8 text-blue-500" />
-              </div>
-              <div>
-                <h1 className="text-2xl md:text-4xl font-semibold text-gray-900 dark:text-white transition-colors">Analytics</h1>
-                <p className="text-gray-500 dark:text-gray-400 text-base md:text-lg transition-colors">Business insights and reports</p>
-              </div>
-            </div>
+            <h1 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Analytics</h1>
+            <p className="text-gray-500 dark:text-gray-400 text-sm mt-1">Business insights and reports</p>
           </div>
         </motion.div>
 
-        {/* Controls - Mobile: 2x2 Grid, Desktop: Original 4 columns */}
+        {/* ═══ CONTROLS ═══ */}
         <motion.div variants={itemVariants}>
           {/* Mobile Layout (2x2 Grid) */}
           <div className="block md:hidden space-y-3">
-            {/* First Row: Report Type and Select Month/FY */}
             <div className="grid grid-cols-2 gap-3">
-              <Card className="p-3">
+              <Card padding="sm">
                 <div className="space-y-2">
-                  <label className="block text-xs font-normal text-gray-700 dark:text-gray-300 transition-colors">Report Type</label>
+                  <label className="text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider block">Report Type</label>
                   <div className="relative">
                     <select
                       value={reportType}
                       onChange={(e) => setReportType(e.target.value as ReportType)}
-                      className="w-full px-2 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none text-xs transition-colors"
+                      className={`${selectClasses} text-xs py-1.5`}
                     >
                       <option value="monthly">Monthly</option>
                       <option value="financial-year">Financial Year</option>
                     </select>
-                    <ChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 w-3 h-3 text-gray-400 dark:text-gray-500 pointer-events-none" />
+                    <ChevronDown className="absolute right-2 top-1/2 transform -translate-y-1/2 w-3 h-3 text-gray-400 pointer-events-none" />
                   </div>
                 </div>
               </Card>
 
-              <Card className="p-3">
+              <Card padding="sm">
                 <div className="space-y-2">
-                  <label className="block text-xs font-normal text-gray-700 dark:text-gray-300 transition-colors">
+                  <label className="text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider block">
                     {reportType === "monthly" ? "Select Month" : "Select FY"}
                   </label>
                   <div className="relative">
@@ -330,7 +310,7 @@ const Analytics: React.FC = () => {
                       <select
                         value={selectedMonth}
                         onChange={(e) => setSelectedMonth(e.target.value)}
-                        className="w-full px-2 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none text-xs transition-colors"
+                        className={`${selectClasses} text-xs py-1.5`}
                       >
                         {availableMonths.length > 0 ? (
                           availableMonths.map((month) => {
@@ -361,7 +341,7 @@ const Analytics: React.FC = () => {
                       <select
                         value={selectedFY}
                         onChange={(e) => setSelectedFY(Number.parseInt(e.target.value))}
-                        className="w-full px-2 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none text-xs transition-colors"
+                        className={`${selectClasses} text-xs py-1.5`}
                       >
                         {availableFYs.length > 0 ? (
                           availableFYs.map((fy) => (
@@ -382,24 +362,23 @@ const Analytics: React.FC = () => {
               </Card>
             </div>
 
-            {/* Second Row: View Type and Export Options */}
             <div className="grid grid-cols-2 gap-3">
-              <Card className="p-3">
+              <Card padding="sm">
                 <div className="space-y-2">
-                  <label className="block text-xs font-normal text-gray-700 dark:text-gray-300 transition-colors">View Type</label>
+                  <label className="text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider block">View Type</label>
                   <div className="flex gap-1">
                     <button
                       onClick={() => setViewType("chart")}
-                      className={`flex-1 px-2 py-1.5 rounded-md text-xs font-medium transition-colors ${
-                        viewType === "chart" ? "bg-blue-600 text-white" : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
+                      className={`flex-1 px-2 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                        viewType === "chart" ? "bg-gray-900 dark:bg-white text-white dark:text-gray-900" : "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700"
                       }`}
                     >
                       Chart
                     </button>
                     <button
                       onClick={() => setViewType("table")}
-                      className={`flex-1 px-2 py-1.5 rounded-md text-xs font-medium transition-colors ${
-                        viewType === "table" ? "bg-blue-600 text-white" : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
+                      className={`flex-1 px-2 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                        viewType === "table" ? "bg-gray-900 dark:bg-white text-white dark:text-gray-900" : "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700"
                       }`}
                     >
                       Table
@@ -408,15 +387,16 @@ const Analytics: React.FC = () => {
                 </div>
               </Card>
 
-              <Card className="p-3">
+              <Card padding="sm">
                 <div className="space-y-2">
-                  <label className="block text-xs font-normal text-gray-700 dark:text-gray-300 transition-colors">Export Options</label>
+                  <label className="text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider block">Export</label>
                   <div className="flex flex-col gap-1">
                     <Button
                       onClick={handleExportExcel}
                       icon={FileSpreadsheet}
                       size="sm"
-                      className="w-full bg-green-600 hover:bg-green-700 text-xs py-1.5 px-2"
+                      variant="accent"
+                      className="w-full text-xs py-1.5 px-2"
                     >
                       Excel
                     </Button>
@@ -425,7 +405,8 @@ const Analytics: React.FC = () => {
                         onClick={handleExportChart}
                         icon={Download}
                         size="sm"
-                        className="w-full bg-purple-600 hover:bg-purple-700 text-xs py-1.5 px-2"
+                        variant="secondary"
+                        className="w-full text-xs py-1.5 px-2"
                       >
                         PNG
                       </Button>
@@ -436,236 +417,165 @@ const Analytics: React.FC = () => {
             </div>
           </div>
 
-          {/* Desktop Layout (Original 4 columns) */}
-          <div className="hidden md:grid md:grid-cols-4 gap-6">
-            <Card>
-              <div className="space-y-3">
-                <label className="block text-sm font-normal text-gray-800 dark:text-gray-300 transition-colors">Report Type</label>
-                <div className="relative">
+          {/* Desktop Layout — inline toolbar */}
+          <div className="hidden md:flex items-end gap-4 bg-white dark:bg-white/[0.02] rounded-2xl border border-gray-100 dark:border-gray-800/50 p-4 shadow-sm">
+            <div className="flex-1 space-y-1.5">
+              <label className="text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider block">Report Type</label>
+              <div className="relative">
+                <select
+                  value={reportType}
+                  onChange={(e) => setReportType(e.target.value as ReportType)}
+                  className={selectClasses}
+                >
+                  <option value="monthly">Monthly Report</option>
+                  <option value="financial-year">Financial Year Report</option>
+                </select>
+                <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+              </div>
+            </div>
+
+            <div className="flex-1 space-y-1.5">
+              <label className="text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider block">
+                {reportType === "monthly" ? "Select Month" : "Select Financial Year"}
+              </label>
+              <div className="relative">
+                {reportType === "monthly" ? (
                   <select
-                    value={reportType}
-                    onChange={(e) => setReportType(e.target.value as ReportType)}
-                    className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none text-sm transition-colors"
+                    value={selectedMonth}
+                    onChange={(e) => setSelectedMonth(e.target.value)}
+                    className={selectClasses}
                   >
-                    <option value="monthly">Monthly Report</option>
-                    <option value="financial-year">Financial Year Report</option>
-                  </select>
-                  <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
-                </div>
-              </div>
-            </Card>
-
-            <Card>
-              <div className="space-y-3">
-                <label className="block text-sm font-normal text-gray-800 dark:text-gray-300 transition-colors">
-                  {reportType === "monthly" ? "Select Month" : "Select Financial Year"}
-                </label>
-                <div className="relative">
-                  {reportType === "monthly" ? (
-                    <select
-                      value={selectedMonth}
-                      onChange={(e) => setSelectedMonth(e.target.value)}
-                      className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none text-sm transition-colors"
-                    >
-                      {availableMonths.length > 0 ? (
-                        availableMonths.map((month) => {
-                          const [year, monthNum] = month.split("-")
-                          const monthName = new Date(
-                            Number.parseInt(year),
-                            Number.parseInt(monthNum) - 1,
-                          ).toLocaleDateString("en-US", {
-                            year: "numeric",
-                            month: "long",
-                          })
-                          return (
-                            <option key={month} value={month}>
-                              {monthName}
-                            </option>
-                          )
+                    {availableMonths.length > 0 ? (
+                      availableMonths.map((month) => {
+                        const [year, monthNum] = month.split("-")
+                        const monthName = new Date(
+                          Number.parseInt(year),
+                          Number.parseInt(monthNum) - 1,
+                        ).toLocaleDateString("en-US", {
+                          year: "numeric",
+                          month: "long",
                         })
-                      ) : (
-                        <option value={selectedMonth}>
-                          {new Date(selectedMonth + "-01").toLocaleDateString("en-US", {
-                            year: "numeric",
-                            month: "long",
-                          })}
-                        </option>
-                      )}
-                    </select>
-                  ) : (
-                    <select
-                      value={selectedFY}
-                      onChange={(e) => setSelectedFY(Number.parseInt(e.target.value))}
-                      className="w-full px-3 py-2 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 appearance-none text-sm transition-colors"
-                    >
-                      {availableFYs.length > 0 ? (
-                        availableFYs.map((fy) => (
-                          <option key={fy} value={fy}>
-                            FY {fy}-{fy + 1}
+                        return (
+                          <option key={month} value={month}>
+                            {monthName}
                           </option>
-                        ))
-                      ) : (
-                        <option value={selectedFY}>
-                          FY {selectedFY}-{selectedFY + 1}
+                        )
+                      })
+                    ) : (
+                      <option value={selectedMonth}>
+                        {new Date(selectedMonth + "-01").toLocaleDateString("en-US", {
+                          year: "numeric",
+                          month: "long",
+                        })}
+                      </option>
+                    )}
+                  </select>
+                ) : (
+                  <select
+                    value={selectedFY}
+                    onChange={(e) => setSelectedFY(Number.parseInt(e.target.value))}
+                    className={selectClasses}
+                  >
+                    {availableFYs.length > 0 ? (
+                      availableFYs.map((fy) => (
+                        <option key={fy} value={fy}>
+                          FY {fy}-{fy + 1}
                         </option>
-                      )}
-                    </select>
-                  )}
-                  <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
-                </div>
+                      ))
+                    ) : (
+                      <option value={selectedFY}>
+                        FY {selectedFY}-{selectedFY + 1}
+                      </option>
+                    )}
+                  </select>
+                )}
+                <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
               </div>
-            </Card>
+            </div>
 
-            <Card>
-              <div className="space-y-3">
-                <label className="block text-sm font-normal text-gray-800 dark:text-gray-300 transition-colors">View Type</label>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => setViewType("chart")}
-                    className={`flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                      viewType === "chart" ? "bg-blue-600 text-white" : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
-                    }`}
-                  >
-                    Chart
-                  </button>
-                  <button
-                    onClick={() => setViewType("table")}
-                    className={`flex-1 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                      viewType === "table" ? "bg-blue-600 text-white" : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
-                    }`}
-                  >
-                    Table
-                  </button>
-                </div>
+            <div className="space-y-1.5">
+              <label className="text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider block">View Type</label>
+              <div className="flex gap-1 bg-gray-100 dark:bg-white/5 rounded-lg p-0.5">
+                <button
+                  onClick={() => setViewType("chart")}
+                  className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+                    viewType === "chart" ? "bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm" : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
+                  }`}
+                >
+                  Chart
+                </button>
+                <button
+                  onClick={() => setViewType("table")}
+                  className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+                    viewType === "table" ? "bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm" : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
+                  }`}
+                >
+                  Table
+                </button>
               </div>
-            </Card>
+            </div>
 
-            <Card>
-              <div className="space-y-3">
-                <label className="block text-sm font-normal text-gray-800 dark:text-gray-300 transition-colors">Export Options</label>
-                <div className="flex gap-2">
-                  <Button
-                    onClick={handleExportExcel}
-                    icon={FileSpreadsheet}
-                    size="sm"
-                    className="flex-1 bg-green-600 hover:bg-green-700 text-xs"
-                  >
-                    Excel
-                  </Button>
-                  {viewType === "chart" && (
-                    <Button
-                      onClick={handleExportChart}
-                      icon={Download}
-                      size="sm"
-                      className="flex-1 bg-purple-600 hover:bg-purple-700 text-xs"
-                    >
-                      PNG
-                    </Button>
-                  )}
-                </div>
-              </div>
-            </Card>
+            <div className="flex gap-2">
+              <Button onClick={handleExportExcel} icon={FileSpreadsheet} size="sm" variant="accent" className="text-xs">Excel</Button>
+              {viewType === "chart" && (
+                <Button onClick={handleExportChart} icon={Download} size="sm" variant="secondary" className="text-xs">PNG</Button>
+              )}
+            </div>
           </div>
         </motion.div>
 
-        {/* Summary Cards - Mobile: Single Row, Desktop: Original Layout */}
+        {/* ═══ SUMMARY STATS ═══ */}
         <motion.div variants={itemVariants}>
-          {/* Mobile Layout (Single Row) */}
-          <div className="grid grid-cols-3 gap-2 md:hidden">
-            <Card className="bg-gradient-to-br from-green-500/10 to-emerald-600/10 border-green-500/20 p-3">
-              <div className="flex flex-col items-center gap-2">
-                <div className="text-center min-w-0 flex-1">
-                  <p className="text-green-600 dark:text-green-400 text-xs font-medium">Total Sales</p>
-                  <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">{formatCurrency(getTotalSales())}</p>
+          <div className="grid grid-cols-3 gap-3">
+            <div className="rounded-2xl border border-emerald-200 dark:border-emerald-500/20 bg-emerald-50 dark:bg-emerald-500/5 p-4">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="p-1.5 rounded-lg bg-emerald-500/10">
+                  <TrendingUp className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
                 </div>
-                <div className="p-1.5 bg-green-500/10 rounded-lg flex-shrink-0">
-                  <TrendingUp className="w-3 h-3 text-green-500" />
-                </div>
+                <span className="text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Total Sales</span>
               </div>
-            </Card>
+              <p className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white ez-number tracking-tight">{formatCurrency(getTotalSales())}</p>
+            </div>
 
-            <Card className="bg-gradient-to-br from-blue-500/10 to-cyan-600/10 border-blue-500/20 p-3">
-              <div className="flex flex-col items-center gap-2">
-                <div className="text-center min-w-0 flex-1">
-                  <p className="text-blue-600 dark:text-blue-400 text-xs font-medium">Total Invoices</p>
-                  <p className="text-sm font-semibold text-gray-900 dark:text-white">{getTotalInvoices()}</p>
+            <div className="rounded-2xl border border-blue-200 dark:border-blue-500/20 bg-blue-50 dark:bg-blue-500/5 p-4">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="p-1.5 rounded-lg bg-blue-500/10">
+                  <FileSpreadsheet className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
                 </div>
-                <div className="p-1.5 bg-blue-500/10 rounded-lg flex-shrink-0">
-                  <FileSpreadsheet className="w-3 h-3 text-blue-500" />
-                </div>
+                <span className="text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Total Invoices</span>
               </div>
-            </Card>
+              <p className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white ez-number tracking-tight">{getTotalInvoices()}</p>
+            </div>
 
-            <Card className="bg-gradient-to-br from-purple-500/10 to-pink-600/10 border-purple-500/20 p-3">
-              <div className="flex flex-col items-center gap-2">
-                <div className="text-center min-w-0 flex-1">
-                  <p className="text-purple-600 dark:text-purple-400 text-xs font-medium">Average Sales</p>
-                  <p className="text-sm font-semibold text-gray-900 dark:text-white truncate">{formatCurrency(getAverageSales())}</p>
+            <div className="rounded-2xl border border-violet-200 dark:border-violet-500/20 bg-violet-50 dark:bg-violet-500/5 p-4">
+              <div className="flex items-center gap-2 mb-2">
+                <div className="p-1.5 rounded-lg bg-violet-500/10">
+                  <BarChart3 className="w-3.5 h-3.5 text-violet-600 dark:text-violet-400" />
                 </div>
-                <div className="p-1.5 bg-purple-500/10 rounded-lg flex-shrink-0">
-                  <BarChart3 className="w-3 h-3 text-purple-500" />
-                </div>
+                <span className="text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Avg Sales</span>
               </div>
-            </Card>
-          </div>
-
-          {/* Desktop Layout (Original) */}
-          <div className="hidden md:grid md:grid-cols-3 gap-6">
-            <Card className="bg-gradient-to-br from-green-500/10 to-emerald-600/10 border-green-500/20">
-              <div className="flex items-center justify-between">
-                <div className="min-w-0 flex-1">
-                  <p className="text-green-600 dark:text-green-400 text-sm font-medium">Total Sales</p>
-                  <p className="text-2xl font-semibold text-gray-900 dark:text-white truncate transition-colors">{formatCurrency(getTotalSales())}</p>
-                </div>
-                <div className="p-3 bg-green-500/10 rounded-lg flex-shrink-0">
-                  <TrendingUp className="w-6 h-6 text-green-500" />
-                </div>
-              </div>
-            </Card>
-
-            <Card className="bg-gradient-to-br from-blue-500/10 to-cyan-600/10 border-blue-500/20">
-              <div className="flex items-center justify-between">
-                <div className="min-w-0 flex-1">
-                  <p className="text-blue-600 dark:text-blue-400 text-sm font-medium">Total Invoices</p>
-                  <p className="text-2xl font-semibold text-gray-900 dark:text-white transition-colors">{getTotalInvoices()}</p>
-                </div>
-                <div className="p-3 bg-blue-500/10 rounded-lg flex-shrink-0">
-                  <FileSpreadsheet className="w-6 h-6 text-blue-500" />
-                </div>
-              </div>
-            </Card>
-
-            <Card className="bg-gradient-to-br from-purple-500/10 to-pink-600/10 border-purple-500/20">
-              <div className="flex items-center justify-between">
-                <div className="min-w-0 flex-1">
-                  <p className="text-purple-600 dark:text-purple-400 text-sm font-medium">Average Sales</p>
-                  <p className="text-2xl font-semibold text-gray-900 dark:text-white truncate transition-colors">{formatCurrency(getAverageSales())}</p>
-                </div>
-                <div className="p-3 bg-purple-500/10 rounded-lg flex-shrink-0">
-                  <BarChart3 className="w-6 h-6 text-purple-500" />
-                </div>
-              </div>
-            </Card>
+              <p className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white ez-number tracking-tight truncate">{formatCurrency(getAverageSales())}</p>
+            </div>
           </div>
         </motion.div>
 
-        {/* Chart/Table Content - Mobile Optimized Charts/Tables */}
+        {/* ═══ CHART / TABLE ═══ */}
         <motion.div variants={itemVariants}>
           {viewType === "chart" ? (
             <Card>
               <div className="mb-4 md:mb-6">
-                <h3 className="text-lg md:text-xl font-semibold text-gray-900 dark:text-white mb-2 transition-colors">
+                <span className="text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider block mb-2">
+                  {reportType === "monthly" ? "Daily Breakdown" : "Monthly Breakdown"}
+                </span>
+                <h3 className="text-lg md:text-xl font-bold tracking-heading text-gray-900 dark:text-white mb-1">
                   {reportType === "monthly"
-                    ? `Daily Sales  - ${new Date(selectedMonth + "-01").toLocaleDateString("en-US", { year: "numeric", month: "long" })}`
-                    : `Monthly Sales - FY ${selectedFY}-${selectedFY + 1}`}
-                  {reportType === "monthly"
-                    ? " Daily breakdown of sales and invoice count"
-                    : " Monthly breakdown of sales and invoice count for the financial year"}
+                    ? `Sales — ${new Date(selectedMonth + "-01").toLocaleDateString("en-US", { year: "numeric", month: "long" })}`
+                    : `Sales — FY ${selectedFY}-${selectedFY + 1}`}
                 </h3>
-                <p className="text-gray-500 dark:text-gray-400 text-sm md:text-base transition-colors">
+                <p className="text-gray-500 dark:text-gray-400 text-sm">
                   {reportType === "monthly"
-                    ? " Daily breakdown of sales and invoice count"
-                    : " Monthly breakdown of sales and invoice count for the financial year"}
+                    ? "Daily breakdown of sales and invoice count"
+                    : "Monthly breakdown of sales and invoice count for the financial year"}
                 </p>
               </div>
               {reportType === "monthly" ? (
@@ -677,65 +587,64 @@ const Analytics: React.FC = () => {
           ) : (
             <Card>
               <div className="mb-4 md:mb-6">
-                <h3 className="text-lg md:text-xl font-semibold text-gray-900 dark:text-white mb-2 transition-colors">
+                <span className="text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider block mb-2">
+                  {reportType === "monthly" ? "Daily Data" : "Monthly Data"}
+                </span>
+                <h3 className="text-lg md:text-xl font-bold tracking-heading text-gray-900 dark:text-white">
                   {reportType === "monthly"
-                    ? `Daily Sales Table - ${new Date(selectedMonth + "-01").toLocaleDateString("en-US", { year: "numeric", month: "long" })}`
-                    : `Monthly Sales Table - FY ${selectedFY}-${selectedFY + 1}`}
+                    ? `Sales Table — ${new Date(selectedMonth + "-01").toLocaleDateString("en-US", { year: "numeric", month: "long" })}`
+                    : `Sales Table — FY ${selectedFY}-${selectedFY + 1}`}
                 </h3>
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b border-gray-200 dark:border-gray-700 transition-colors bg-gray-50/50 dark:bg-transparent">
-                      <th className="text-left py-3 px-2 md:px-4 text-gray-700 dark:text-gray-400 font-normal text-sm">
+                    <tr className="border-b border-gray-100 dark:border-gray-800">
+                      <th className="text-left py-3 px-2 md:px-4 text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">
                         {reportType === "monthly" ? "Date" : "Month"}
                       </th>
-                      <th className="text-right py-3 px-2 md:px-4 text-gray-700 dark:text-gray-300 font-normal text-sm">Sales Amount</th>
-                      <th className="text-right py-3 px-2 md:px-4 text-gray-700 dark:text-gray-300 font-normal text-sm">
-                        Invoice Count
-                      </th>
-                      <th className="text-right py-3 px-2 md:px-4 text-gray-700 dark:text-gray-300 font-normal text-sm">
-                        Avg per Invoice
-                      </th>
+                      <th className="text-right py-3 px-2 md:px-4 text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Sales Amount</th>
+                      <th className="text-right py-3 px-2 md:px-4 text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Invoice Count</th>
+                      <th className="text-right py-3 px-2 md:px-4 text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Avg per Invoice</th>
                     </tr>
                   </thead>
                   <tbody>
                     {reportType === "monthly"
                       ? monthlyData.map((item, index) => (
-                          <tr key={index} className="border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors">
+                          <tr key={index} className="border-b border-gray-50 dark:border-gray-800/50 hover:bg-gray-50/50 dark:hover:bg-gray-800/20 transition-colors">
                             <td className="py-3 px-2 md:px-4 text-gray-900 dark:text-white text-sm">{item.formattedDate}</td>
-                            <td className="py-3 px-2 md:px-4 text-right text-gray-900 dark:text-white font-medium text-sm">
+                            <td className="py-3 px-2 md:px-4 text-right text-gray-900 dark:text-white font-medium text-sm ez-number">
                               {formatCurrency(item.sales)}
                             </td>
-                            <td className="py-3 px-2 md:px-4 text-right text-gray-700 dark:text-gray-300 text-sm">{item.invoices}</td>
-                            <td className="py-3 px-2 md:px-4 text-right text-gray-700 dark:text-gray-300 text-sm">
+                            <td className="py-3 px-2 md:px-4 text-right text-gray-500 dark:text-gray-400 text-sm ez-number">{item.invoices}</td>
+                            <td className="py-3 px-2 md:px-4 text-right text-gray-500 dark:text-gray-400 text-sm ez-number">
                               {item.invoices > 0 ? formatCurrency(item.sales / item.invoices) : formatCurrency(0)}
                             </td>
                           </tr>
                         ))
                       : financialYearData.map((item, index) => (
-                          <tr key={index} className="border-b border-gray-50 dark:border-gray-700/50 hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors">
+                          <tr key={index} className="border-b border-gray-50 dark:border-gray-800/50 hover:bg-gray-50/50 dark:hover:bg-gray-800/20 transition-colors">
                             <td className="py-3 px-2 md:px-4 text-gray-900 dark:text-white text-sm">{item.month}</td>
-                            <td className="py-3 px-2 md:px-4 text-right text-gray-900 dark:text-white font-medium text-sm">
+                            <td className="py-3 px-2 md:px-4 text-right text-gray-900 dark:text-white font-medium text-sm ez-number">
                               {formatCurrency(item.sales)}
                             </td>
-                            <td className="py-3 px-2 md:px-4 text-right text-gray-700 dark:text-gray-300 text-sm">{item.invoices}</td>
-                            <td className="py-3 px-2 md:px-4 text-right text-gray-700 dark:text-gray-300 text-sm">
+                            <td className="py-3 px-2 md:px-4 text-right text-gray-500 dark:text-gray-400 text-sm ez-number">{item.invoices}</td>
+                            <td className="py-3 px-2 md:px-4 text-right text-gray-500 dark:text-gray-400 text-sm ez-number">
                               {item.invoices > 0 ? formatCurrency(item.sales / item.invoices) : formatCurrency(0)}
                             </td>
                           </tr>
                         ))}
                   </tbody>
                   <tfoot>
-                    <tr className="border-t-2 border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-750 transition-colors">
+                    <tr className="border-t-2 border-gray-200 dark:border-gray-700 bg-gray-50/50 dark:bg-gray-800/20">
                       <td className="py-3 px-2 md:px-4 text-gray-900 dark:text-white font-semibold text-sm">Total</td>
-                      <td className="py-3 px-2 md:px-4 text-right text-gray-900 dark:text-white font-semibold text-sm">
+                      <td className="py-3 px-2 md:px-4 text-right text-gray-900 dark:text-white font-bold text-sm ez-number">
                         {formatCurrency(getTotalSales())}
                       </td>
-                      <td className="py-3 px-2 md:px-4 text-right text-gray-900 dark:text-white font-semibold text-sm">
+                      <td className="py-3 px-2 md:px-4 text-right text-gray-900 dark:text-white font-bold text-sm ez-number">
                         {getTotalInvoices()}
                       </td>
-                      <td className="py-3 px-2 md:px-4 text-right text-gray-900 dark:text-white font-semibold text-sm">
+                      <td className="py-3 px-2 md:px-4 text-right text-gray-900 dark:text-white font-bold text-sm ez-number">
                         {formatCurrency(getAverageSales())}
                       </td>
                     </tr>

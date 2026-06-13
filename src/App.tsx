@@ -16,6 +16,9 @@ import PurchaseBillsPage from "./components/PurchaseBills/PurchaseBillsPage"
 import CreatePurchaseBill from "./components/PurchaseBills/CreatePurchaseBill"
 import LedgersPage from "./components/Invoice/LedgersPage"
 import GSTReports from "./components/Analytics/GSTReports"
+import LandingPage from "./pages/LandingPage"
+import PrivacyPage from "./pages/privacy"
+import TermsPage from "./pages/terms"
 import ToastContainer from "./components/UI/ToastContainer"
 import { useToast } from "./hooks/useToast"
 
@@ -26,10 +29,13 @@ function AppContent() {
     <>
       <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <Routes>
+          <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/privacy" element={<PrivacyPage />} />
+          <Route path="/terms" element={<TermsPage />} />
           <Route
-            path="/"
+            path="/dashboard"
             element={
               <ProtectedRoute>
                 <Layout />

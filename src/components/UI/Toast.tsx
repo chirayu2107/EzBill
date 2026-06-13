@@ -30,44 +30,69 @@ const Toast: React.FC<ToastProps> = ({ id, type, title, message, duration = 5000
       case "error":
         return <AlertCircle className="w-5 h-5 text-red-500" />
       case "warning":
-        return <AlertTriangle className="w-5 h-5 text-yellow-500" />
+        return <AlertTriangle className="w-5 h-5 text-amber-500" />
       case "info":
         return <Info className="w-5 h-5 text-blue-500" />
       default:
         return <Info className="w-5 h-5 text-blue-500" />
     }
+  }
+
+  const getTypeLabel = () => {
+    return type.toUpperCase()
   }
 
   const getColors = () => {
     switch (type) {
       case "success":
-        return "bg-green-500/10 border-green-500/20 text-green-400"
+        return "border-green-500/20"
       case "error":
-        return "bg-red-500/10 border-red-500/20 text-red-400"
+        return "border-red-500/20"
       case "warning":
-        return "bg-yellow-500/10 border-yellow-500/20 text-yellow-400"
+        return "border-amber-500/20"
       case "info":
-        return "bg-blue-500/10 border-blue-500/20 text-blue-400"
+        return "border-blue-500/20"
       default:
-        return "bg-blue-500/10 border-blue-500/20 text-blue-400"
+        return "border-blue-500/20"
+    }
+  }
+
+  const getLabelColor = () => {
+    switch (type) {
+      case "success":
+        return "text-green-600 dark:text-green-400"
+      case "error":
+        return "text-red-600 dark:text-red-400"
+      case "warning":
+        return "text-amber-600 dark:text-amber-400"
+      case "info":
+        return "text-blue-600 dark:text-blue-400"
+      default:
+        return "text-blue-600 dark:text-blue-400"
     }
   }
 
   return (
     <motion.div
-      initial={{ opacity: 0, x: 300, scale: 0.3 }}
+      initial={{ opacity: 0, x: 300, scale: 0.8 }}
       animate={{ opacity: 1, x: 0, scale: 1 }}
-      exit={{ opacity: 0, x: 300, scale: 0.5, transition: { duration: 0.2 } }}
-      className={`flex items-start gap-3 p-4 rounded-lg border backdrop-blur-sm ${getColors()} min-w-[300px] max-w-[400px] shadow-lg`}
+      exit={{ opacity: 0, x: 300, scale: 0.8, transition: { duration: 0.2 } }}
+      transition={{ type: "spring", stiffness: 280, damping: 28 }}
+      className={`
+        bg-white dark:bg-gray-900 relative flex items-start gap-3 p-4 rounded-xl border ${getColors()}
+        min-w-[300px] max-w-[400px]
+        shadow-ez dark:shadow-ez-dark
+      `}
     >
       <div className="flex-shrink-0 mt-0.5">{getIcon()}</div>
 
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium text-white">{title}</p>
-        {message && <p className="text-xs text-gray-300 mt-1">{message}</p>}
+        <span className={`text-xs font-medium text-gray-500 dark:text-gray-400 ${getLabelColor()} block mb-1`}>{getTypeLabel()}</span>
+        <p className="text-sm font-medium text-gray-900 dark:text-white">{title}</p>
+        {message && <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 leading-body">{message}</p>}
       </div>
 
-      <button onClick={() => onClose(id)} className="flex-shrink-0 text-gray-400 hover:text-white transition-colors">
+      <button onClick={() => onClose(id)} className="flex-shrink-0 text-gray-400 hover:text-gray-600 dark:hover:text-white transition-colors p-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700">
         <X className="w-4 h-4" />
       </button>
     </motion.div>

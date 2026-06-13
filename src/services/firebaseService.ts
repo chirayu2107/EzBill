@@ -19,16 +19,13 @@ import type { Invoice, User, SignupData, PurchaseBill } from "../types"
 // Auth Services
 export const signUpUser = async (userData: SignupData) => {
   try {
-    console.log("Creating user with email:", userData.email)
     const userCredential = await createUserWithEmailAndPassword(auth, userData.email, userData.password)
-    console.log("User created successfully:", userCredential.user.uid)
 
     // Update the user's display name
     if (userData.fullName) {
       await updateProfile(userCredential.user, {
         displayName: userData.fullName,
       })
-      console.log("Display name updated:", userData.fullName)
     }
 
     // Generate invoice prefix from full name
@@ -59,11 +56,9 @@ export const signUpUser = async (userData: SignupData) => {
 
     // Use setDoc with the user's UID as the document ID
     await setDoc(doc(db, "users", userCredential.user.uid), userDoc)
-    console.log("User data saved to Firestore successfully")
 
     return { success: true, user: userCredential.user }
   } catch (error: any) {
-    console.error("Signup error:", error)
     let errorMessage = "An error occurred during signup"
 
     // Handle specific Firebase auth errors
@@ -93,12 +88,9 @@ export const signUpUser = async (userData: SignupData) => {
 
 export const signInUser = async (email: string, password: string) => {
   try {
-    console.log("Signing in user with email:", email)
     const userCredential = await signInWithEmailAndPassword(auth, email, password)
-    console.log("User signed in successfully:", userCredential.user.uid)
     return { success: true, user: userCredential.user }
   } catch (error: any) {
-    console.error("Sign in error:", error)
     let errorMessage = "An error occurred during sign in"
 
     // Handle specific Firebase auth errors
@@ -135,20 +127,15 @@ export const signInUser = async (email: string, password: string) => {
 export const signOutUser = async () => {
   try {
     await signOut(auth)
-    console.log("User signed out successfully")
     return { success: true }
   } catch (error: any) {
-    console.error("Sign out error:", error)
     return { success: false, error: error.message }
   }
 }
 
 export const getUserData = async (uid: string) => {
   try {
-    console.log("Getting user data for UID:", uid)
-
     if (!uid) {
-      console.error("No UID provided")
       return { success: false, error: "No user ID provided" }
     }
 
@@ -158,7 +145,6 @@ export const getUserData = async (uid: string) => {
 
     if (userDocSnap.exists()) {
       const userData = userDocSnap.data()
-      console.log("Raw user data from Firestore:", userData)
 
       // Ensure all fields have default values
       const processedUserData: User = {
@@ -179,27 +165,21 @@ export const getUserData = async (uid: string) => {
         createdAt: userData.createdAt?.toDate() || new Date(),
       }
 
-      console.log("Processed user data:", processedUserData)
       return {
         success: true,
         userData: processedUserData,
       }
     }
 
-    console.log("User document not found for UID:", uid)
     return { success: false, error: "User document not found" }
   } catch (error: any) {
-    console.error("Get user data error:", error)
     return { success: false, error: error.message }
   }
 }
 
 export const updateUserData = async (uid: string, userData: Partial<User>) => {
   try {
-    console.log("Updating user data for UID:", uid, userData)
-
     if (!uid) {
-      console.error("No UID provided for update")
       return { success: false, error: "No user ID provided" }
     }
 
@@ -233,8 +213,6 @@ export const updateUserData = async (uid: string, userData: Partial<User>) => {
       }
     }
 
-    console.log("Clean user data to update:", updateData)
-
     // Update using UID as document ID
     const userDocRef = doc(db, "users", uid)
 
@@ -243,11 +221,9 @@ export const updateUserData = async (uid: string, userData: Partial<User>) => {
 
     if (docSnap.exists()) {
       await updateDoc(userDocRef, updateData)
-      console.log("User data updated successfully")
       return { success: true }
     } else {
       // If document doesn't exist, create it
-      console.log("Document doesn't exist, creating new one")
       const newUserData = {
         email: "",
         fullName: "",
@@ -267,11 +243,9 @@ export const updateUserData = async (uid: string, userData: Partial<User>) => {
       }
 
       await setDoc(userDocRef, newUserData)
-      console.log("New user document created successfully")
       return { success: true }
     }
   } catch (error: any) {
-    console.error("Update user data error:", error)
     return { success: false, error: error.message }
   }
 }
@@ -279,8 +253,6 @@ export const updateUserData = async (uid: string, userData: Partial<User>) => {
 // Invoice Services
 export const addInvoice = async (invoiceData: Omit<Invoice, "id">, userId: string) => {
   try {
-    console.log("Adding invoice for user:", userId, invoiceData)
-
     const invoiceDoc = {
       ...invoiceData,
       userId,
@@ -289,18 +261,14 @@ export const addInvoice = async (invoiceData: Omit<Invoice, "id">, userId: strin
     }
 
     const docRef = await addDoc(collection(db, "invoices"), invoiceDoc)
-    console.log("Invoice added successfully with ID:", docRef.id)
     return { success: true, id: docRef.id }
   } catch (error: any) {
-    console.error("Add invoice error:", error)
     return { success: false, error: error.message }
   }
 }
 
 export const updateInvoice = async (invoiceId: string, invoiceData: Partial<Invoice>) => {
   try {
-    console.log("Updating invoice:", invoiceId, invoiceData)
-
     const invoiceRef = doc(db, "invoices", invoiceId)
 
     // Create update data with proper type handling
@@ -324,98 +292,72 @@ export const updateInvoice = async (invoiceId: string, invoiceData: Partial<Invo
     }
 
     await updateDoc(invoiceRef, updateData)
-    console.log("Invoice updated successfully")
     return { success: true }
   } catch (error: any) {
-    console.error("Update invoice error:", error)
     return { success: false, error: error.message }
   }
 }
 
 export const deleteInvoice = async (invoiceId: string) => {
   try {
-    console.log("Deleting invoice:", invoiceId)
     await deleteDoc(doc(db, "invoices", invoiceId))
-    console.log("Invoice deleted successfully")
     return { success: true }
   } catch (error: any) {
-    console.error("Delete invoice error:", error)
     return { success: false, error: error.message }
   }
 }
 
 export const getUserInvoices = async (userId: string) => {
   try {
-    console.log("Fetching invoices for user:", userId)
-
     // Check if we can access the collection
     const invoicesCollection = collection(db, "invoices")
-    console.log("Invoices collection reference:", invoicesCollection)
 
     // Try with ordering first (requires composite index)
     try {
       const q = query(invoicesCollection, where("userId", "==", userId), orderBy("createdAt", "desc"))
-      console.log("Trying query with ordering...")
-
       const querySnapshot = await getDocs(q)
-      console.log("Query with ordering executed successfully, found documents:", querySnapshot.size)
 
       const invoices = querySnapshot.docs
         .map((doc) => {
           const data = doc.data()
-          console.log("Processing invoice document:", doc.id, data)
 
           try {
-            const processedInvoice = {
+            return {
               id: doc.id,
               ...data,
               // Safely convert Firestore Timestamps to Date objects
               date: data.date?.toDate ? data.date.toDate() : new Date(data.date),
               createdAt: data.createdAt?.toDate ? data.createdAt.toDate() : new Date(data.createdAt),
             } as Invoice
-
-            console.log("Processed invoice:", processedInvoice)
-            return processedInvoice
           } catch (docError) {
-            console.error("Error processing invoice document:", doc.id, docError)
             return null
           }
         })
         .filter(Boolean) as Invoice[]
 
-      console.log("Final processed invoices:", invoices.length)
       return { success: true, invoices }
     } catch (indexError: any) {
-      console.log("Query with ordering failed (likely missing index), trying without ordering:", indexError.message)
-
       // Fallback: Query without ordering (doesn't require composite index)
       const simpleQuery = query(invoicesCollection, where("userId", "==", userId))
       const querySnapshot = await getDocs(simpleQuery)
-      console.log("Simple query executed, found documents:", querySnapshot.size)
 
       if (querySnapshot.empty) {
-        console.log("No invoices found for user")
         return { success: true, invoices: [] }
       }
 
       const invoices = querySnapshot.docs
         .map((doc) => {
           const data = doc.data()
-          console.log("Processing invoice document:", doc.id, data)
 
           try {
-            const processedInvoice = {
+            return {
               id: doc.id,
               ...data,
               // Safely convert Firestore Timestamps to Date objects
               date: data.date?.toDate ? data.date.toDate() : new Date(data.date),
               createdAt: data.createdAt?.toDate ? data.createdAt.toDate() : new Date(data.createdAt),
             } as Invoice
-
-            console.log("Processed invoice:", processedInvoice)
-            return processedInvoice
           } catch (docError) {
-            console.error("Error processing invoice document:", doc.id, docError)
             return null
           }
         })
@@ -424,20 +366,9 @@ export const getUserInvoices = async (userId: string) => {
       // Sort manually by createdAt (newest first)
       invoices.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
 
-      console.log("Final processed invoices (manually sorted):", invoices.length)
       return { success: true, invoices }
     }
   } catch (error: any) {
-    console.error("Get user invoices error:", error)
-
-    // More detailed error logging
-    if (error.code) {
-      console.error("Firebase error code:", error.code)
-    }
-    if (error.message) {
-      console.error("Firebase error message:", error.message)
-    }
-
     return { success: false, error: error.message, invoices: [] }
   }
 }
@@ -445,8 +376,6 @@ export const getUserInvoices = async (userId: string) => {
 // Purchase Bill Services
 export const addPurchaseBill = async (billData: Omit<PurchaseBill, "id">, userId: string) => {
   try {
-    console.log("Adding purchase bill for user:", userId, billData)
-
     const billDoc = {
       ...billData,
       userId,
@@ -455,18 +384,14 @@ export const addPurchaseBill = async (billData: Omit<PurchaseBill, "id">, userId
     }
 
     const docRef = await addDoc(collection(db, "purchaseBills"), billDoc)
-    console.log("Purchase bill added successfully with ID:", docRef.id)
     return { success: true, id: docRef.id }
   } catch (error: any) {
-    console.error("Add purchase bill error:", error)
     return { success: false, error: error.message }
   }
 }
 
 export const updatePurchaseBill = async (billId: string, billData: Partial<PurchaseBill>) => {
   try {
-    console.log("Updating purchase bill:", billId, billData)
-
     const billRef = doc(db, "purchaseBills", billId)
 
     // Create update data with proper type handling
@@ -490,30 +415,23 @@ export const updatePurchaseBill = async (billId: string, billData: Partial<Purch
     }
 
     await updateDoc(billRef, updateData)
-    console.log("Purchase bill updated successfully")
     return { success: true }
   } catch (error: any) {
-    console.error("Update purchase bill error:", error)
     return { success: false, error: error.message }
   }
 }
 
 export const deletePurchaseBill = async (billId: string) => {
   try {
-    console.log("Deleting purchase bill:", billId)
     await deleteDoc(doc(db, "purchaseBills", billId))
-    console.log("Purchase bill deleted successfully")
     return { success: true }
   } catch (error: any) {
-    console.error("Delete purchase bill error:", error)
     return { success: false, error: error.message }
   }
 }
 
 export const getUserPurchaseBills = async (userId: string) => {
   try {
-    console.log("Fetching purchase bills for user:", userId)
-
     const billsCollection = collection(db, "purchaseBills")
 
     // Try with ordering first (requires composite index)
@@ -533,7 +451,6 @@ export const getUserPurchaseBills = async (userId: string) => {
               createdAt: data.createdAt?.toDate ? data.createdAt.toDate() : new Date(data.createdAt),
             } as PurchaseBill
           } catch (docError) {
-            console.error("Error processing purchase bill document:", doc.id, docError)
             return null
           }
         })
@@ -541,8 +458,6 @@ export const getUserPurchaseBills = async (userId: string) => {
 
       return { success: true, purchaseBills }
     } catch (indexError: any) {
-      console.log("Query with ordering failed (likely missing index), trying without ordering:", indexError.message)
-
       // Fallback: Query without ordering
       const simpleQuery = query(billsCollection, where("userId", "==", userId))
       const querySnapshot = await getDocs(simpleQuery)
@@ -562,7 +477,6 @@ export const getUserPurchaseBills = async (userId: string) => {
               createdAt: data.createdAt?.toDate ? data.createdAt.toDate() : new Date(data.createdAt),
             } as PurchaseBill
           } catch (docError) {
-            console.error("Error processing purchase bill document:", doc.id, docError)
             return null
           }
         })
@@ -574,7 +488,6 @@ export const getUserPurchaseBills = async (userId: string) => {
       return { success: true, purchaseBills }
     }
   } catch (error: any) {
-    console.error("Get user purchase bills error:", error)
     return { success: false, error: error.message, purchaseBills: [] }
   }
 }

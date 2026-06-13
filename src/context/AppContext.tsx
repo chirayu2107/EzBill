@@ -54,21 +54,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const { user, isAuthenticated } = useAuth()
   const { toast } = useToast()
 
-  // Debug logging
-  useEffect(() => {
-    console.log("AppContext - Auth state changed:")
-    console.log("- isAuthenticated:", isAuthenticated)
-    console.log("- user:", user)
-    console.log("- auth.currentUser:", auth.currentUser)
-  }, [isAuthenticated, user])
-
   // Load data when user is authenticated
   useEffect(() => {
     if (isAuthenticated && auth.currentUser) {
-      console.log("User authenticated, loading data...")
       loadData()
     } else {
-      console.log("User not authenticated, clearing data")
       setInvoices([])
       setPurchaseBills([])
       setError(null)
@@ -86,28 +76,22 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       const invoicesResult = await getUserInvoices(auth.currentUser.uid)
       if (invoicesResult.success) {
         setInvoices(invoicesResult.invoices || [])
-      } else {
-        console.error("Failed to load invoices:", invoicesResult.error)
       }
 
       // Load Purchase Bills
       const billsResult = await getUserPurchaseBills(auth.currentUser.uid)
       if (billsResult.success) {
         setPurchaseBills(billsResult.purchaseBills || [])
-      } else {
-        console.error("Failed to load purchase bills:", billsResult.error)
       }
       
     } catch (error: any) {
-      console.error("Error loading data:", error)
-      setError(`Failed to load data: ${error.message}`)
+      setError("Failed to load data. Please try again.")
     } finally {
       setLoading(false)
     }
   }
 
   const refreshInvoices = async () => {
-    console.log("Refreshing data...")
     await loadData()
   }
 
@@ -149,8 +133,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       return
     }
 
-    console.log("Adding new invoice:", invoiceData)
-
     const invoiceNumber = generateInvoiceNumber()
     const newInvoice: Omit<Invoice, "id"> = {
       ...invoiceData,
@@ -162,24 +144,20 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       setError(null)
       const result = await addInvoiceToFirebase(newInvoice, auth.currentUser.uid)
       if (result.success) {
-        console.log("Invoice added successfully, refreshing list")
         await loadData() // Reload invoices to get the latest data
         toast.success("Invoice Created", `Invoice ${invoiceNumber} has been created successfully`)
       } else {
-        console.error("Failed to add invoice:", result.error)
         setError(result.error || "Failed to add invoice")
         toast.error("Failed to Create Invoice", result.error || "An error occurred while creating the invoice")
       }
     } catch (error: any) {
-      console.error("Error adding invoice:", error)
-      setError(`Failed to add invoice: ${error.message}`)
+      setError("Failed to add invoice. Please try again.")
     }
   }
 
   const updateInvoice = async (id: string, invoiceData: Omit<Invoice, "id" | "invoiceNumber" | "createdAt">) => {
     try {
       setError(null)
-      console.log("Updating invoice:", id, invoiceData)
 
       // Create a clean update object without the excluded fields
       const updateData: Partial<Invoice> = {
@@ -199,55 +177,44 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
       const result = await updateInvoiceInFirebase(id, updateData)
       if (result.success) {
-        console.log("Invoice updated successfully, refreshing list")
         await loadData() // Reload invoices to get the latest data
         toast.success("Invoice Updated", "Invoice has been updated successfully")
       } else {
-        console.error("Failed to update invoice:", result.error)
         setError(result.error || "Failed to update invoice")
         toast.error("Failed to Update Invoice", result.error || "An error occurred while updating the invoice")
       }
     } catch (error: any) {
-      console.error("Error updating invoice:", error)
-      setError(`Failed to update invoice: ${error.message}`)
+      setError("Failed to update invoice. Please try again.")
     }
   }
 
   const updateInvoiceStatus = async (id: string, status: Invoice["status"]) => {
     try {
       setError(null)
-      console.log("Updating invoice status:", id, status)
 
       const result = await updateInvoiceInFirebase(id, { status })
       if (result.success) {
-        console.log("Invoice status updated successfully")
         setInvoices((prev) => prev.map((invoice) => (invoice.id === id ? { ...invoice, status } : invoice)))
       } else {
-        console.error("Failed to update invoice status:", result.error)
         setError(result.error || "Failed to update invoice status")
       }
     } catch (error: any) {
-      console.error("Error updating invoice status:", error)
-      setError(`Failed to update invoice status: ${error.message}`)
+      setError("Failed to update invoice status. Please try again.")
     }
   }
 
   const deleteInvoice = async (id: string) => {
     try {
       setError(null)
-      console.log("Deleting invoice:", id)
 
       const result = await deleteInvoiceFromFirebase(id)
       if (result.success) {
-        console.log("Invoice deleted successfully")
         setInvoices((prev) => prev.filter((invoice) => invoice.id !== id))
       } else {
-        console.error("Failed to delete invoice:", result.error)
         setError(result.error || "Failed to delete invoice")
       }
     } catch (error: any) {
-      console.error("Error deleting invoice:", error)
-      setError(`Failed to delete invoice: ${error.message}`)
+      setError("Failed to delete invoice. Please try again.")
     }
   }
 
@@ -270,8 +237,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         toast.error("Failed to Add Bill", result.error || "Error adding bill")
       }
     } catch (error: any) {
-      console.error("Error adding purchase bill:", error)
-      setError(`Failed to add purchase bill: ${error.message}`)
+      setError("Failed to add purchase bill. Please try again.")
     }
   }
 
@@ -303,8 +269,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         toast.error("Failed to Update Bill", result.error || "Error updating bill")
       }
     } catch (error: any) {
-      console.error("Error updating purchase bill:", error)
-      setError(`Failed to update purchase bill: ${error.message}`)
+      setError("Failed to update purchase bill. Please try again.")
     }
   }
 
@@ -319,7 +284,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         toast.error("Failed to Delete Bill", result.error || "Error deleting bill")
       }
     } catch (error: any) {
-      console.error("Error deleting purchase bill:", error)
+      // Silent fail
     }
   }
 

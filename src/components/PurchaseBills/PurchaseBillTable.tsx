@@ -247,14 +247,14 @@ const PurchaseBillTable: React.FC<PurchaseBillTableProps> = ({ bills, onViewBill
             <table className="w-full">
               <thead>
                  <tr className="border-b border-gray-100 dark:border-gray-700 transition-colors">
-                   <th className="text-left py-4 px-4 text-gray-500 dark:text-gray-400 font-normal transition-colors">Bill #</th>
-                  <th className="text-left py-4 px-4 text-gray-500 dark:text-gray-400 font-normal transition-colors">Vendor</th>
-                  <th className="text-left py-4 px-4 text-gray-500 dark:text-gray-400 font-normal transition-colors">Date</th>
-                  <th className="text-left py-4 px-4 text-gray-500 dark:text-gray-400 font-normal transition-colors">Amount</th>
-                  <th className="text-left py-4 px-4 text-gray-500 dark:text-gray-400 font-normal transition-colors">GST</th>
-                  <th className="text-left py-4 px-4 text-gray-500 dark:text-gray-400 font-normal transition-colors">Total</th>
-                  <th className="text-left py-4 px-4 text-gray-500 dark:text-gray-400 font-normal transition-colors">Status</th>
-                  <th className="text-left py-4 px-4 text-gray-500 dark:text-gray-400 font-normal transition-colors">Actions</th>
+                   <th className="text-left py-3 px-4 text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Bill #</th>
+                  <th className="text-left py-3 px-4 text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Vendor</th>
+                  <th className="text-left py-3 px-4 text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Date</th>
+                  <th className="text-left py-3 px-4 text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Amount</th>
+                  <th className="text-left py-3 px-4 text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">GST</th>
+                  <th className="text-left py-3 px-4 text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Total</th>
+                  <th className="text-left py-3 px-4 text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Status</th>
+                  <th className="text-left py-3 px-4 text-[11px] font-semibold text-gray-400 dark:text-gray-500 uppercase tracking-wider">Actions</th>
                  </tr>
                </thead>
               <tbody>

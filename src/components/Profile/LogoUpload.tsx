@@ -19,13 +19,10 @@ const LogoUpload: React.FC<LogoUploadProps> = ({ currentLogo, onLogoChange, disa
   const { toast } = useToast()
 
   const processImage = (file: File) => {
-    console.log("LogoUpload: Starting to process image:", file.name, file.type, file.size)
     const reader = new FileReader()
     reader.onload = (e) => {
-      console.log("LogoUpload: FileReader loaded")
       const img = new Image()
       img.onload = () => {
-        console.log("LogoUpload: Image object loaded, dimensions:", img.width, "x", img.height)
         const canvas = document.createElement("canvas")
         const size = Math.min(img.width, img.height)
         canvas.width = 512 // Standard logo size
@@ -43,7 +40,6 @@ const LogoUpload: React.FC<LogoUploadProps> = ({ currentLogo, onLogoChange, disa
         const sourceX = (img.width - size) / 2
         const sourceY = (img.height - size) / 2
         
-        console.log("LogoUpload: Drawing image to canvas, crop at:", sourceX, sourceY, "size:", size)
         
         // Clear background
         ctx.clearRect(0, 0, 512, 512)
@@ -63,7 +59,6 @@ const LogoUpload: React.FC<LogoUploadProps> = ({ currentLogo, onLogoChange, disa
 
         try {
           const result = canvas.toDataURL("image/png")
-          console.log("LogoUpload: data URL generated, length:", result.length)
           onLogoChange(result)
           toast.success("Logo Uploaded", "Your business logo has been uploaded and resized to 1:1")
         } catch (err) {

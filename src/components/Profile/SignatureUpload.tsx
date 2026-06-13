@@ -22,7 +22,6 @@ const SignatureUpload: React.FC<SignatureUploadProps> = ({ currentSignature, onS
     if (!files || files.length === 0) return
 
     const file = files[0]
-    console.log("Processing file:", file.name, file.type, file.size)
 
     // Validate file type
     if (!file.type.startsWith("image/")) {
@@ -37,13 +36,11 @@ const SignatureUpload: React.FC<SignatureUploadProps> = ({ currentSignature, onS
     }
 
     setUploading(true)
-    console.log("Starting file upload...")
 
     const reader = new FileReader()
     reader.onload = (e) => {
       const result = e.target?.result as string
       if (result) {
-        console.log("File read successfully, base64 length:", result.length)
         onSignatureChange(result)
         toast.success("Signature Uploaded", "Your signature has been uploaded successfully")
       } else {
@@ -80,7 +77,6 @@ const SignatureUpload: React.FC<SignatureUploadProps> = ({ currentSignature, onS
     if (disabled) return
 
     const files = e.dataTransfer.files
-    console.log("Files dropped:", files.length)
     handleFiles(files)
   }
 
@@ -89,18 +85,15 @@ const SignatureUpload: React.FC<SignatureUploadProps> = ({ currentSignature, onS
     if (disabled) return
 
     const files = e.target.files
-    console.log("Files selected:", files?.length)
     handleFiles(files)
   }
 
   const handleButtonClick = () => {
     if (disabled) return
-    console.log("Opening file picker...")
     fileInputRef.current?.click()
   }
 
   const handleRemoveSignature = () => {
-    console.log("Removing signature...")
     onSignatureChange(null)
     if (fileInputRef.current) {
       fileInputRef.current.value = ""
@@ -108,7 +101,6 @@ const SignatureUpload: React.FC<SignatureUploadProps> = ({ currentSignature, onS
     toast.success("Signature Removed", "Your signature has been removed")
   }
 
-  console.log("SignatureUpload render - currentSignature exists:", !!currentSignature)
 
   return (
     <div className="space-y-4">
@@ -134,7 +126,6 @@ const SignatureUpload: React.FC<SignatureUploadProps> = ({ currentSignature, onS
                 toast.error("Image Error", "Failed to load signature image")
               }}
               onLoad={() => {
-                console.log("Signature image loaded successfully")
               }}
             />
           </div>

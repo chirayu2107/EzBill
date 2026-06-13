@@ -1,146 +1,291 @@
 "use client"
 
 import type React from "react"
-import { useState } from "react"
-import { Link, useLocation } from "react-router-dom"
+import { useState, useRef, useEffect, useCallback } from "react"
+import { Link, useLocation, useNavigate } from "react-router-dom"
 import { motion, AnimatePresence } from "framer-motion"
 import { useAuth } from "../../context/AuthContext"
 import { useTheme } from "../../context/ThemeContext"
-import { LayoutDashboard, FileText, Plus, Receipt, User, LogOut, BarChart3, Menu, X, ShoppingBag, Sun, Moon, BookOpen, FileSpreadsheet } from "lucide-react"
-import Button from "../UI/Button"
+import {
+  LayoutDashboard, FileText, Plus, User, LogOut,
+  BarChart3, Menu, X, ShoppingBag, Sun, Moon, BookOpen,
+  FileSpreadsheet,
+} from "lucide-react"
+
+const COLLAPSED_W = 72
+const EXPANDED_W = 260
 
 const Sidebar: React.FC = () => {
   const location = useLocation()
+  const navigate = useNavigate()
   const { user, logout } = useAuth()
   const { theme, toggleTheme } = useTheme()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [isCollapsed, setIsCollapsed] = useState(false)
+
+  /* ── Hold-and-slide state ── */
+  const [isDragging, setIsDragging] = useState(false)
+  const [dragIndex, setDragIndex] = useState(-1)
+  const navBarRef = useRef<HTMLDivElement>(null)
+  const itemRefs = useRef<(HTMLAnchorElement | null)[]>([])
 
   const menuItems = [
-    { path: "/", icon: LayoutDashboard, label: "Dashboard" },
-    { path: "/invoices", icon: FileText, label: "Invoices" },
-    { path: "/purchase-bills", icon: ShoppingBag, label: "Purchase Bills" },
-    { path: "/create-invoice", icon: Plus, label: "Create Invoice" },
-    { path: "/ledgers", icon: BookOpen, label: "Ledgers" },
-    { path: "/gst-reports", icon: FileSpreadsheet, label: "GST Reports" },
-    { path: "/analytics", icon: BarChart3, label: "Analytics" },
-    { path: "/profile", icon: User, label: "Profile" },
+    { path: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
+    { path: "/dashboard/invoices", icon: FileText, label: "Invoices" },
+    { path: "/dashboard/purchase-bills", icon: ShoppingBag, label: "Purchase Bills" },
+    { path: "/dashboard/create-invoice", icon: Plus, label: "Create Invoice" },
+    { path: "/dashboard/ledgers", icon: BookOpen, label: "Ledgers" },
+    { path: "/dashboard/gst-reports", icon: FileSpreadsheet, label: "GST Reports" },
+    { path: "/dashboard/analytics", icon: BarChart3, label: "Analytics" },
   ]
 
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen)
-  }
+  const mobileNavItems = [
+    { path: "/dashboard", icon: LayoutDashboard, label: "Home" },
+    { path: "/dashboard/invoices", icon: FileText, label: "Invoices" },
+    { path: "/dashboard/create-invoice", icon: Plus, label: "Create" },
+    { path: "/dashboard/analytics", icon: BarChart3, label: "Analytics" },
+    { path: "/dashboard/profile", icon: User, label: "Profile" },
+  ]
 
-  const closeMobileMenu = () => {
-    setIsMobileMenuOpen(false)
-  }
+  const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen)
+  const closeMobileMenu = () => setIsMobileMenuOpen(false)
+  const toggleCollapse = () => setIsCollapsed((p) => !p)
+
+  /* ── Get closest nav item index from pointer X position ── */
+  const getClosestIndex = useCallback((clientX: number): number => {
+    let closest = 0
+    let minDist = Infinity
+    itemRefs.current.forEach((el, i) => {
+      if (!el) return
+      const rect = el.getBoundingClientRect()
+      const center = rect.left + rect.width / 2
+      const dist = Math.abs(clientX - center)
+      if (dist < minDist) {
+        minDist = dist
+        closest = i
+      }
+    })
+    return closest
+  }, [])
 
   const sidebarVariants = {
-    open: {
-      x: 0,
-      transition: {
-        type: "spring",
-        stiffness: 300,
-        damping: 30,
-      },
-    },
-    closed: {
-      x: "-100%",
-      transition: {
-        type: "spring",
-        stiffness: 300,
-        damping: 30,
-      },
-    },
+    open: { x: 0, transition: { type: "spring", stiffness: 280, damping: 28 } },
+    closed: { x: "-100%", transition: { type: "spring", stiffness: 280, damping: 28 } },
   }
-
   const overlayVariants = {
-    open: {
-      opacity: 1,
-      transition: { duration: 0.2 },
-    },
-    closed: {
-      opacity: 0,
-      transition: { duration: 0.2 },
-    },
+    open: { opacity: 1, transition: { duration: 0.2 } },
+    closed: { opacity: 0, transition: { duration: 0.2 } },
+  }
+  const menuItemVariants = {
+    open: { opacity: 1, x: 0, transition: { type: "spring", stiffness: 280, damping: 28 } },
+    closed: { opacity: 0, x: -20 },
   }
 
-  const menuItemVariants = {
-    open: {
-      opacity: 1,
-      x: 0,
-      transition: {
-        type: "spring",
-        stiffness: 300,
-        damping: 30,
-      },
-    },
-    closed: {
-      opacity: 0,
-      x: -20,
-    },
-  }
+  /* ── Initials helper ── */
+  const initial = user?.fullName?.charAt(0)?.toUpperCase() || "?"
 
   return (
     <>
-      {/* Mobile Top Navigation Bar */}
-      <div className="md:hidden fixed top-0 left-0 right-0 z-50 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 transition-colors">
-        <div className="flex items-center justify-between p-4">
-          <motion.button
+      {/* ═══ MOBILE TOP BAR ═══ */}
+      <div className="md:hidden fixed top-0 left-0 right-0 z-50 bg-white dark:bg-[#0C111D] border-b border-gray-200 dark:border-gray-800">
+        <div className="flex items-center justify-between px-4 py-3">
+          <button
             onClick={toggleMobileMenu}
-            className="p-2 text-gray-600 dark:text-white rounded-lg"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
+            className="p-2 text-gray-500 dark:text-gray-400 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
           >
-            {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </motion.button>
-          <motion.div
-            className="flex items-center gap-3"
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
+            {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
+          <div className="flex items-center gap-2">
+            <img src="/EzBill.png" alt="EzBill" className="w-7 h-7 rounded-lg" />
+            <h1 className="text-base font-semibold text-gray-900 dark:text-white">EzBill</h1>
+          </div>
+          <button
+            onClick={toggleTheme}
+            className="p-2 text-gray-500 dark:text-gray-400 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
           >
-            <div className="w-8 h-8 bg-gradient-to-r from-emerald-500 to-green-600 rounded-lg flex items-center justify-center">
-              <Receipt className="w-5 h-5 text-white" />
-            </div>
-            <h1 className="text-xl font-bold text-gray-900 dark:text-white">EzBill</h1>
-          </motion.div>
-          <div className="w-10 md:hidden"></div> {/* Spacer to keep title centered */}
+            {theme === "light" ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
+          </button>
         </div>
       </div>
 
-      {/* Desktop Sidebar */}
-      <div className="hidden md:flex w-64 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex-col transition-colors">
-        <div className="p-6 flex-1">
-          <motion.div
-            className="flex items-center gap-3 mb-8"
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <div className="w-8 h-8 bg-gradient-to-r from-emerald-500 to-green-600 rounded-lg flex items-center justify-center">
-              <Receipt className="w-5 h-5 text-white" />
-            </div>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">EzBill</h1>
-          </motion.div>
+      {/* ═══ MOBILE BOTTOM NAV ═══ */}
+      <div className="md:hidden ez-mobile-nav" ref={navBarRef}>
+        <div
+          className="flex items-center justify-around relative"
+          onPointerDown={(e) => {
+            // Start tracking — set dragging after a brief hold
+            const bar = navBarRef.current
+            if (!bar) return
+            ;(e.target as HTMLElement).setPointerCapture?.(e.pointerId)
+            const idx = getClosestIndex(e.clientX)
+            setDragIndex(idx)
+            setIsDragging(true)
+          }}
+          onPointerMove={(e) => {
+            if (!isDragging) return
+            const idx = getClosestIndex(e.clientX)
+            if (idx !== dragIndex) setDragIndex(idx)
+          }}
+          onPointerUp={() => {
+            if (isDragging && dragIndex >= 0 && dragIndex < mobileNavItems.length) {
+              navigate(mobileNavItems[dragIndex].path)
+            }
+            setIsDragging(false)
+            setDragIndex(-1)
+          }}
+          onPointerCancel={() => {
+            setIsDragging(false)
+            setDragIndex(-1)
+          }}
+          style={{ touchAction: "none" }}
+        >
+          {mobileNavItems.map((item, index) => {
+            const isActive = isDragging ? dragIndex === index : location.pathname === item.path
+            return (
+              <Link
+                key={item.path}
+                to={item.path}
+                ref={(el) => { itemRefs.current[index] = el }}
+                className="relative flex flex-col items-center py-1 px-3"
+                onClick={(e) => {
+                  if (isDragging) e.preventDefault()
+                }}
+              >
+                {/* Liquid glass indicator — iOS 26 style */}
+                {isActive && (
+                  <motion.div
+                    layoutId="mobile-nav-pill"
+                    className="absolute -inset-x-1 -top-1 -bottom-1 rounded-[16px]"
+                    style={theme === "dark" ? {
+                      background: "rgba(16, 185, 129, 0.12)",
+                      backdropFilter: "blur(20px) saturate(150%)",
+                      WebkitBackdropFilter: "blur(20px) saturate(150%)",
+                      border: "0.5px solid rgba(16, 185, 129, 0.25)",
+                      boxShadow: "0 1px 8px rgba(16,185,129,0.1), inset 0 1px 0 rgba(255,255,255,0.05)",
+                    } : {
+                      background: "rgba(255,255,255,0.50)",
+                      backdropFilter: "blur(20px) saturate(180%)",
+                      WebkitBackdropFilter: "blur(20px) saturate(180%)",
+                      border: "0.5px solid rgba(255,255,255,0.70)",
+                      boxShadow: "0 1px 8px rgba(0,0,0,0.06), 0 0.5px 2px rgba(0,0,0,0.04), inset 0 1px 0 rgba(255,255,255,0.6)",
+                    }}
+                    transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                  />
+                )}
+                <item.icon
+                  className={`relative z-10 w-[22px] h-[22px] transition-colors duration-150 ${
+                    isActive
+                      ? "text-emerald-600 dark:text-emerald-400"
+                      : "text-gray-400 dark:text-gray-400"
+                  }`}
+                  strokeWidth={isActive ? 2.2 : 1.6}
+                />
+                {isActive && (
+                  <motion.span
+                    initial={{ opacity: 0, y: -2 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.15 }}
+                    className="relative z-10 text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 leading-tight mt-0.5"
+                  >
+                    {item.label}
+                  </motion.span>
+                )}
+              </Link>
+            )
+          })}
+        </div>
+      </div>
 
-          <nav className="space-y-2">
+      {/* ═══ DESKTOP SIDEBAR ═══ */}
+      <motion.div
+        className="hidden md:flex flex-col shrink-0 overflow-hidden cursor-pointer
+                   bg-white dark:bg-[#0B0F1A] border-r border-gray-100 dark:border-gray-800/50"
+        animate={{ width: isCollapsed ? COLLAPSED_W : EXPANDED_W }}
+        transition={{ type: "spring", stiffness: 320, damping: 32 }}
+        onClick={(e: React.MouseEvent) => {
+          // Only toggle when clicking empty space, not on interactive elements
+          const target = e.target as HTMLElement
+          if (target.closest("a, button, input, img")) return
+          toggleCollapse()
+        }}
+      >
+        {/* ── Top: Logo + Nav ── */}
+        <div className="flex-1 flex flex-col pt-5 pb-3 overflow-hidden">
+          {/* Logo */}
+          <div className={`flex items-center shrink-0 mb-5 ${isCollapsed ? "justify-center px-0" : "gap-2.5 px-5"}`}>
+            <img
+              src="/EzBill.png"
+              alt="EzBill"
+              className="w-[34px] h-[34px] rounded-xl shrink-0"
+              style={{ boxShadow: "0 2px 8px rgba(16,185,129,0.18)" }}
+            />
+            {!isCollapsed && (
+              <motion.h1
+                initial={false}
+                animate={{ opacity: 1, x: 0 }}
+                className="text-[15px] font-bold tracking-tight text-gray-900 dark:text-white whitespace-nowrap"
+              >
+                EzBill
+              </motion.h1>
+            )}
+          </div>
+
+          {/* Divider */}
+          <div className={`h-px bg-gray-100 dark:bg-gray-800/60 shrink-0 ${isCollapsed ? "mx-3" : "mx-5"} mb-3`} />
+
+          {/* Navigation */}
+          <nav className={`flex-1 space-y-0.5 overflow-y-auto overflow-x-hidden ${isCollapsed ? "px-2" : "px-3"}`}>
             {menuItems.map((item, index) => {
               const isActive = location.pathname === item.path
+              const Icon = item.icon
               return (
                 <motion.div
                   key={item.path}
-                  initial={{ opacity: 0, x: -20 }}
+                  initial={{ opacity: 0, x: -8 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: index * 0.1, duration: 0.3 }}
+                  transition={{ delay: index * 0.025, duration: 0.2 }}
                 >
                   <Link
                     to={item.path}
-                    className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
-                      isActive ? "bg-emerald-600 text-white" : "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-emerald-600 dark:hover:text-white"
+                    className={`group relative flex items-center rounded-xl transition-all duration-200 ${
+                      isCollapsed ? "justify-center h-10 w-full" : "gap-3 px-3 h-10"
+                    } ${
+                      isActive
+                        ? "bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 font-semibold"
+                        : "text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/[0.04] hover:text-gray-900 dark:hover:text-white font-medium"
                     }`}
+                    title={isCollapsed ? item.label : undefined}
                   >
-                    <item.icon className="w-5 h-5" />
-                    {item.label}
+                    {/* Active accent bar */}
+                    {isActive && (
+                      <motion.div
+                        layoutId="sidebar-active"
+                        className="absolute left-0 top-1.5 bottom-1.5 w-[3px] rounded-full"
+                        style={{ background: "linear-gradient(180deg, #10b981, #059669)" }}
+                        transition={{ type: "spring", stiffness: 350, damping: 30 }}
+                      />
+                    )}
+
+                    <Icon
+                      className={`w-[18px] h-[18px] shrink-0 transition-colors ${
+                        isActive ? "text-emerald-600 dark:text-emerald-400" : "text-gray-400 dark:text-gray-500 group-hover:text-gray-600 dark:group-hover:text-gray-300"
+                      }`}
+                      strokeWidth={isActive ? 2 : 1.75}
+                    />
+
+                    {!isCollapsed && (
+                      <span className="text-[13px] whitespace-nowrap truncate">
+                        {item.label}
+                      </span>
+                    )}
+
+                    {/* Tooltip — collapsed only */}
+                    {isCollapsed && (
+                      <span className="absolute left-full ml-3 px-2.5 py-1.5 rounded-lg bg-gray-900 dark:bg-gray-700 text-white text-[11px] font-medium whitespace-nowrap opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity duration-150 z-50 shadow-xl">
+                        {item.label}
+                        <span className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-gray-900 dark:border-r-gray-700" />
+                      </span>
+                    )}
                   </Link>
                 </motion.div>
               )
@@ -148,47 +293,87 @@ const Sidebar: React.FC = () => {
           </nav>
         </div>
 
-        <motion.div
-          className="p-6 border-t border-gray-200 dark:border-gray-700"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5, duration: 0.3 }}
-        >
-          <div className="mb-6 flex items-center justify-between gap-3 overflow-hidden">
-            <div className="flex items-center gap-2 min-w-0">
-              <div className="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400 font-bold shrink-0">
-                {user?.fullName?.charAt(0)}
-              </div>
-              <div className="min-w-0">
-                <p className="text-gray-900 dark:text-white font-medium truncate text-sm">{user?.fullName}</p>
-              </div>
-            </div>
-            <motion.button
-              onClick={toggleTheme}
-              className="p-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors shrink-0"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              title={theme === "light" ? "Switch to dark mode" : "Switch to light mode"}
-            >
-              {theme === "light" ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
-            </motion.button>
-          </div>
-          <Button 
-            onClick={logout} 
-            variant="secondary" 
-            icon={LogOut} 
-            className="w-full text-xs py-2 bg-gray-900 dark:bg-gray-700 text-white dark:text-gray-200 hover:bg-black dark:hover:bg-gray-600 border-none transition-colors shadow-sm"
-          >
-            Sign Out
-          </Button>
-        </motion.div>
-      </div>
+        {/* ── Bottom: User ── */}
+        <div className={`shrink-0 border-t border-gray-100 dark:border-gray-800/50 ${isCollapsed ? "px-2" : "px-3"} py-3 space-y-2`}>
 
-      {/* Mobile Sidebar Overlay */}
+          {/* User — links to profile */}
+          <Link
+            to="/dashboard/profile"
+            className={`group relative flex items-center rounded-xl transition-all duration-200 ${isCollapsed ? "justify-center h-10" : "gap-2.5 px-2 py-2"} ${
+              location.pathname === "/dashboard/profile"
+                ? "bg-emerald-50 dark:bg-emerald-500/10"
+                : "hover:bg-gray-50 dark:hover:bg-white/[0.04]"
+            }`}
+            title={isCollapsed ? "Profile" : undefined}
+          >
+            {/* Active accent bar */}
+            {location.pathname === "/dashboard/profile" && (
+              <motion.div
+                layoutId="sidebar-active"
+                className="absolute left-0 top-1.5 bottom-1.5 w-[3px] rounded-full"
+                style={{ background: "linear-gradient(180deg, #10b981, #059669)" }}
+                transition={{ type: "spring", stiffness: 350, damping: 30 }}
+              />
+            )}
+            <div
+              className="w-8 h-8 rounded-full flex items-center justify-center text-white font-semibold text-xs shrink-0"
+              style={{ background: "linear-gradient(135deg, #10b981 0%, #059669 100%)" }}
+            >
+              {initial}
+            </div>
+            {!isCollapsed && (
+              <div className="flex-1 min-w-0">
+                <p className={`text-[13px] font-medium truncate leading-tight ${
+                  location.pathname === "/dashboard/profile" ? "text-emerald-700 dark:text-emerald-400" : "text-gray-900 dark:text-white"
+                }`}>
+                  {user?.fullName}
+                </p>
+                <p className="text-[11px] text-gray-400 dark:text-gray-500 truncate leading-tight">
+                  {user?.email}
+                </p>
+              </div>
+            )}
+            {!isCollapsed && (
+              <button
+                onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleTheme(); }}
+                className="p-1.5 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors shrink-0"
+                title={theme === "light" ? "Dark mode" : "Light mode"}
+              >
+                {theme === "light" ? <Moon className="w-3.5 h-3.5" /> : <Sun className="w-3.5 h-3.5" />}
+              </button>
+            )}
+            {/* Tooltip — collapsed */}
+            {isCollapsed && (
+              <span className="absolute left-full ml-3 px-2.5 py-1.5 rounded-lg bg-gray-900 dark:bg-gray-700 text-white text-[11px] font-medium whitespace-nowrap opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity duration-150 z-50 shadow-xl">
+                Profile
+                <span className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-gray-900 dark:border-r-gray-700" />
+              </span>
+            )}
+          </Link>
+
+          {/* Sign out */}
+          <button
+            onClick={logout}
+            className={`group flex items-center rounded-xl h-9 w-full
+                       border border-gray-200 dark:border-gray-800
+                       text-gray-500 dark:text-gray-400
+                       hover:bg-red-50 dark:hover:bg-red-500/5 hover:text-red-600 dark:hover:text-red-400
+                       hover:border-red-200 dark:hover:border-red-500/20
+                       transition-all duration-200 text-[12px] font-medium
+                       ${isCollapsed ? "justify-center" : "gap-2 px-3"}`}
+            title={isCollapsed ? "Sign Out" : undefined}
+          >
+            <LogOut className="w-3.5 h-3.5 shrink-0" />
+            {!isCollapsed && <span>Sign Out</span>}
+          </button>
+        </div>
+      </motion.div>
+
+      {/* ═══ MOBILE SIDEBAR OVERLAY ═══ */}
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
-            className="md:hidden fixed inset-0 bg-black bg-opacity-50 z-40"
+            className="md:hidden fixed inset-0 bg-black/40 backdrop-blur-sm z-40"
             variants={overlayVariants}
             initial="closed"
             animate="open"
@@ -198,37 +383,42 @@ const Sidebar: React.FC = () => {
         )}
       </AnimatePresence>
 
-      {/* Mobile Sidebar */}
+      {/* ═══ MOBILE SIDEBAR PANEL ═══ */}
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
-            className="md:hidden fixed left-0 top-0 h-full w-80 bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex flex-col z-50 transition-colors"
+            className="md:hidden fixed left-0 top-0 h-full w-72 bg-white dark:bg-gray-900 border-r border-gray-100 dark:border-gray-800 flex flex-col z-50"
             variants={sidebarVariants}
             initial="closed"
             animate="open"
             exit="closed"
           >
-            <div className="p-6 flex-1">
-              <motion.div className="flex items-center gap-3 mb-8 mt-16" variants={menuItemVariants}>
-                <div className="w-8 h-8 bg-gradient-to-r from-emerald-500 to-green-600 rounded-lg flex items-center justify-center">
-                  <Receipt className="w-5 h-5 text-white" />
-                </div>
-                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">EzBill</h1>
-              </motion.div>
+            <div className="p-6 flex-1 overflow-y-auto">
+              <div className="flex items-center gap-2.5 mb-6 mt-14">
+                <img src="/EzBill.png" alt="EzBill" className="w-8 h-8 rounded-lg" />
+                <h1 className="text-base font-semibold text-gray-900 dark:text-white">EzBill</h1>
+              </div>
 
-              <nav className="space-y-2">
+              <nav className="space-y-1">
                 {menuItems.map((item, index) => {
                   const isActive = location.pathname === item.path
                   return (
-                    <motion.div key={item.path} variants={menuItemVariants} transition={{ delay: index * 0.1 }}>
+                    <motion.div key={item.path} variants={menuItemVariants} transition={{ delay: index * 0.05 }}>
                       <Link
                         to={item.path}
                         onClick={closeMobileMenu}
-                        className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
-                          isActive ? "bg-emerald-600 text-white" : "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                        className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors text-sm ${
+                          isActive
+                            ? "bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 font-semibold"
+                            : "text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/50"
                         }`}
                       >
-                        <item.icon className="w-5 h-5" />
+                        <item.icon
+                          className={`w-5 h-5 ${
+                            isActive ? "text-emerald-600 dark:text-emerald-400" : "text-gray-400 dark:text-gray-500"
+                          }`}
+                          strokeWidth={isActive ? 2 : 1.8}
+                        />
                         {item.label}
                       </Link>
                     </motion.div>
@@ -238,32 +428,29 @@ const Sidebar: React.FC = () => {
             </div>
 
             <motion.div
-              className="p-6 border-t border-gray-200 dark:border-gray-700"
+              className="p-5 border-t border-gray-100 dark:border-gray-800"
               variants={menuItemVariants}
-              transition={{ delay: 0.5 }}
+              transition={{ delay: 0.4 }}
             >
-              <div className="mb-4 flex items-center justify-between gap-4 overflow-hidden">
-                <div className="min-w-0">
-                  <p className="text-gray-500 dark:text-gray-400 text-sm">Signed in as</p>
-                  <p className="text-gray-900 dark:text-white font-medium truncate">{user?.fullName}</p>
-                </div>
-                <motion.button
-                  onClick={toggleTheme}
-                  className="p-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
+              <div className="mb-3 flex items-center gap-3">
+                <div
+                  className="w-8 h-8 rounded-full flex items-center justify-center text-white font-medium text-sm shrink-0"
+                  style={{ background: "linear-gradient(135deg, #10b981, #059669)" }}
                 >
-                  {theme === "light" ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
-                </motion.button>
+                  {initial}
+                </div>
+                <div className="min-w-0">
+                  <p className="text-xs text-gray-500 dark:text-gray-400">Signed in as</p>
+                  <p className="text-gray-900 dark:text-white font-medium truncate text-sm">{user?.fullName}</p>
+                </div>
               </div>
-              <Button 
-                onClick={logout} 
-                variant="secondary" 
-                icon={LogOut} 
-                className="w-full bg-gray-900 dark:bg-gray-700 text-white dark:text-gray-200 border-none transition-colors shadow-sm"
+              <button
+                onClick={logout}
+                className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-red-50 dark:hover:bg-red-500/5 hover:text-red-600 dark:hover:text-red-400 hover:border-red-200 transition-all text-xs font-medium"
               >
+                <LogOut className="w-4 h-4" />
                 Sign Out
-              </Button>
+              </button>
             </motion.div>
           </motion.div>
         )}

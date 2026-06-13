@@ -25,27 +25,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // Function to refresh user data from Firestore
   const refreshUserData = async (uid: string) => {
     try {
-      console.log("Refreshing user data for UID:", uid)
       const result = await getUserData(uid)
 
       if (result.success && result.userData) {
-        console.log("User data refreshed successfully:", result.userData)
         setUser(result.userData as User)
         return result.userData
       } else {
-        console.error("Failed to refresh user data:", result.error)
         return null
       }
     } catch (error) {
-      console.error("Error refreshing user data:", error)
       return null
     }
   }
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      console.log("Auth state changed:", firebaseUser?.uid)
-
       try {
         if (firebaseUser) {
           // User is signed in, get their data from Firestore
@@ -55,7 +49,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             setIsAuthenticated(true)
           } else {
             // If user data doesn't exist, create a basic user object
-            console.log("Creating basic user object for new user")
             const basicUser: User = {
               id: firebaseUser.uid,
               email: firebaseUser.email || "",
@@ -78,12 +71,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           }
         } else {
           // User is signed out
-          console.log("User signed out")
           setUser(null)
           setIsAuthenticated(false)
         }
       } catch (error) {
-        console.error("Error in auth state change:", error)
         setUser(null)
         setIsAuthenticated(false)
       } finally {
@@ -96,39 +87,29 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const login = async (email: string, password: string): Promise<boolean> => {
     try {
-      console.log("Attempting login for:", email)
       const result = await signInUser(email, password)
-      console.log("Login result:", result)
 
       if (result.success) {
         // The onAuthStateChanged listener will handle setting the user data
         return true
       } else {
-        console.error("Login failed:", result.error)
         return false
       }
     } catch (error) {
-      console.error("Login error:", error)
       return false
     }
   }
 
   const signup = async (userData: SignupData): Promise<boolean> => {
     try {
-      console.log("Attempting signup for:", userData.email)
       const result = await signUpUser(userData)
-      console.log("Signup result:", result)
 
       if (result.success) {
-        // Don't sign out immediately - let the user stay signed in after signup
-        console.log("Signup successful, user should be signed in")
         return true
       } else {
-        console.error("Signup failed:", result.error)
         return false
       }
     } catch (error) {
-      console.error("Signup error:", error)
       return false
     }
   }
@@ -139,21 +120,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUser(null)
       setIsAuthenticated(false)
     } catch (error) {
-      console.error("Logout error:", error)
+      // Silent fail — user will see they're still logged in
     }
   }
 
   const updateProfile = async (userData: Partial<User>) => {
     if (user && auth.currentUser) {
       try {
-        console.log("Updating profile for user:", auth.currentUser.uid, userData)
-
-        // Log signature data specifically
-        if (userData.signature !== undefined) {
-          console.log("Signature update - length:", userData.signature?.length || 0)
-          console.log("Signature starts with data:image:", userData.signature?.startsWith("data:image/") || false)
-        }
-
         const result = await updateUserData(auth.currentUser.uid, userData)
 
         if (result.success) {
@@ -161,7 +134,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           const refreshedUserData = await refreshUserData(auth.currentUser.uid)
 
           if (refreshedUserData) {
-            console.log("Profile updated and refreshed successfully")
             return { success: true }
           } else {
             // Fallback: update local state if refresh fails
@@ -172,15 +144,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
               createdAt: user.createdAt,
             }
             setUser(updatedUser)
-            console.log("Profile updated successfully (local fallback)")
             return { success: true }
           }
         } else {
-          console.error("Failed to update profile:", result.error)
           throw new Error(result.error || "Failed to update profile")
         }
       } catch (error: any) {
-        console.error("Update profile error:", error)
         throw error
       }
     } else {
