@@ -330,7 +330,7 @@ const Profile: React.FC = () => {
   }
 
   return (
-    <div className="max-w-4xl mx-auto select-none pt-20 md:pt-0 pb-8">
+    <div className="max-w-4xl mx-auto select-none pt-20 lg:pt-0 pb-8">
 
       {/* ═══════════ HERO BANNER ═══════════ */}
       <div className="relative mb-20">

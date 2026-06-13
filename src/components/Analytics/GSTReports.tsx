@@ -103,7 +103,7 @@ const GSTReports: React.FC = () => {
 
 
   return (
-    <div className="pt-20 md:pt-0 space-y-6 md:space-y-8">
+    <div className="pt-20 lg:pt-0 space-y-6 md:space-y-8">
       <motion.div 
         className="flex flex-col md:flex-row md:items-start justify-between gap-4"
         initial={{ y: -10, opacity: 0 }}

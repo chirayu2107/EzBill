@@ -56,7 +56,7 @@ const LedgersPage: React.FC = () => {
   }
 
   return (
-    <motion.div className="space-y-6 md:space-y-8 pt-20 md:pt-0" variants={containerVariants} initial="hidden" animate="visible">
+    <motion.div className="space-y-6 md:space-y-8 pt-20 lg:pt-0" variants={containerVariants} initial="hidden" animate="visible">
       {/* Header */}
       <motion.div className="flex flex-col md:flex-row justify-between items-start gap-4" variants={itemVariants}>
         <div>

@@ -139,7 +139,7 @@ const Dashboard: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="space-y-8 pt-20 md:pt-0">
+      <div className="space-y-8 pt-20 lg:pt-0">
         <div className="flex items-center justify-center py-16">
           <div className="text-center">
             <div className="ez-loading-bar" />
@@ -155,7 +155,7 @@ const Dashboard: React.FC = () => {
 
   if (error) {
     return (
-      <div className="space-y-8 pt-20 md:pt-0">
+      <div className="space-y-8 pt-20 lg:pt-0">
         <Card>
           <div className="flex items-start gap-4">
             <div className="p-2.5 bg-red-50 dark:bg-red-500/10 rounded-xl">
@@ -174,7 +174,7 @@ const Dashboard: React.FC = () => {
 
   return (
     <motion.div
-      className="space-y-6 pt-20 md:pt-0"
+      className="space-y-6 pt-20 lg:pt-0"
       variants={containerVariants}
       initial="hidden"
       animate="visible"

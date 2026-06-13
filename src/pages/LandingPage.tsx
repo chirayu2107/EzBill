@@ -137,7 +137,7 @@ const LandingPage: React.FC = () => {
       <div className="absolute top-1/3 right-1/4 w-[250px] md:w-[400px] h-[250px] md:h-[400px] bg-teal-500/10 dark:bg-teal-500/5 rounded-full blur-3xl pointer-events-none z-0" />
 
       {/* Header */}
-      <header className="sticky top-0 z-50 backdrop-blur-md bg-surface-light/80 dark:bg-[#0b0f19]/80 border-b border-gray-200/50 dark:border-gray-800/50 transition-colors">
+      <header className="fixed top-0 left-0 right-0 z-50 backdrop-blur-xl bg-white/60 dark:bg-[#0b0f19]/50 border-b border-white/20 dark:border-white/[0.06] transition-colors">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-14 sm:h-16 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <div className="w-9 h-9 bg-gradient-to-br from-emerald-500 to-green-600 rounded-lg flex items-center justify-center shadow-lg shadow-emerald-500/20">
@@ -190,7 +190,7 @@ const LandingPage: React.FC = () => {
       </header>
 
       {/* Hero Section */}
-      <section className="relative pt-14 pb-16 sm:pt-20 sm:pb-24 md:pt-28 md:pb-32 px-4 sm:px-6 max-w-7xl mx-auto z-10 text-center">
+      <section className="relative pt-24 pb-16 sm:pt-32 sm:pb-24 md:pt-36 md:pb-32 px-4 sm:px-6 max-w-7xl mx-auto z-10 text-center">
 
         <h1 style={{ fontFamily: "'Outfit', sans-serif" }} className="text-3xl sm:text-5xl md:text-[4.5rem] font-black tracking-[-0.02em] sm:tracking-[-0.03em] mb-4 sm:mb-6 max-w-3xl mx-auto leading-[1.12] sm:leading-[1.08] bg-gradient-to-br from-gray-900 via-gray-800 to-gray-600 dark:from-white dark:via-gray-100 dark:to-gray-400 bg-clip-text text-transparent">
           Professional Invoicing{" "}

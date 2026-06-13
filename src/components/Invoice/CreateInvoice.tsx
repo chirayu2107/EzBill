@@ -194,7 +194,7 @@ const CreateInvoice: React.FC = () => {
   }
 
   return (
-    <div className="pt-24 md:pt-0">
+    <div className="pt-24 lg:pt-0">
       <motion.div
         className="max-w-4xl mx-auto space-y-6 md:space-y-8"
         variants={containerVariants}

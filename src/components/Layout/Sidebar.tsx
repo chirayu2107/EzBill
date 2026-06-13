@@ -87,7 +87,7 @@ const Sidebar: React.FC = () => {
   return (
     <>
       {/* ═══ MOBILE TOP BAR ═══ */}
-      <div className="md:hidden fixed top-0 left-0 right-0 z-50 bg-white dark:bg-[#0C111D] border-b border-gray-200 dark:border-gray-800">
+      <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-white dark:bg-[#0C111D] border-b border-gray-200 dark:border-gray-800">
         <div className="flex items-center justify-between px-4 py-3">
           <button
             onClick={toggleMobileMenu}
@@ -109,7 +109,7 @@ const Sidebar: React.FC = () => {
       </div>
 
       {/* ═══ MOBILE BOTTOM NAV ═══ */}
-      <div className="md:hidden ez-mobile-nav" ref={navBarRef}>
+      <div className="lg:hidden ez-mobile-nav" ref={navBarRef}>
         <div
           className="flex items-center justify-around relative"
           onPointerDown={(e) => {
@@ -198,7 +198,7 @@ const Sidebar: React.FC = () => {
 
       {/* ═══ DESKTOP SIDEBAR ═══ */}
       <motion.div
-        className="hidden md:flex flex-col shrink-0 overflow-hidden cursor-pointer
+        className="hidden lg:flex flex-col shrink-0 overflow-hidden cursor-pointer
                    bg-white dark:bg-[#0B0F1A] border-r border-gray-100 dark:border-gray-800/50"
         animate={{ width: isCollapsed ? COLLAPSED_W : EXPANDED_W }}
         transition={{ type: "spring", stiffness: 320, damping: 32 }}
@@ -373,7 +373,7 @@ const Sidebar: React.FC = () => {
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
-            className="md:hidden fixed inset-0 bg-black/40 backdrop-blur-sm z-40"
+            className="lg:hidden fixed inset-0 bg-black/40 backdrop-blur-sm z-40"
             variants={overlayVariants}
             initial="closed"
             animate="open"
@@ -387,7 +387,7 @@ const Sidebar: React.FC = () => {
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
-            className="md:hidden fixed left-0 top-0 h-full w-72 bg-white dark:bg-gray-900 border-r border-gray-100 dark:border-gray-800 flex flex-col z-50"
+            className="lg:hidden fixed left-0 top-0 h-full w-72 bg-white dark:bg-gray-900 border-r border-gray-100 dark:border-gray-800 flex flex-col z-50"
             variants={sidebarVariants}
             initial="closed"
             animate="open"
