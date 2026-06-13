@@ -27,7 +27,7 @@ const InvoicesPage: React.FC = () => {
   })
 
   const stats = [
-    { value: "all", label: "All Invoices", count: invoices.length, color: "text-gray-900 dark:text-[#ECECEF]", bg: "bg-gray-50 dark:bg-[#1F1F22]", activeBg: "bg-gray-100 dark:bg-[#27272A]", border: "border-gray-200 dark:border-[#3A3A3F]" },
+    { value: "all", label: "All Invoices", count: invoices.length, color: "text-gray-900 dark:text-[#F0F0F3]", bg: "bg-gray-50 dark:bg-[#1C1C1F]", activeBg: "bg-gray-100 dark:bg-[#232326]", border: "border-gray-200 dark:border-white/[0.12]" },
     { value: "paid", label: "Paid", count: invoices.filter(i => i.status === "paid").length, color: "text-emerald-600 dark:text-emerald-400", bg: "bg-emerald-50 dark:bg-emerald-500/8", activeBg: "bg-emerald-100 dark:bg-emerald-500/15", border: "border-emerald-200 dark:border-emerald-500/25" },
     { value: "unpaid", label: "Unpaid", count: invoices.filter(i => i.status === "unpaid").length, color: "text-amber-600 dark:text-amber-400", bg: "bg-amber-50 dark:bg-amber-500/8", activeBg: "bg-amber-100 dark:bg-amber-500/15", border: "border-amber-200 dark:border-amber-500/25" },
     { value: "overdue", label: "Overdue", count: invoices.filter(i => i.status === "overdue").length, color: "text-red-500 dark:text-red-400", bg: "bg-red-50 dark:bg-red-500/8", activeBg: "bg-red-100 dark:bg-red-500/15", border: "border-red-200 dark:border-red-500/25" },
@@ -71,7 +71,7 @@ const InvoicesPage: React.FC = () => {
               className={`relative rounded-2xl border p-4 text-center transition-all duration-200 ${
                 isActive
                   ? `${stat.activeBg} ${stat.border} shadow-sm`
-                  : `bg-white dark:bg-[#1F1F22] border-gray-100 dark:border-[#2A2A2E] hover:border-gray-200 dark:hover:border-[#3A3A3F]`
+                  : `bg-white dark:bg-[#1C1C1F] border-gray-100 dark:border-white/[0.07] hover:border-gray-200 dark:hover:border-white/[0.12]`
               }`}
               whileTap={{ scale: 0.98 }}
             >
@@ -95,20 +95,20 @@ const InvoicesPage: React.FC = () => {
             placeholder="Search invoices by customer name or invoice number..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-11 pr-4 py-3 bg-white dark:bg-[#1F1F22] border border-gray-200 dark:border-[#2A2A2E] rounded-xl text-sm text-gray-900 dark:text-[#ECECEF] focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-400/40 transition-all placeholder:text-gray-400 dark:placeholder:text-[#63636E] shadow-sm"
+            className="w-full pl-11 pr-4 py-3 bg-white dark:bg-[#1C1C1F] border border-gray-200 dark:border-white/[0.07] rounded-xl text-sm text-gray-900 dark:text-[#F0F0F3] focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-400/40 transition-all placeholder:text-gray-400 dark:placeholder:text-[#63636E] shadow-sm"
           />
         </div>
 
         <div className="flex items-center justify-between">
-          <div className="flex gap-1 bg-gray-100 dark:bg-[#1F1F22] rounded-lg p-0.5">
+          <div className="flex gap-1 bg-gray-100 dark:bg-[#1C1C1F] rounded-lg p-0.5">
             {["all", "paid", "unpaid", "overdue"].map((f) => (
               <button
                 key={f}
                 onClick={() => setStatusFilter(f as any)}
                 className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
                   statusFilter === f
-                    ? "bg-white dark:bg-[#27272A] text-gray-900 dark:text-[#ECECEF] shadow-sm"
-                    : "text-gray-500 dark:text-[#63636E] hover:text-gray-700 dark:hover:text-[#9E9EA7]"
+                    ? "bg-white dark:bg-[#232326] text-gray-900 dark:text-[#F0F0F3] shadow-sm"
+                    : "text-gray-500 dark:text-[#62626B] hover:text-gray-700 dark:hover:text-[#9E9EA7]"
                 }`}
               >
                 {f === "all" ? "All Invoices" : f.charAt(0).toUpperCase() + f.slice(1)}

@@ -12,7 +12,7 @@ import {
   Timestamp,
   setDoc,
 } from "firebase/firestore"
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, updateProfile } from "firebase/auth"
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, updateProfile, sendPasswordResetEmail } from "firebase/auth"
 import { auth, db } from "../config/firebase"
 import type { Invoice, User, SignupData, PurchaseBill } from "../types"
 
@@ -130,6 +130,34 @@ export const signOutUser = async () => {
     return { success: true }
   } catch (error: any) {
     return { success: false, error: error.message }
+  }
+}
+
+export const resetPassword = async (email: string) => {
+  try {
+    await sendPasswordResetEmail(auth, email)
+    return { success: true }
+  } catch (error: any) {
+    let errorMessage = "Failed to send reset email"
+
+    switch (error.code) {
+      case "auth/user-not-found":
+        errorMessage = "No account found with this email address."
+        break
+      case "auth/invalid-email":
+        errorMessage = "Please enter a valid email address."
+        break
+      case "auth/too-many-requests":
+        errorMessage = "Too many requests. Please wait a moment and try again."
+        break
+      case "auth/network-request-failed":
+        errorMessage = "Network error. Please check your internet connection."
+        break
+      default:
+        errorMessage = error.message || errorMessage
+    }
+
+    return { success: false, error: errorMessage }
   }
 }
 

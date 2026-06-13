@@ -3,21 +3,22 @@
 @tailwind utilities;
 
 /* ═══════════════════════════════════════════════════════════
-   EZBILL DESIGN SYSTEM — Modern Dashboard
-   Inspired by Linear, Raycast, Vercel
+   EZBILL DESIGN SYSTEM — Premium SaaS Dashboard
+   Inspired by Linear, Arc Browser, Raycast, Vercel
    ═══════════════════════════════════════════════════════════ */
 
 /* ─── Design Tokens (Dark) ───
-   bg-base:      #111113   — deepest layer (app bg)
-   bg-surface:   #19191B   — sidebar, main panels
-   bg-card:      #1F1F22   — card background
-   bg-elevated:  #27272A   — hover states, elevated surfaces
-   bg-muted:     #2E2E32   — subtle containers, code blocks
-   border-base:  #2A2A2E   — default borders
-   border-hover: #3A3A3F   — interactive borders on hover
-   text-primary: #ECECEF   — headings, primary text
-   text-secondary:#9E9EA7  — body text, descriptions
-   text-muted:   #63636E   — labels, placeholders
+   bg-base:      #0F0F11   — deepest layer (app bg)
+   bg-surface:   #161618   — sidebar, main panels
+   bg-card:      #1C1C1F   — card background
+   bg-elevated:  #232326   — hover states, elevated surfaces
+   bg-muted:     #2B2B2F   — subtle containers, code blocks
+   border-base:  rgba(255,255,255,0.07)  — subtle borders
+   border-hover: rgba(255,255,255,0.12)  — interactive borders
+   text-primary: #F0F0F3   — headings, primary text
+   text-secondary:#A0A0AB  — body text, descriptions
+   text-muted:   #62626B   — labels, placeholders
+   accent:       #10b981   — emerald brand
    ─── */
 
 /* ─── Base Layer ─── */
@@ -39,7 +40,8 @@
 
   .dark body,
   html.dark body {
-    background-color: #111113;
+    background-color: #0F0F11;
+    color: #A0A0AB;
   }
 
   ::selection {
@@ -48,17 +50,24 @@
   }
 
   .dark ::selection {
-    background-color: rgba(16, 185, 129, 0.3);
+    background-color: rgba(16, 185, 129, 0.35);
     color: #fff;
   }
 
-  /* Scrollbar */
-  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  /* Scrollbar — sleek and minimal */
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
   ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background-color: rgba(0,0,0,0.1); border-radius: 9999px; }
-  ::-webkit-scrollbar-thumb:hover { background-color: rgba(0,0,0,0.2); }
-  .dark ::-webkit-scrollbar-thumb { background-color: rgba(255,255,255,0.08); }
-  .dark ::-webkit-scrollbar-thumb:hover { background-color: rgba(255,255,255,0.15); }
+  ::-webkit-scrollbar-thumb {
+    background-color: rgba(0,0,0,0.12);
+    border-radius: 9999px;
+  }
+  ::-webkit-scrollbar-thumb:hover { background-color: rgba(0,0,0,0.22); }
+  .dark ::-webkit-scrollbar-thumb {
+    background-color: rgba(255,255,255,0.06);
+  }
+  .dark ::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(255,255,255,0.12);
+  }
 
   /* Typography */
   h1, h2, h3, h4, h5, h6 {
@@ -71,12 +80,16 @@
     letter-spacing: -0.035em;
     font-weight: 700;
   }
+
+  .dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 {
+    color: #F0F0F3;
+  }
 }
 
 /* ─── Component Layer ─── */
 @layer components {
 
-  /* ═══ CARD — Modern with subtle depth ═══ */
+  /* ═══ CARD — Premium glass surface ═══ */
   .ez-card {
     position: relative;
     background: #fff;
@@ -85,15 +98,16 @@
     box-shadow:
       0 1px 3px rgba(0, 0, 0, 0.04),
       0 4px 12px rgba(0, 0, 0, 0.02);
-    transition: all 0.2s ease;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .dark .ez-card {
-    background: #1F1F22;
-    border-color: #2A2A2E;
+    background: linear-gradient(180deg, #1C1C1F 0%, #1A1A1D 100%);
+    border-color: rgba(255, 255, 255, 0.06);
     box-shadow:
-      0 1px 2px rgba(0, 0, 0, 0.4),
-      0 0 0 1px rgba(255, 255, 255, 0.03);
+      0 1px 2px rgba(0, 0, 0, 0.5),
+      0 4px 16px rgba(0, 0, 0, 0.15),
+      inset 0 1px 0 rgba(255, 255, 255, 0.04);
   }
 
   .ez-card-hover:hover {
@@ -105,14 +119,15 @@
   }
 
   .dark .ez-card-hover:hover {
-    border-color: #3A3A3F;
+    border-color: rgba(255, 255, 255, 0.10);
     box-shadow:
-      0 4px 16px rgba(0, 0, 0, 0.5),
-      0 0 0 1px rgba(255, 255, 255, 0.05);
+      0 4px 24px rgba(0, 0, 0, 0.4),
+      0 0 0 1px rgba(255, 255, 255, 0.06),
+      inset 0 1px 0 rgba(255, 255, 255, 0.06);
     transform: translateY(-1px);
   }
 
-  /* ═══ BENTO CARD — Glassmorphic variants ═══ */
+  /* ═══ BENTO CARD — Rich glassmorphic variants ═══ */
   .ez-bento-emerald {
     background: rgba(16, 185, 129, 0.06);
     backdrop-filter: blur(16px) saturate(140%);
@@ -121,11 +136,12 @@
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
   }
   .dark .ez-bento-emerald {
-    background: rgba(16, 185, 129, 0.08);
-    border-color: rgba(16, 185, 129, 0.15);
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.10) 0%, rgba(16, 185, 129, 0.04) 100%);
+    border-color: rgba(16, 185, 129, 0.18);
     box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.04),
-      0 0 24px rgba(16, 185, 129, 0.04);
+      inset 0 1px 0 rgba(16, 185, 129, 0.08),
+      0 0 32px rgba(16, 185, 129, 0.06),
+      0 4px 16px rgba(0, 0, 0, 0.15);
   }
 
   .ez-bento-violet {
@@ -136,11 +152,12 @@
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
   }
   .dark .ez-bento-violet {
-    background: rgba(139, 92, 246, 0.08);
-    border-color: rgba(139, 92, 246, 0.15);
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.10) 0%, rgba(139, 92, 246, 0.04) 100%);
+    border-color: rgba(139, 92, 246, 0.18);
     box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.04),
-      0 0 24px rgba(139, 92, 246, 0.04);
+      inset 0 1px 0 rgba(139, 92, 246, 0.08),
+      0 0 32px rgba(139, 92, 246, 0.06),
+      0 4px 16px rgba(0, 0, 0, 0.15);
   }
 
   .ez-bento-amber {
@@ -151,11 +168,12 @@
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
   }
   .dark .ez-bento-amber {
-    background: rgba(245, 158, 11, 0.08);
-    border-color: rgba(245, 158, 11, 0.15);
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.10) 0%, rgba(245, 158, 11, 0.04) 100%);
+    border-color: rgba(245, 158, 11, 0.18);
     box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.04),
-      0 0 24px rgba(245, 158, 11, 0.04);
+      inset 0 1px 0 rgba(245, 158, 11, 0.08),
+      0 0 32px rgba(245, 158, 11, 0.06),
+      0 4px 16px rgba(0, 0, 0, 0.15);
   }
 
   .ez-bento-blue {
@@ -166,14 +184,15 @@
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
   }
   .dark .ez-bento-blue {
-    background: rgba(59, 130, 246, 0.08);
-    border-color: rgba(59, 130, 246, 0.15);
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.10) 0%, rgba(59, 130, 246, 0.04) 100%);
+    border-color: rgba(59, 130, 246, 0.18);
     box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.04),
-      0 0 24px rgba(59, 130, 246, 0.04);
+      inset 0 1px 0 rgba(59, 130, 246, 0.08),
+      0 0 32px rgba(59, 130, 246, 0.06),
+      0 4px 16px rgba(0, 0, 0, 0.15);
   }
 
-  /* ═══ HERO CARD — Dark gradient for main stat ═══ */
+  /* ═══ HERO CARD — Premium gradient with accent lighting ═══ */
   .ez-hero-card {
     position: relative;
     overflow: hidden;
@@ -183,11 +202,13 @@
     color: white;
   }
   .dark .ez-hero-card {
-    background: linear-gradient(135deg, #1A1A1E 0%, #252528 100%);
-    border-color: #2A2A2E;
+    background: linear-gradient(145deg, #161618 0%, #1C1C1F 40%, #191920 100%);
+    border-color: rgba(16, 185, 129, 0.12);
     box-shadow:
-      0 2px 8px rgba(0, 0, 0, 0.3),
-      inset 0 1px 0 rgba(255, 255, 255, 0.05);
+      0 2px 12px rgba(0, 0, 0, 0.4),
+      0 8px 32px rgba(0, 0, 0, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.06),
+      0 0 40px rgba(16, 185, 129, 0.04);
   }
   .ez-hero-card::before {
     content: '';
@@ -197,6 +218,16 @@
     width: 60%;
     height: 100%;
     background: radial-gradient(ellipse, rgba(16, 185, 129, 0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .dark .ez-hero-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(16, 185, 129, 0.2), transparent);
     pointer-events: none;
   }
 
@@ -218,9 +249,9 @@
     border-color: #ABEFC6;
   }
   .dark .ez-status-pill--paid {
-    color: #75E0A7;
-    background: rgba(34, 197, 94, 0.12);
-    border-color: rgba(34, 197, 94, 0.25);
+    color: #6EE7A8;
+    background: rgba(34, 197, 94, 0.10);
+    border-color: rgba(34, 197, 94, 0.20);
   }
 
   .ez-status-pill--unpaid {
@@ -230,8 +261,8 @@
   }
   .dark .ez-status-pill--unpaid {
     color: #FEC84B;
-    background: rgba(234, 179, 8, 0.12);
-    border-color: rgba(234, 179, 8, 0.25);
+    background: rgba(234, 179, 8, 0.10);
+    border-color: rgba(234, 179, 8, 0.20);
   }
 
   .ez-status-pill--overdue {
@@ -241,8 +272,8 @@
   }
   .dark .ez-status-pill--overdue {
     color: #FDA29B;
-    background: rgba(239, 68, 68, 0.12);
-    border-color: rgba(239, 68, 68, 0.25);
+    background: rgba(239, 68, 68, 0.10);
+    border-color: rgba(239, 68, 68, 0.20);
   }
 
   .ez-status-dot {
@@ -280,7 +311,7 @@
     animation: loadingBar 1.5s ease-in-out infinite;
   }
 
-  /* ═══ MODAL ═══ */
+  /* ═══ MODAL — Elevated glass panel ═══ */
   .ez-modal {
     border-radius: 16px;
     background: #fff;
@@ -290,14 +321,15 @@
       0 20px 24px -4px rgba(16, 24, 40, 0.08);
   }
   .dark .ez-modal {
-    background: #252528;
-    border-color: #2A2A2E;
+    background: linear-gradient(180deg, #232326 0%, #1F1F22 100%);
+    border-color: rgba(255, 255, 255, 0.08);
     box-shadow:
-      0 20px 24px -4px rgba(0, 0, 0, 0.5),
-      0 0 0 1px rgba(255, 255, 255, 0.05);
+      0 24px 48px -12px rgba(0, 0, 0, 0.6),
+      0 0 0 1px rgba(255, 255, 255, 0.05),
+      inset 0 1px 0 rgba(255, 255, 255, 0.06);
   }
 
-  /* ═══ MOBILE BOTTOM NAV — iOS 26 liquid glass ═══ */
+  /* ═══ MOBILE BOTTOM NAV — Frosted glass ═══ */
   .ez-mobile-nav {
     position: fixed;
     bottom: 12px;
@@ -317,12 +349,12 @@
       inset 0 0.5px 0 rgba(255, 255, 255, 0.8);
   }
   .dark .ez-mobile-nav {
-    background: rgba(25, 25, 27, 0.85);
-    border-color: rgba(255, 255, 255, 0.08);
+    background: rgba(22, 22, 24, 0.88);
+    border-color: rgba(255, 255, 255, 0.06);
     box-shadow:
-      0 8px 32px rgba(0, 0, 0, 0.5),
-      0 2px 8px rgba(0, 0, 0, 0.3),
-      inset 0 0.5px 0 rgba(255, 255, 255, 0.06);
+      0 8px 40px rgba(0, 0, 0, 0.6),
+      0 2px 8px rgba(0, 0, 0, 0.4),
+      inset 0 0.5px 0 rgba(255, 255, 255, 0.05);
   }
 
   /* ═══ SPARKLINE CHART ═══ */

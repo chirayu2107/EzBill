@@ -119,7 +119,7 @@ const GSTReports: React.FC = () => {
           </p>
         </div>
         <div className="flex items-center gap-3 w-full md:w-auto">
-          <div className="flex items-center bg-white dark:bg-[#1F1F22] rounded-xl border border-gray-200 dark:border-[#2A2A2E] p-1 shadow-sm">
+          <div className="flex items-center bg-white dark:bg-[#1C1C1F] rounded-xl border border-gray-200 dark:border-white/[0.07] p-1 shadow-sm">
             <input 
               type="date" 
               value={dateRange.start} 
@@ -141,7 +141,7 @@ const GSTReports: React.FC = () => {
       </motion.div>
 
       {/* Tabs */}
-      <div className="flex gap-1 bg-gray-100 dark:bg-[#1F1F22] rounded-xl p-1 w-full max-w-md">
+      <div className="flex gap-1 bg-gray-100 dark:bg-[#1C1C1F] rounded-xl p-1 w-full max-w-md">
         <button
           onClick={() => setActiveTab("b2b")}
           className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-xs font-medium transition-all ${
@@ -188,7 +188,7 @@ const GSTReports: React.FC = () => {
                   <tr><td colSpan={7} className="px-6 py-12 text-center text-gray-400 text-sm">No B2B transactions found in this period</td></tr>
                 ) : (
                   b2bData.map(inv => (
-                    <tr key={inv.id} className="border-b border-gray-50 dark:border-[#2A2A2E] hover:bg-gray-50/50 dark:hover:bg-gray-800/20 transition-colors duration-150">
+                    <tr key={inv.id} className="border-b border-gray-50 dark:border-white/[0.07] hover:bg-gray-50/50 dark:hover:bg-gray-800/20 transition-colors duration-150">
                       <td className="px-4 md:px-6 py-3.5">
                         <div className="flex flex-col">
                           <span className="text-sm font-semibold text-gray-900 dark:text-white ez-mono">{inv.invoiceNumber}</span>

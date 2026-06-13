@@ -192,7 +192,7 @@ const CustomerLedger: React.FC<CustomerLedgerProps> = ({ customerName, invoices,
         </div>
 
         {/* Date Range Filter */}
-        <div className="flex flex-wrap items-center gap-3 px-6 py-3 bg-gray-50 dark:bg-[#27272A] border-b border-gray-200 dark:border-gray-700">
+        <div className="flex flex-wrap items-center gap-3 px-6 py-3 bg-gray-50 dark:bg-[#232326] border-b border-gray-200 dark:border-gray-700">
           <Calendar className="w-4 h-4 text-gray-400" />
           <span className="text-sm text-gray-600 dark:text-gray-400 font-medium">Date Range:</span>
           <div className="flex items-center gap-2">

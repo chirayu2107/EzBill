@@ -6,6 +6,7 @@ import { ThemeProvider } from "./context/ThemeContext"
 import ProtectedRoute from "./components/Auth/ProtectedRoute"
 import Login from "./components/Auth/Login"
 import Signup from "./components/Auth/Signup"
+import ForgotPassword from "./components/Auth/ForgotPassword"
 import Layout from "./components/Layout/Layout"
 import Dashboard from "./components/Dashboard/Dashboard"
 import InvoicesPage from "./components/Dashboard/InvoicesPage"
@@ -32,6 +33,7 @@ function AppContent() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/privacy" element={<PrivacyPage />} />
           <Route path="/terms" element={<TermsPage />} />
           <Route
