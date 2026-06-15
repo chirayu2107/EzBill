@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useState, useRef, useEffect } from "react"
+import { motion, AnimatePresence } from "framer-motion"
 import { Link } from "react-router-dom"
 import { useAuth } from "../context/AuthContext"
 import { useTheme } from "../context/ThemeContext"
@@ -13,18 +14,126 @@ import {
   Shield,
   BarChart3,
   Users,
-  Moon,
-  Sun,
-  ChevronDown,
-  Sparkles
+  Sparkles,
+  ShoppingBag,
+  Package,
+  Briefcase,
+  UtensilsCrossed,
+  Pencil,
+  Globe,
+  ChevronLeft,
+  ChevronRight
 } from "lucide-react"
 import Button from "../components/UI/Button"
 
+const faqs = [
+  {
+    q: "Is EzBill really free to start?",
+    a: "Yes! Our Free plan allows you to create up to 5 invoices per month with standard templates, basic client management, and PDF exports. No credit card required."
+  },
+  {
+    q: "Can I customize the invoices with my own branding?",
+    a: "Absolutely! With the Pro plan, you can upload your business logo, custom signatures, choose custom brand colors, and remove the EzBill watermark."
+  },
+  {
+    q: "How does the auto-GST calculation work?",
+    a: "When creating an invoice, you can enable GST/IGST with a single click. EzBill will automatically calculate CGST, SGST, or IGST based on your item rates and tax percentages."
+  },
+  {
+    q: "Can I download reports for accounting?",
+    a: "Yes, you can generate comprehensive sales reports, purchase bill summaries, and detailed GST reports in CSV format, perfect for file tax returns or sending to your accountant."
+  }
+]
+
+const features = [
+  {
+    icon: Receipt,
+    title: "Smart Invoicing",
+    description: "Create professional invoices in seconds with automated tax, discounts, and grand total calculations."
+  },
+  {
+    icon: BarChart3,
+    title: "GST Reports & Analytics",
+    description: "Keep track of tax filings with auto-generated GST tax reports and analyze your monthly sales growth."
+  },
+  {
+    icon: Users,
+    title: "Client Ledger Sheets",
+    description: "Maintain clear debit/credit transaction histories for all your business clients in one centralized hub."
+  },
+  {
+    icon: Shield,
+    title: "Expense & Purchase Bills",
+    description: "Track your outgoing expenditures and manage supplier bills efficiently alongside your incoming revenues."
+  },
+  {
+    icon: Zap,
+    title: "Instant PDF Downloads",
+    description: "Generate print-ready PDFs of your invoices with modern layouts, customized styles, and digital signatures."
+  },
+  {
+    icon: Sparkles,
+    title: "Custom Brand Templates",
+    description: "Infuse your company colors, custom logo, and signature to build high-end client trust."
+  }
+]
+
+const testimonials = [
+  {
+    name: "Rohan Sharma",
+    role: "Freelance UI Designer",
+    quote: "EzBill made billing my clients a breeze. The PDF layout looks incredibly premium, and it takes me less than 2 minutes to send an invoice.",
+    rating: 5,
+    avatar: "https://res.cloudinary.com/dkoiyuyhj/image/upload/v1753032406/n4dpb2qiwgwxpfb2kurc.jpg"
+  },
+  {
+    name: "Priya Patel",
+    role: "Founder, Bloom Agency",
+    quote: "The client ledger feature is a lifesaver! I can track exactly who owes what, and exporting GST reports saves hours of accounting work every month.",
+    rating: 5,
+    avatar: "https://res.cloudinary.com/dkoiyuyhj/image/upload/v1753032557/xbkz2uegcbb1k4vw6fqw.jpg"
+  },
+  {
+    name: "Anand Verma",
+    role: "Retail Store Owner",
+    quote: "Moving from paper books to EzBill has completely digitized our billing process. The interface is clean, dark mode is beautiful, and support is super fast.",
+    rating: 5,
+    avatar: "https://res.cloudinary.com/dkoiyuyhj/image/upload/v1753032858/gteqwkdcagqbxjg6aght.avif"
+  }
+]
+
+const slideVariants = {
+  enter: (direction: number) => ({
+    x: direction > 0 ? 120 : -120,
+    opacity: 0,
+  }),
+  center: {
+    x: 0,
+    opacity: 1,
+  },
+  exit: (direction: number) => ({
+    x: direction < 0 ? 120 : -120,
+    opacity: 0,
+  }),
+}
+
 const LandingPage: React.FC = () => {
   const { isAuthenticated } = useAuth()
-  const { theme, toggleTheme } = useTheme()
+  const { theme, resetToSystem } = useTheme()
   const [isAnnual, setIsAnnual] = useState(false)
   const [activeFaq, setActiveFaq] = useState<number | null>(null)
+  const [activeTestimonial, setActiveTestimonial] = useState(0)
+  const [direction, setDirection] = useState(1)
+
+  const paginate = (newDirection: number) => {
+    setDirection(newDirection)
+    setActiveTestimonial((prev) => (prev + newDirection + testimonials.length) % testimonials.length)
+  }
+
+  // Landing page always follows the OS — clear any manual override when visiting
+  useEffect(() => {
+    resetToSystem()
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Scroll-driven 3D perspective animation
   const mockupRef = useRef<HTMLDivElement>(null)
@@ -54,81 +163,15 @@ const LandingPage: React.FC = () => {
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
-  const faqs = [
-    {
-      q: "Is EzBill really free to start?",
-      a: "Yes! Our Free plan allows you to create up to 5 invoices per month with standard templates, basic client management, and PDF exports. No credit card required."
-    },
-    {
-      q: "Can I customize the invoices with my own branding?",
-      a: "Absolutely! With the Pro plan, you can upload your business logo, custom signatures, choose custom brand colors, and remove the EzBill watermark."
-    },
-    {
-      q: "How does the auto-GST calculation work?",
-      a: "When creating an invoice, you can enable GST/IGST with a single click. EzBill will automatically calculate CGST, SGST, or IGST based on your item rates and tax percentages."
-    },
-    {
-      q: "Can I download reports for accounting?",
-      a: "Yes, you can generate comprehensive sales reports, purchase bill summaries, and detailed GST reports in CSV format, perfect for file tax returns or sending to your accountant."
-    }
-  ]
+  // Auto-swipe testimonials every 5 seconds (resets timer on manual click)
+  useEffect(() => {
+    const timer = setInterval(() => {
+      paginate(1)
+    }, 5000)
+    return () => clearInterval(timer)
+  }, [activeTestimonial])
 
-  const features = [
-    {
-      icon: Receipt,
-      title: "Smart Invoicing",
-      description: "Create professional invoices in seconds with automated tax, discounts, and grand total calculations."
-    },
-    {
-      icon: BarChart3,
-      title: "GST Reports & Analytics",
-      description: "Keep track of tax filings with auto-generated GST tax reports and analyze your monthly sales growth."
-    },
-    {
-      icon: Users,
-      title: "Client Ledger Sheets",
-      description: "Maintain clear debit/credit transaction histories for all your business clients in one centralized hub."
-    },
-    {
-      icon: Shield,
-      title: "Expense & Purchase Bills",
-      description: "Track your outgoing expenditures and manage supplier bills efficiently alongside your incoming revenues."
-    },
-    {
-      icon: Zap,
-      title: "Instant PDF Downloads",
-      description: "Generate print-ready PDFs of your invoices with modern layouts, customized styles, and digital signatures."
-    },
-    {
-      icon: Sparkles,
-      title: "Custom Brand Templates",
-      description: "Infuse your company colors, custom logo, and signature to build high-end client trust."
-    }
-  ]
 
-  const testimonials = [
-    {
-      name: "Rohan Sharma",
-      role: "Freelance UI Designer",
-      quote: "EzBill made billing my clients a breeze. The PDF layout looks incredibly premium, and it takes me less than 2 minutes to send an invoice.",
-      rating: 5,
-      avatar: "https://res.cloudinary.com/dkoiyuyhj/image/upload/v1753032406/n4dpb2qiwgwxpfb2kurc.jpg"
-    },
-    {
-      name: "Priya Patel",
-      role: "Founder, Bloom Agency",
-      quote: "The client ledger feature is a lifesaver! I can track exactly who owes what, and exporting GST reports saves hours of accounting work every month.",
-      rating: 5,
-      avatar: "https://res.cloudinary.com/dkoiyuyhj/image/upload/v1753032557/xbkz2uegcbb1k4vw6fqw.jpg"
-    },
-    {
-      name: "Anand Verma",
-      role: "Retail Store Owner",
-      quote: "Moving from paper books to EzBill has completely digitized our billing process. The interface is clean, dark mode is beautiful, and support is super fast.",
-      rating: 5,
-      avatar: "https://res.cloudinary.com/dkoiyuyhj/image/upload/v1753032858/gteqwkdcagqbxjg6aght.avif"
-    }
-  ]
 
   return (
     <div className="min-h-screen bg-surface-light dark:bg-[#0C0C0E] text-gray-900 dark:text-gray-100 transition-colors duration-300 overflow-x-hidden w-full">
@@ -157,19 +200,14 @@ const LandingPage: React.FC = () => {
 
           {/* Right Controls */}
           <div className="flex items-center gap-2 sm:gap-4">
-            {/* Theme Toggle */}
-            <button
-              onClick={toggleTheme}
-              className="p-1.5 sm:p-2 rounded-lg text-gray-500 dark:text-[#8B8B96] hover:bg-gray-100 dark:hover:bg-[#212124] transition-colors"
-              aria-label="Toggle Theme"
-            >
-              {theme === "dark" ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-indigo-600" />}
-            </button>
 
             {isAuthenticated ? (
               <Link to="/dashboard">
                 <Button variant="accent" size="sm">
-                  <span className="hidden sm:inline">Go to </span>Dashboard
+                  <span>
+                    <span className="hidden sm:inline">Go to </span>
+                    Dashboard
+                  </span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </Button>
               </Link>
@@ -271,30 +309,31 @@ const LandingPage: React.FC = () => {
       </section>
 
       {/* Features Grid */}
-      <section id="features" className="py-16 sm:py-24 border-t border-gray-200/50 dark:border-white/[0.04] bg-gray-50/50 dark:bg-[#141416]/50">
+      <section id="features" className="py-16 sm:py-24 border-t border-gray-200/50 dark:border-white/[0.04]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="text-center mb-16">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight mb-4 text-gray-900 dark:text-white">
+          {/* Centered header */}
+          <div className="mb-12 text-center max-w-2xl mx-auto">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight mb-4 text-gray-900 dark:text-white sm:whitespace-nowrap">
               Everything you need to power your business
             </h2>
-            <p className="text-gray-600 dark:text-gray-400 max-w-xl mx-auto text-sm md:text-base">
+            <p className="text-gray-500 dark:text-gray-400 text-sm md:text-base leading-relaxed">
               A comprehensive billing app built specifically for modern merchants, service agencies, and freelancers.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-10">
             {features.map((feature, i) => {
               const Icon = feature.icon
               return (
-                <div
-                  key={i}
-                  className="p-5 sm:p-6 rounded-2xl border border-gray-200 dark:border-white/[0.04] bg-white dark:bg-[#1A1A1D] hover:shadow-lg hover:shadow-emerald-500/5 dark:hover:border-white/[0.06] dark:hover:bg-[#212124] hover:-translate-y-1 transition-all duration-300"
-                >
-                  <div className="w-10 h-10 bg-emerald-500/10 dark:bg-emerald-500/10 text-emerald-500 dark:text-emerald-400 rounded-lg flex items-center justify-center mb-5">
-                    <Icon className="w-5 h-5" />
+                <div key={i} className="group">
+                  <div className="w-10 h-10 bg-gray-100 dark:bg-white/[0.06] border border-gray-200/80 dark:border-white/[0.08] rounded-xl flex items-center justify-center mb-5">
+                    <Icon className="w-4 h-4 text-gray-600 dark:text-gray-400" />
                   </div>
-                  <h3 className="text-lg font-bold mb-2 text-gray-900 dark:text-white">{feature.title}</h3>
-                  <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">{feature.description}</p>
+                  <h3 className="text-base font-bold mb-2 text-gray-900 dark:text-white">{feature.title}</h3>
+                  <p className="text-gray-500 dark:text-gray-400 text-sm leading-relaxed mb-4">{feature.description}</p>
+                  <span className="inline-flex items-center gap-1 text-sm font-semibold text-emerald-600 dark:text-emerald-400 hover:gap-2 transition-all cursor-default">
+                    Learn more <ArrowRight className="w-3.5 h-3.5" />
+                  </span>
                 </div>
               )
             })}
@@ -426,120 +465,212 @@ const LandingPage: React.FC = () => {
       </section>
 
       {/* Testimonials */}
-      <section className="py-16 sm:py-24 border-t border-gray-200/50 dark:border-white/[0.04] bg-gray-50/50 dark:bg-[#141416]/50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="text-center mb-16">
+      <section className="py-16 sm:py-24 border-t border-gray-200/50 dark:border-white/[0.04]">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
+          <div className="flex flex-col md:flex-row items-center gap-10 md:gap-14">
+
+            <div className="w-full md:w-[40%] flex-shrink-0">
+              <div className="relative overflow-hidden min-h-[300px] sm:min-h-[235px]">
+                <AnimatePresence initial={false} custom={direction} mode="wait">
+                  <motion.div
+                    key={activeTestimonial}
+                    custom={direction}
+                    variants={slideVariants}
+                    initial="enter"
+                    animate="center"
+                    exit="exit"
+                    transition={{
+                      x: { type: "spring", stiffness: 300, damping: 30 },
+                      opacity: { duration: 0.25 }
+                    }}
+                    className="absolute inset-0 flex flex-col justify-between pb-2"
+                  >
+                    <div>
+                      <div className="flex gap-1 mb-5">
+                        {[...Array(testimonials[activeTestimonial].rating)].map((_, i) => (
+                          <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
+                        ))}
+                      </div>
+
+                      <blockquote className="text-xl sm:text-2xl leading-snug text-gray-900 dark:text-white mb-7">
+                        "{testimonials[activeTestimonial].quote}"
+                      </blockquote>
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                      <img
+                        src={testimonials[activeTestimonial].avatar}
+                        alt={testimonials[activeTestimonial].name}
+                        className="w-9 h-9 rounded-full object-cover"
+                      />
+                      <div>
+                        <p className="text-sm font-semibold text-gray-900 dark:text-white">{testimonials[activeTestimonial].name}</p>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">{testimonials[activeTestimonial].role}</p>
+                      </div>
+                    </div>
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+
+              {/* Prev / Next controls at the bottom (Static) */}
+              <div className="flex items-center justify-end gap-2 mt-6 border-t border-gray-150/40 dark:border-white/[0.04] pt-4">
+                <button
+                  onClick={() => paginate(-1)}
+                  className="w-8 h-8 rounded-full border border-gray-300 dark:border-white/[0.15] flex items-center justify-center hover:border-gray-400 dark:hover:border-white/[0.3] transition-colors"
+                >
+                  <ChevronLeft className="w-3.5 h-3.5 text-gray-500 dark:text-gray-400" />
+                </button>
+                <button
+                  onClick={() => paginate(1)}
+                  className="w-8 h-8 rounded-full border border-gray-300 dark:border-white/[0.15] flex items-center justify-center hover:border-gray-400 dark:hover:border-white/[0.3] transition-colors"
+                >
+                  <ChevronRight className="w-3.5 h-3.5 text-gray-500 dark:text-gray-400" />
+                </button>
+              </div>
+            </div>
+
+            {/* Right: Photo collage — takes remaining space */}
+            <div className="hidden md:grid grid-cols-6 gap-3 items-start flex-1 min-w-0 pointer-events-none">
+              {/* Row 1: Top images */}
+              <img
+                src="https://www.untitledui.com/react/marketing/testimonial-abstract-image-01.webp"
+                alt=""
+                className="col-start-2 col-span-2 row-start-1 w-full h-[180px] object-cover object-center self-end"
+              />
+              <img
+                src="https://www.untitledui.com/react/marketing/smiling-girl-3.webp"
+                alt=""
+                className="col-start-4 col-span-2 row-start-1 w-full h-[220px] object-cover object-center self-end"
+              />
+
+              {/* Row 2: Bottom images */}
+              <img
+                src="https://www.untitledui.com/react/marketing/ai-woman-03.webp"
+                alt=""
+                className="col-start-1 col-span-2 row-start-2 w-full h-[130px] object-cover object-center self-start"
+              />
+              <img
+                src="https://www.untitledui.com/react/marketing/two-standing-women.webp"
+                alt=""
+                className="col-start-3 col-span-2 row-start-2 w-full h-[280px] object-cover object-top self-start"
+              />
+              <img
+                src="https://www.untitledui.com/react/marketing/smiling-girl-8.webp"
+                alt=""
+                className="col-start-5 col-span-2 row-start-2 w-full h-[130px] object-cover object-center self-start"
+              />
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+
+      {/* Accordion FAQs */}
+      <section id="faq" className="py-16 sm:py-24 border-t border-gray-200/50 dark:border-white/[0.04]">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6">
+          <div className="text-center mb-12">
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight mb-4 text-gray-900 dark:text-white">
-              Trusted by 500+ businesses worldwide
+              Frequently asked questions
             </h2>
-            <p className="text-gray-600 dark:text-gray-400 max-w-md mx-auto text-sm">
-              Read how billing is simplified for teams, agencies, and retail merchants.
+            <p className="text-gray-500 dark:text-gray-400 text-sm md:text-base">
+              Everything you need to know about the product and billing.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
-            {testimonials.map((test, i) => (
-              <div
-                key={i}
-                className="p-6 rounded-2xl border border-gray-200 dark:border-white/[0.04] bg-white dark:bg-[#1A1A1D] shadow-sm hover:shadow-md dark:hover:border-white/[0.06] transition-all duration-300"
-              >
-                <div className="flex items-center gap-1 text-amber-400 mb-4">
-                  {[...Array(test.rating)].map((_, index) => (
-                    <Star key={index} className="w-4 h-4 fill-amber-400" />
-                  ))}
-                </div>
-                <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed mb-6 italic">
-                  "{test.quote}"
-                </p>
-                <div className="flex items-center gap-3">
-                  <img
-                    src={test.avatar}
-                    alt={test.name}
-                    className="w-10 h-10 rounded-full object-cover border border-emerald-500/40"
-                  />
-                  <div>
-                    <h4 className="text-sm font-bold text-gray-900 dark:text-white">{test.name}</h4>
-                    <span className="text-[11px] text-gray-500">{test.role}</span>
+          <div className="divide-y divide-gray-200 dark:divide-white/[0.06]">
+            {faqs.map((faq, i) => (
+              <div key={i}>
+                <button
+                  onClick={() => setActiveFaq(activeFaq === i ? null : i)}
+                  className="w-full flex items-center justify-between py-5 text-left text-sm sm:text-base font-semibold text-gray-900 dark:text-white transition-colors"
+                >
+                  <span>{faq.q}</span>
+                  <span className="ml-4 flex-shrink-0 w-6 h-6 rounded-full border border-gray-300 dark:border-white/[0.2] flex items-center justify-center">
+                    <span className={`text-sm font-light leading-none text-gray-400 dark:text-gray-500 transition-transform duration-300 inline-block ${
+                      activeFaq === i ? "rotate-45" : ""
+                    }`}>
+                      +
+                    </span>
+                  </span>
+                </button>
+                {activeFaq === i && (
+                  <div className="pb-5 text-sm text-gray-500 dark:text-gray-400 leading-relaxed">
+                    {faq.a}
                   </div>
-                </div>
+                )}
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Accordion FAQs */}
-      <section id="faq" className="py-16 sm:py-24 max-w-4xl mx-auto px-4 sm:px-6">
-        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight mb-6 sm:mb-8 text-center text-gray-900 dark:text-white">
-          Frequently Asked Questions
-        </h2>
-
-        <div className="space-y-4">
-          {faqs.map((faq, i) => (
-            <div
-              key={i}
-              className="border border-gray-200 dark:border-white/[0.04] rounded-2xl bg-white dark:bg-[#1A1A1D] overflow-hidden"
-            >
-              <button
-                onClick={() => setActiveFaq(activeFaq === i ? null : i)}
-                className="w-full flex items-center justify-between p-4 sm:p-5 text-left text-sm sm:text-base font-bold text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-[#212124] transition-all duration-200"
-              >
-                <span>{faq.q}</span>
-                <ChevronDown
-                  className={`w-4 h-4 text-gray-400 transition-transform duration-300 ${
-                    activeFaq === i ? "transform rotate-180" : ""
-                  }`}
-                />
-              </button>
-              {activeFaq === i && (
-                <div className="p-4 sm:p-5 pt-0 text-xs sm:text-sm text-gray-600 dark:text-gray-400 border-t border-gray-100 dark:border-white/[0.04] leading-relaxed">
-                  {faq.a}
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      </section>
-
       {/* CTA Section */}
-      <section className="py-14 sm:py-20 px-4 sm:px-6 max-w-5xl mx-auto">
-        <div className="p-6 sm:p-8 md:p-16 rounded-2xl sm:rounded-3xl bg-gradient-to-br from-emerald-500 to-green-600 dark:from-emerald-600 dark:to-green-700 text-white text-center relative overflow-hidden shadow-xl shadow-emerald-500/10">
-          <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-white/5 rounded-full blur-3xl pointer-events-none" />
-          <div className="absolute -bottom-1/3 -left-10 w-[300px] h-[300px] bg-black/10 rounded-full blur-3xl pointer-events-none" />
+      <section className="py-14 sm:py-20 border-t border-gray-200/50 dark:border-white/[0.04]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-10 md:gap-16">
 
-          <div className="relative z-10 max-w-2xl mx-auto">
-            <h2 className="text-2xl sm:text-3xl md:text-5xl font-extrabold tracking-tight mb-4 sm:mb-6 leading-tight text-white">
-              Ready to automate your billing process?
-            </h2>
-            <p className="text-emerald-50/90 mb-8 sm:mb-10 max-w-lg mx-auto text-xs sm:text-sm md:text-base leading-relaxed">
-              Join hundreds of merchants who spend less time doing accounting and more time growing their sales numbers.
-            </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              {isAuthenticated ? (
-                <Link to="/dashboard" className="w-full sm:w-auto">
-                  <Button variant="primary" size="lg" className="w-full sm:w-auto !bg-white hover:!bg-gray-50 !text-emerald-700 !border-white !shadow-lg">
-                    Go to Dashboard
-                    <ArrowRight className="w-4 h-4" />
-                  </Button>
-                </Link>
-              ) : (
-                <>
-                  <Link to="/signup" className="w-full sm:w-auto">
-                    <Button variant="primary" size="lg" className="w-full sm:w-auto !bg-white hover:!bg-gray-50 !text-emerald-700 !border-white !shadow-lg">
-                      Create Your Free Account
+            {/* Left: Text + Buttons */}
+            <div className="flex-1 max-w-lg">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight mb-3 leading-tight text-gray-900 dark:text-white">
+                Join over <span className="text-emerald-600 dark:text-emerald-400">500+</span> businesses<br />
+                growing with EzBill
+              </h2>
+              <p className="text-gray-500 dark:text-gray-400 text-sm mb-7 leading-relaxed">
+                Start invoicing professionally today. No credit card required.
+              </p>
+              <div className="flex items-center gap-3">
+                {isAuthenticated ? (
+                  <Link to="/dashboard">
+                    <Button variant="accent" size="md" className="shadow-md shadow-emerald-500/20 font-semibold">
+                      Go to Dashboard
+                      <ArrowRight className="w-4 h-4" />
                     </Button>
                   </Link>
-                  <Link to="/login" className="w-full sm:w-auto">
-                    <Button variant="secondary" size="lg" className="w-full sm:w-auto !bg-transparent !border-2 !border-white !text-white hover:!bg-white/15 hover:!border-white">
-                      Sign In
-                    </Button>
-                  </Link>
-                </>
-              )}
+                ) : (
+                  <>
+                    <Link to="/login">
+                      <Button variant="secondary" size="md" className="font-semibold">
+                        Sign in
+                      </Button>
+                    </Link>
+                    <Link to="/signup">
+                      <Button variant="accent" size="md" className="shadow-md shadow-emerald-500/20 font-semibold">
+                        Get started
+                      </Button>
+                    </Link>
+                  </>
+                )}
+              </div>
             </div>
+
+            {/* Right: Trusted-by brand grid */}
+            <div className="flex-1 grid grid-cols-3 gap-x-6 gap-y-4 max-w-md w-full">
+              {[
+                { icon: ShoppingBag,     name: "Retail Shops" },
+                { icon: Package,         name: "Logistics" },
+                { icon: Briefcase,       name: "Agencies" },
+                { icon: UtensilsCrossed, name: "Restaurants" },
+                { icon: Pencil,          name: "Freelancers" },
+                { icon: Globe,           name: "E-commerce" },
+              ].map(({ icon: Icon, name }) => (
+                <div
+                  key={name}
+                  className="flex items-center gap-2 group"
+                >
+                  <Icon className="w-4 h-4 flex-shrink-0 text-gray-400 dark:text-gray-500 group-hover:text-gray-600 dark:group-hover:text-gray-300 transition-colors" />
+                  <span className="text-sm font-semibold text-gray-500 dark:text-gray-400 group-hover:text-gray-800 dark:group-hover:text-gray-200 transition-colors whitespace-nowrap">
+                    {name}
+                  </span>
+                </div>
+              ))}
+            </div>
+
+
           </div>
         </div>
       </section>
+
 
       {/* Footer */}
       <footer className="py-8 sm:py-12 border-t border-gray-200/50 dark:border-white/[0.04] bg-gray-50/50 dark:bg-[#141416]/60">

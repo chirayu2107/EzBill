@@ -125,7 +125,7 @@ const PurchaseBillPreview: React.FC<PurchaseBillPreviewProps> = ({ bill, onClose
       >
         {/* Header Actions - Only show if not auto-downloading */}
         {!autoDownload && (
-          <div className="sticky top-0 z-10 flex flex-col sm:flex-row justify-between items-start sm:items-center p-2 md:p-4 border-b border-gray-200 dark:border-white/[0.04] bg-gray-50 dark:bg-[#141416] backdrop-blur-sm gap-2 transition-colors">
+          <div className="no-print sticky top-0 z-10 flex flex-col sm:flex-row justify-between items-start sm:items-center p-2 md:p-4 border-b border-gray-200 dark:border-white/[0.04] bg-gray-50 dark:bg-[#141416] backdrop-blur-sm gap-2 transition-colors">
             <h2 className="text-base md:text-xl font-semibold text-gray-800 dark:text-white transition-colors">Purchase Bill Preview</h2>
             <div className="flex items-center gap-1 md:gap-2 w-full sm:w-auto">
               <Button
@@ -226,22 +226,28 @@ const PurchaseBillPreview: React.FC<PurchaseBillPreviewProps> = ({ bill, onClose
               <table className="w-full border-collapse text-[6px] md:text-sm">
                 <thead>
                   <tr className="bg-gray-100">
-                    <th className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 font-bold text-center w-[8%] md:w-auto text-gray-900">
+                    <th className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 font-bold text-center w-[5%] text-gray-900">
                       S.NO
                     </th>
-                    <th className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 font-bold text-left w-[35%] md:w-auto text-gray-900">
+                    <th className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 font-bold text-left w-[30%] text-gray-900">
                       ITEMS
                     </th>
-                    <th className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 font-bold text-center w-[12%] md:w-auto text-gray-900">
+                    <th className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 font-bold text-center w-[12%] text-gray-900">
                       HSN/SAC
                     </th>
-                    <th className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 font-bold text-center w-[8%] md:w-auto text-gray-900">
+                    <th className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 font-bold text-center w-[8%] text-gray-900">
                       QTY
                     </th>
-                    <th className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 font-bold text-right w-[15%] md:w-auto text-gray-900">
+                    <th className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 font-bold text-center w-[8%] text-gray-900">
+                      UNIT
+                    </th>
+                    <th className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 font-bold text-right w-[12%] text-gray-900">
                       RATE
                     </th>
-                    <th className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 font-bold text-right w-[22%] md:w-auto text-gray-900">
+                    <th className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 font-bold text-right w-[10%] text-gray-900">
+                      DISC
+                    </th>
+                    <th className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 font-bold text-right w-[15%] text-gray-900">
                       AMOUNT
                     </th>
                   </tr>
@@ -261,8 +267,14 @@ const PurchaseBillPreview: React.FC<PurchaseBillPreviewProps> = ({ bill, onClose
                       <td className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 text-center text-gray-800">
                         {item.quantity}
                       </td>
+                      <td className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 text-center text-gray-800">
+                        {item.unit || "pcs"}
+                      </td>
                       <td className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 text-right text-gray-800">
                         {formatCurrency(item.rate).replace("₹", "")}
+                      </td>
+                      <td className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 text-right text-gray-800">
+                        {item.discount ? `${item.discount}%` : "-"}
                       </td>
                       <td className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 text-right text-gray-900 font-semibold">
                         {formatCurrency(item.lineTotal).replace("₹", "")}
@@ -273,7 +285,7 @@ const PurchaseBillPreview: React.FC<PurchaseBillPreviewProps> = ({ bill, onClose
                   {/* Subtotal Row */}
                   <tr className="bg-gray-50">
                     <td
-                      colSpan={5}
+                      colSpan={7}
                       className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 text-right font-bold text-gray-900"
                     >
                       Subtotal
@@ -283,11 +295,26 @@ const PurchaseBillPreview: React.FC<PurchaseBillPreviewProps> = ({ bill, onClose
                     </td>
                   </tr>
 
+                  {/* Overall Discount Row */}
+                  {bill.discountAmount && bill.discountAmount > 0 ? (
+                    <tr className="bg-gray-50">
+                      <td
+                        colSpan={7}
+                        className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 text-right font-bold text-gray-900 text-emerald-600 dark:text-emerald-400"
+                      >
+                        Overall Discount {bill.discountType === "percentage" ? `(${bill.discountValue}%)` : ""}
+                      </td>
+                      <td className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 text-right font-bold text-emerald-600 dark:text-emerald-400">
+                        -{formatCurrency(bill.discountAmount).replace("₹", "")}
+                      </td>
+                    </tr>
+                  ) : null}
+
                   {/* GST Rows */}
                   {bill.gstBreakdown.isInterState ? (
                     <tr className="bg-gray-50">
                       <td
-                        colSpan={5}
+                        colSpan={7}
                         className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 text-right font-bold text-gray-900"
                       >
                         IGST @ 18%
@@ -300,7 +327,7 @@ const PurchaseBillPreview: React.FC<PurchaseBillPreviewProps> = ({ bill, onClose
                     <>
                       <tr className="bg-gray-50">
                         <td
-                          colSpan={5}
+                          colSpan={7}
                           className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 text-right font-bold text-gray-900"
                         >
                           CGST @ 9%
@@ -311,7 +338,7 @@ const PurchaseBillPreview: React.FC<PurchaseBillPreviewProps> = ({ bill, onClose
                       </tr>
                       <tr className="bg-gray-50">
                         <td
-                          colSpan={5}
+                          colSpan={7}
                           className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 text-right font-bold text-gray-900"
                         >
                           SGST @ 9%
@@ -326,7 +353,7 @@ const PurchaseBillPreview: React.FC<PurchaseBillPreviewProps> = ({ bill, onClose
                   {/* Total Row */}
                   <tr className="bg-gray-200">
                     <td
-                      colSpan={5}
+                      colSpan={7}
                       className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 text-right font-bold text-gray-900"
                     >
                       TOTAL
@@ -386,7 +413,7 @@ const PurchaseBillPreview: React.FC<PurchaseBillPreviewProps> = ({ bill, onClose
                       {bill.items[0]?.hsnSac || "-"}
                     </td>
                     <td className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 text-center text-gray-800">
-                      {formatCurrency(bill.subtotal).replace("₹", "")}
+                      {formatCurrency(bill.subtotal - (bill.discountAmount || 0)).replace("₹", "")}
                     </td>
                     {bill.gstBreakdown.isInterState ? (
                       <>

@@ -4,6 +4,7 @@ import type React from "react"
 import { useState } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { useAuth } from "../../context/AuthContext"
+import { useTheme } from "../../context/ThemeContext"
 import { useToast } from "../../hooks/useToast"
 import { Mail, Lock, LogIn, Receipt } from "lucide-react"
 import Button from "../UI/Button"
@@ -11,6 +12,7 @@ import Card from "../UI/Card"
 
 const Login: React.FC = () => {
   const { login } = useAuth()
+  const { theme } = useTheme()
   const { toast } = useToast()
   const navigate = useNavigate()
   const [email, setEmail] = useState("")
@@ -144,15 +146,19 @@ const Login: React.FC = () => {
       </div>
 
       {/* Right Side: Dashboard UI Preview (Hidden on Mobile) */}
-      <div className="hidden md:flex w-full md:w-1/2 items-center justify-end bg-gray-900 dark:bg-[#141416] overflow-hidden px-4 md:px-0 relative">
+      <div className="hidden md:flex w-full md:w-1/2 items-center justify-end bg-gray-100 dark:bg-[#141416] overflow-hidden px-4 md:px-0 relative">
         {/* Ambient gradient orbs */}
         <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-emerald-500/8 rounded-full blur-3xl" />
         <div className="absolute bottom-1/4 right-1/4 w-48 h-48 bg-green-500/6 rounded-full blur-3xl" />
         
-        <div className="rounded-2xl border border-gray-700/50 dark:border-white/[0.04] shadow-2xl shadow-black/20 w-full max-w-none scale-[1.10] md:ml-14 overflow-hidden relative z-10">
+        <div className="rounded-2xl border border-gray-300/60 dark:border-white/[0.04] shadow-2xl shadow-black/10 dark:shadow-black/20 w-full max-w-none scale-[1.10] md:ml-14 overflow-hidden relative z-10">
           <a href="/">
-            <img
-              src="https://res.cloudinary.com/dkoiyuyhj/image/upload/v1781382931/b4sbmxypebypu6dgqbru.png"
+          <img
+              src={
+                theme === "dark"
+                  ? "https://res.cloudinary.com/dkoiyuyhj/image/upload/v1781382931/b4sbmxypebypu6dgqbru.png"
+                  : "https://res.cloudinary.com/dkoiyuyhj/image/upload/v1781378408/hpzq3yvz0mxuegdv9phv.png"
+              }
               alt="Dashboard Preview"
               className="object-contain w-full h-full"
             />

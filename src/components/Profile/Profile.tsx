@@ -704,11 +704,11 @@ const Profile: React.FC = () => {
                   </div>
                   {formData.invoicePrefix && (
                     <p className="text-[12px] text-emerald-600 dark:text-emerald-400 font-medium mt-2 font-mono">
-                      Preview: {formData.invoicePrefix}-1, {formData.invoicePrefix}-2, …
+                      Preview: {formData.invoicePrefix}-{new Date().getFullYear()}-1, {formData.invoicePrefix}-{new Date().getFullYear()}-2, …
                     </p>
                   )}
                   <p className="text-[11px] text-gray-400 dark:text-gray-500 mt-1.5">
-                    {isEditing ? "2–6 characters, letters and numbers only." : `Your invoices: ${formData.invoicePrefix || "XUSE"}-XXXXX`}
+                    {isEditing ? "2–6 characters, letters and numbers only." : `Your invoices: ${formData.invoicePrefix || "XUSE"}-${new Date().getFullYear()}-1`}
                   </p>
                 </div>
               </div>

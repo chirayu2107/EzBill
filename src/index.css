@@ -381,18 +381,197 @@ input, textarea, [contenteditable="true"] {
   }
 }
 
+/* Ensure the printed/previewed invoice and bill content is always black-on-white with correct colors, even in dark mode */
+.dark .invoice-print-content,
+.invoice-print-content {
+  background-color: #ffffff !important;
+  color: #111827 !important;
+}
+
+.dark .invoice-print-content h1,
+.dark .invoice-print-content h2,
+.dark .invoice-print-content h3,
+.dark .invoice-print-content h4,
+.dark .invoice-print-content h5,
+.dark .invoice-print-content h6,
+.dark .invoice-print-content p,
+.dark .invoice-print-content span,
+.dark .invoice-print-content div,
+.dark .invoice-print-content td,
+.dark .invoice-print-content th,
+.dark .invoice-print-content table,
+.dark .invoice-print-content tr {
+  color: #111827 !important;
+}
+
+/* Specific text color overrides to keep premium contrast levels */
+.dark .invoice-print-content .text-gray-900,
+.invoice-print-content .text-gray-900 {
+  color: #111827 !important;
+}
+
+.dark .invoice-print-content .text-gray-800,
+.invoice-print-content .text-gray-800 {
+  color: #1f2937 !important;
+}
+
+.dark .invoice-print-content .text-gray-700,
+.invoice-print-content .text-gray-700 {
+  color: #374151 !important;
+}
+
+.dark .invoice-print-content .text-gray-600,
+.invoice-print-content .text-gray-600 {
+  color: #4b5563 !important;
+}
+
+.dark .invoice-print-content .text-gray-500,
+.invoice-print-content .text-gray-500 {
+  color: #6b7280 !important;
+}
+
+/* Background overrides for table headers and sections */
+.dark .invoice-print-content .bg-gray-50,
+.invoice-print-content .bg-gray-50 {
+  background-color: #f9fafb !important;
+}
+
+.dark .invoice-print-content .bg-gray-100,
+.invoice-print-content .bg-gray-100 {
+  background-color: #f3f4f6 !important;
+}
+
+/* Border overrides */
+.dark .invoice-print-content .border-gray-800,
+.invoice-print-content .border-gray-800 {
+  border-color: #1f2937 !important;
+}
+
+.dark .invoice-print-content .border-gray-600,
+.invoice-print-content .border-gray-600 {
+  border-color: #4b5563 !important;
+}
+
+.dark .invoice-print-content .border-gray-400,
+.invoice-print-content .border-gray-400 {
+  border-color: #9ca3af !important;
+}
+
 /* ═══ PRINT STYLES ═══ */
 @media print {
-  body * { visibility: hidden; }
-  .invoice-print-content, .invoice-print-content * { visibility: visible; }
+  /* A4 page with comfortable margins */
+  @page {
+    size: A4 portrait;
+    margin: 12mm 15mm;
+  }
+
+  /* Make html/body scrollable and white */
+  html, body {
+    height: auto !important;
+    min-height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+    background-color: #ffffff !important;
+    color: #000000 !important;
+  }
+
+  /* Hide absolutely everything first */
+  body * {
+    visibility: hidden !important;
+  }
+
+  /* Show ONLY the invoice/bill print content and all its descendants */
+  .invoice-print-content,
+  .invoice-print-content * {
+    visibility: visible !important;
+  }
+
+  /*
+   * KEY FIX: anchor the invoice content to the very top-left of the printed page.
+   * Without this, the modal overlay (which is `fixed inset-0`) gets reset to
+   * `position: static` and contributes a full blank page before the invoice.
+   */
   .invoice-print-content {
-    position: absolute; left: 0; top: 0; width: 100%;
-    margin: 0; padding: 20px;
-    background-color: white !important; color: black !important; border: none !important;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    display: block !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: visible !important;
+    z-index: 9999 !important;
   }
-  .bg-gray-100, .bg-gray-50, .bg-gray-200 {
+
+  /* Constrain ONLY the business logo thumbnail */
+  .invoice-print-content .invoice-logo-img {
+    max-width: 48px !important;
+    max-height: 48px !important;
+    width: 48px !important;
+    height: 48px !important;
+    object-fit: cover !important;
+    display: block !important;
+  }
+
+  /* Signature: let it breathe, just cap height so it never overflows */
+  .invoice-print-content .invoice-signature-img {
+    max-width: 100% !important;
+    max-height: 80px !important;
+    width: auto !important;
+    height: auto !important;
+    object-fit: contain !important;
+    display: block !important;
+    margin: 0 auto !important;
+  }
+
+  /* Force correct border colours */
+  .invoice-print-content th,
+  .invoice-print-content td {
+    border-color: #000000 !important;
+  }
+
+  .invoice-print-content .border {
+    border-color: #000000 !important;
+    border-width: 1px !important;
+  }
+
+  /* Let table content naturally flow across pages */
+  table {
+    page-break-inside: auto !important;
+    break-inside: auto !important;
+    width: 100% !important;
+  }
+
+  tr {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    page-break-after: auto !important;
+    break-after: auto !important;
+  }
+
+  thead {
+    display: table-header-group !important;
+  }
+
+  tfoot {
+    display: table-footer-group !important;
+  }
+
+  /* Force light backgrounds to print */
+  .bg-gray-100, .bg-gray-50 {
     background-color: #f3f4f6 !important;
-    -webkit-print-color-adjust: exact; print-color-adjust: exact;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
   }
-  .ez-mobile-nav, .ez-loading-bar { display: none !important; }
+
+  /* Hide UI chrome that must never print */
+  .no-print,
+  .no-print *,
+  .ez-mobile-nav,
+  .ez-loading-bar {
+    display: none !important;
+  }
 }

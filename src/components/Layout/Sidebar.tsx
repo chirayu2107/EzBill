@@ -21,7 +21,7 @@ const Sidebar: React.FC = () => {
   const { user, logout } = useAuth()
   const { theme, toggleTheme } = useTheme()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const [isCollapsed, setIsCollapsed] = useState(false)
+  const [isCollapsed, setIsCollapsed] = useState(true)
 
   /* ── Hold-and-slide state ── */
   const [isDragging, setIsDragging] = useState(false)

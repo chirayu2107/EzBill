@@ -1,5 +1,4 @@
 "use client"
-
 import type React from "react"
 import { useMemo, useState, useEffect } from "react"
 import { formatCurrency } from "../../utils/calculations"
@@ -11,25 +10,31 @@ interface MonthlyChartProps {
     day: number
     sales: number
     invoices: number
+    prevSales: number
+    prevInvoices: number
     formattedDate: string
   }>
+  metric?: "sales" | "invoices"
 }
 
 interface TooltipProps {
   active?: boolean
   payload?: Array<{
     value: number
+    dataKey: string
     payload: {
       day: number
       sales: number
       invoices: number
+      prevSales: number
+      prevInvoices: number
       date: string
     }
   }>
   label?: string | number
 }
 
-const MonthlyChart: React.FC<MonthlyChartProps> = ({ data }) => {
+const MonthlyChart: React.FC<MonthlyChartProps> = ({ data, metric = "sales" }) => {
   const [isClient, setIsClient] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
   const [RechartsComponents, setRechartsComponents] = useState<any>(null)
@@ -58,35 +63,67 @@ const MonthlyChart: React.FC<MonthlyChartProps> = ({ data }) => {
       day: item.day,
       sales: item.sales,
       invoices: item.invoices,
+      prevSales: item.prevSales,
+      prevInvoices: item.prevInvoices,
       date: item.formattedDate,
     }))
   }, [data])
 
+  const isSales = metric === "sales"
+  const isDark = theme === "dark"
+  const currentColor = isSales ? "#8b5cf6" : "#10b981"
+  const prevColor = isDark ? "rgba(255,255,255,0.25)" : "rgba(0,0,0,0.25)"
+  const currentGradId = `current-${metric}-grad`
+  const gridColor = isDark ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.05)"
+  const axisColor = isDark ? "#6B7280" : "#9CA3AF"
+
   const CustomTooltip: React.FC<TooltipProps> = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
-      const data = payload[0].payload
+      // payload[0] is typically the first area declared, payload[1] is the second.
+      // Let's identify the current and previous values based on their dataKey.
+      const currentKey = isSales ? "sales" : "invoices"
+      const prevKey = isSales ? "prevSales" : "prevInvoices"
+
+      const currentItem = payload.find(p => p.dataKey === currentKey)
+      const prevItem = payload.find(p => p.dataKey === prevKey)
+
+      const currentVal = currentItem ? currentItem.value : 0
+      const prevVal = prevItem ? prevItem.value : 0
+      const change = prevVal > 0 ? ((currentVal - prevVal) / prevVal) * 100 : 0
+      const dateText = currentItem?.payload.date || ""
+
       return (
         <div
           className="rounded-xl p-3 text-xs border border-gray-200/60 dark:border-white/[0.04] transition-colors"
           style={{
-            background: theme === "dark" ? "rgba(17,24,39,0.95)" : "rgba(255,255,255,0.97)",
+            background: isDark ? "rgba(17,24,39,0.95)" : "rgba(255,255,255,0.97)",
             backdropFilter: "blur(12px)",
             boxShadow: "0 4px 20px rgba(0,0,0,0.12), 0 0 0 1px rgba(0,0,0,0.04)",
           }}
         >
-          <p className="text-gray-900 dark:text-white font-semibold mb-1.5 text-[13px]">Day {label}</p>
-          <p className="text-gray-500 dark:text-gray-400 mb-2 text-[11px]">{data.date}</p>
+          <p className="text-gray-900 dark:text-white font-semibold mb-1 text-[13px]">Day {label}</p>
+          <p className="text-gray-400 dark:text-gray-500 mb-2 text-[10px]">{dateText}</p>
           <div className="space-y-1.5">
             <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-emerald-500" />
-              <span className="text-gray-600 dark:text-gray-300">Sales:</span>
-              <span className="font-semibold text-gray-900 dark:text-white ml-auto">{formatCurrency(payload[0].value)}</span>
+              <span className="w-2 h-2 rounded-full" style={{ backgroundColor: currentColor }} />
+              <span className="text-gray-600 dark:text-gray-400">Current:</span>
+              <span className="font-semibold text-gray-900 dark:text-white ml-auto">
+                {isSales ? formatCurrency(currentVal) : currentVal}
+              </span>
             </div>
-            {payload[1] && (
-              <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-blue-500" />
-                <span className="text-gray-600 dark:text-gray-300">Invoices:</span>
-                <span className="font-semibold text-gray-900 dark:text-white ml-auto">{payload[1].value}</span>
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full border border-dashed" style={{ borderColor: prevColor }} />
+              <span className="text-gray-650 dark:text-gray-450">Previous:</span>
+              <span className="font-semibold text-gray-900 dark:text-white ml-auto">
+                {isSales ? formatCurrency(prevVal) : prevVal}
+              </span>
+            </div>
+            {prevVal > 0 && (
+              <div className="border-t border-gray-100 dark:border-white/[0.04] pt-1.5 mt-1.5 flex items-center gap-2">
+                <span className="text-gray-500 dark:text-gray-500">Change:</span>
+                <span className={`font-bold ml-auto ${change >= 0 ? "text-emerald-600" : "text-rose-600"}`}>
+                  {change >= 0 ? "+" : ""}{change.toFixed(1)}%
+                </span>
               </div>
             )}
           </div>
@@ -108,10 +145,6 @@ const MonthlyChart: React.FC<MonthlyChartProps> = ({ data }) => {
     return value.toString()
   }
 
-  const isDark = theme === "dark"
-  const gridColor = isDark ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.05)"
-  const axisColor = isDark ? "#6B7280" : "#9CA3AF"
-
   // Show loading state while components are loading
   if (!isClient || !RechartsComponents) {
     return (
@@ -126,45 +159,22 @@ const MonthlyChart: React.FC<MonthlyChartProps> = ({ data }) => {
     )
   }
 
-  const { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } = RechartsComponents
-
-  const CustomLegend = ({ payload }: any) => {
-    if (!payload) return null
-    return (
-      <div className="flex items-center justify-center gap-5 mt-3">
-        {payload.map((entry: any, index: number) => (
-          <div key={index} className="flex items-center gap-1.5">
-            <span
-              className="w-2.5 h-2.5 rounded-[3px]"
-              style={{ backgroundColor: entry.color }}
-            />
-            <span className="text-[11px] font-medium text-gray-500 dark:text-gray-400">
-              {entry.value}
-            </span>
-          </div>
-        ))}
-      </div>
-    )
-  }
+  const { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } = RechartsComponents
 
   return (
-    <div className="w-full h-80 md:h-96" id="monthly-chart">
+    <div className="w-full h-80 md:h-96 animate-fade-in" id="monthly-chart">
       <ResponsiveContainer width="100%" height="100%">
-        <BarChart
+        <AreaChart
           data={chartData}
-          margin={isMobile ? { top: 10, right: 25, left: 25, bottom: 10 } : { top: 10, right: 30, left: 20, bottom: 5 }}
+          margin={isMobile ? { top: 10, right: 10, left: 5, bottom: 10 } : { top: 15, right: 20, left: 10, bottom: 5 }}
         >
           <defs>
-            <linearGradient id="salesGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#10b981" stopOpacity={0.9} />
-              <stop offset="100%" stopColor="#059669" stopOpacity={0.7} />
-            </linearGradient>
-            <linearGradient id="invoiceGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#6366f1" stopOpacity={0.85} />
-              <stop offset="100%" stopColor="#4f46e5" stopOpacity={0.65} />
+            <linearGradient id={currentGradId} x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor={currentColor} stopOpacity={0.15} />
+              <stop offset="100%" stopColor={currentColor} stopOpacity={0.0} />
             </linearGradient>
           </defs>
-          <CartesianGrid strokeDasharray="0" stroke={gridColor} vertical={false} />
+          <CartesianGrid strokeDasharray="3 3" stroke={gridColor} vertical={false} />
           <XAxis
             dataKey="day"
             stroke={axisColor}
@@ -176,46 +186,39 @@ const MonthlyChart: React.FC<MonthlyChartProps> = ({ data }) => {
             dy={6}
           />
           <YAxis
-            yAxisId="sales"
-            orientation="left"
-            stroke="transparent"
+            stroke={axisColor}
             fontSize={isMobile ? 10 : 11}
             tickLine={false}
             axisLine={false}
-            tickFormatter={formatYAxisTick}
+            tickFormatter={isSales ? formatYAxisTick : formatInvoiceYAxisTick}
             width={isMobile ? 38 : 55}
-            tick={{ fill: "#10b981", fontWeight: 500 }}
+            tick={{ fill: axisColor, fontWeight: 500 }}
           />
-          <YAxis
-            yAxisId="invoices"
-            orientation="right"
-            stroke="transparent"
-            fontSize={isMobile ? 10 : 11}
-            tickLine={false}
-            axisLine={false}
-            tickFormatter={formatInvoiceYAxisTick}
-            width={isMobile ? 25 : 40}
-            tick={{ fill: "#6366f1", fontWeight: 500 }}
+          <Tooltip content={<CustomTooltip />} cursor={{ stroke: currentColor, strokeWidth: 1.2, strokeDasharray: "4 4" }} />
+          
+          {/* Previous Period Area (Dotted/dashed outline with no fill) */}
+          <Area
+            type="monotone"
+            dataKey={isSales ? "prevSales" : "prevInvoices"}
+            stroke={prevColor}
+            strokeWidth={1.5}
+            strokeDasharray="4 4"
+            fill="transparent"
+            name={isSales ? "Previous Period Sales" : "Previous Period Invoices"}
+            activeDot={false}
           />
-          <Tooltip content={<CustomTooltip />} cursor={{ fill: isDark ? "rgba(255,255,255,0.03)" : "rgba(0,0,0,0.03)", radius: 4 }} />
-          <Legend content={<CustomLegend />} />
-          <Bar
-            yAxisId="sales"
-            dataKey="sales"
-            fill="url(#salesGrad)"
-            name="Sales Amount"
-            radius={[4, 4, 0, 0]}
-            maxBarSize={isMobile ? 16 : 32}
+          
+          {/* Current Period Area (Solid line + gradient fill) */}
+          <Area
+            type="monotone"
+            dataKey={isSales ? "sales" : "invoices"}
+            stroke={currentColor}
+            strokeWidth={2}
+            fill={`url(#${currentGradId})`}
+            name={isSales ? "Current Period Sales" : "Current Period Invoices"}
+            activeDot={{ r: 4.5, strokeWidth: 1.5, stroke: "#fff", fill: currentColor }}
           />
-          <Bar
-            yAxisId="invoices"
-            dataKey="invoices"
-            fill="url(#invoiceGrad)"
-            name="Invoice Count"
-            radius={[4, 4, 0, 0]}
-            maxBarSize={isMobile ? 16 : 32}
-          />
-        </BarChart>
+        </AreaChart>
       </ResponsiveContainer>
     </div>
   )

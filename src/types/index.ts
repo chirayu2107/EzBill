@@ -4,6 +4,8 @@ export interface InvoiceItem {
   hsnSac: string
   quantity: number
   rate: number
+  unit?: string
+  discount?: number
   lineTotal: number
 }
 
@@ -26,6 +28,9 @@ export interface Invoice {
   date: Date
   items: InvoiceItem[]
   subtotal: number
+  discountType?: "percentage" | "flat"
+  discountValue?: number
+  discountAmount?: number
   gst: number
   gstBreakdown: GSTBreakdown
   total: number
@@ -39,6 +44,8 @@ export interface PurchaseBillItem {
   hsnSac: string
   quantity: number
   rate: number
+  unit?: string
+  discount?: number
   lineTotal: number
 }
 
@@ -53,6 +60,9 @@ export interface PurchaseBill {
   date: Date
   items: PurchaseBillItem[]
   subtotal: number
+  discountType?: "percentage" | "flat"
+  discountValue?: number
+  discountAmount?: number
   gst: number
   gstBreakdown: GSTBreakdown
   total: number

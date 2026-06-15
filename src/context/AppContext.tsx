@@ -25,6 +25,7 @@ interface AppContextType {
   deleteInvoice: (id: string) => Promise<void>
   getDashboardSummary: () => DashboardSummary
   getInvoiceById: (id: string) => Invoice | undefined
+  generateInvoiceNumber: (date?: Date) => string
   // Purchase Bills
   purchaseBills: PurchaseBill[]
   addPurchaseBill: (bill: Omit<PurchaseBill, "id" | "createdAt">) => Promise<void>
@@ -91,11 +92,85 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }
   }
 
+  const isNewFormat = (invoiceNumber: string): boolean => {
+    if (!invoiceNumber) return false
+    const parts = invoiceNumber.split("-")
+    if (parts.length < 3) return false
+    const sequencePart = parts[parts.length - 1]
+    const yearPart = parts[parts.length - 2]
+    
+    const isYearValid = /^\d{4}$/.test(yearPart)
+    const isSequenceValid = /^\d+$/.test(sequencePart)
+    
+    return isYearValid && isSequenceValid
+  }
+
+  const getMigratedInvoiceNumber = (invoiceNumber: string, date: Date): string => {
+    const safeInvoiceNumber = invoiceNumber || "1"
+    const parts = safeInvoiceNumber.split("-")
+    let prefix = ""
+    let sequence = ""
+
+    if (parts.length >= 2) {
+      sequence = parts[parts.length - 1]
+      prefix = parts.slice(0, parts.length - 1).join("-").toUpperCase()
+    } else {
+      sequence = parts[0]
+      if (user?.invoicePrefix && user.invoicePrefix.trim()) {
+        prefix = user.invoicePrefix.trim().toUpperCase()
+      } else if (user?.fullName && user.fullName.length >= 4) {
+        prefix = user.fullName.replace(/\s+/g, "").substring(0, 4).toUpperCase()
+      } else {
+        prefix = "XUSE"
+      }
+    }
+
+    const numericSequence = sequence.replace(/\D/g, "") || "1"
+    const dateObj = date instanceof Date && !isNaN(date.getTime()) ? date : new Date()
+    const year = dateObj.getFullYear()
+    const month = dateObj.getMonth()
+    const financialYear = month >= 3 ? year : year - 1
+
+    return `${prefix}-${financialYear}-${numericSequence}`
+  }
+
+  const migrateExistingInvoices = async () => {
+    let migratedCount = 0
+    for (const invoice of invoices) {
+      if (!isNewFormat(invoice.invoiceNumber)) {
+        const newInvoiceNumber = getMigratedInvoiceNumber(invoice.invoiceNumber, invoice.date)
+        
+        try {
+          await updateInvoiceInFirebase(invoice.id, { invoiceNumber: newInvoiceNumber })
+          migratedCount++
+        } catch (err) {
+          console.error("Failed to migrate invoice:", invoice.id, err)
+        }
+      }
+    }
+    if (migratedCount > 0) {
+      await loadData() // Refresh context state
+      toast.success("Invoices Migrated", `${migratedCount} invoices updated to the new financial year numbering format.`)
+    }
+  }
+
+  useEffect(() => {
+    if (!loading && invoices.length > 0) {
+      const runMigration = async () => {
+        const needsMigration = invoices.some((inv) => !isNewFormat(inv.invoiceNumber))
+        if (needsMigration) {
+          await migrateExistingInvoices()
+        }
+      }
+      runMigration()
+    }
+  }, [loading, invoices])
+
   const refreshInvoices = async () => {
     await loadData()
   }
 
-  const generateInvoiceNumber = () => {
+  const generateInvoiceNumber = (date: Date = new Date()) => {
     // Use the user's custom invoice prefix, fallback to auto-generated or default
     let prefix = "XUSE" // default fallback
 
@@ -107,24 +182,31 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       prefix = user.fullName.replace(/\s+/g, "").substring(0, 4).toUpperCase()
     }
 
-    const baseNumber = 1
+    const dateObj = new Date(date)
+    const year = dateObj.getFullYear()
+    const month = dateObj.getMonth() // 0-indexed: 0 = Jan, 11 = Dec
+    const financialYear = month >= 3 ? year : year - 1
 
-    // Get the highest existing invoice number for this user with this prefix
-    let maxNumber = baseNumber - 1
+    const yearPrefix = `${prefix}-${financialYear}-`
+
+    // Get the highest existing invoice number for this user with this prefix and financial year
+    let maxNumber = 0
 
     invoices.forEach((invoice) => {
-      if (invoice.invoiceNumber.startsWith(prefix + "-")) {
-        const numberPart = invoice.invoiceNumber.split("-")[1]
-        const num = Number.parseInt(numberPart)
-        if (!isNaN(num) && num > maxNumber) {
-          maxNumber = num
+      if (invoice.invoiceNumber.startsWith(yearPrefix)) {
+        const parts = invoice.invoiceNumber.split("-")
+        if (parts.length >= 3) {
+          const numberPart = parts[2]
+          const num = Number.parseInt(numberPart)
+          if (!isNaN(num) && num > maxNumber) {
+            maxNumber = num
+          }
         }
       }
     })
 
-    // Return the next number in sequence
-    const nextNumber = String(maxNumber + 1)
-    return `${prefix}-${nextNumber}`
+    const nextNumber = maxNumber + 1
+    return `${prefix}-${financialYear}-${nextNumber}`
   }
 
   const addInvoice = async (invoiceData: Omit<Invoice, "id" | "invoiceNumber" | "createdAt">) => {
@@ -133,7 +215,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       return
     }
 
-    const invoiceNumber = generateInvoiceNumber()
+    const invoiceNumber = generateInvoiceNumber(invoiceData.date)
     const newInvoice: Omit<Invoice, "id"> = {
       ...invoiceData,
       invoiceNumber,
@@ -379,6 +461,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         loading,
         error,
         refreshInvoices,
+        generateInvoiceNumber,
       }}
     >
       {children}

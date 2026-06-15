@@ -33,12 +33,12 @@ export const calculateGST = (amount: number, rate = 18): number => {
   return (amount * rate) / 100
 }
 
-export const calculateLineTotal = (quantity: number, rate: number): number => {
-  return quantity * rate
+export const calculateLineTotal = (quantity: number, rate: number, discount = 0): number => {
+  return quantity * rate * (1 - discount / 100)
 }
 
-export const calculateSubtotal = (items: { quantity: number; rate: number }[]): number => {
-  return items.reduce((sum, item) => sum + item.quantity * item.rate, 0)
+export const calculateSubtotal = (items: { quantity: number; rate: number; discount?: number }[]): number => {
+  return items.reduce((sum, item) => sum + item.quantity * item.rate * (1 - (item.discount || 0) / 100), 0)
 }
 
 export const formatCurrency = (amount: number): string => {
