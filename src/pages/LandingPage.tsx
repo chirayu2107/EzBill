@@ -249,7 +249,7 @@ const LandingPage: React.FC = () => {
       </header>
 
       {/* Hero Section */}
-      <section className="relative pt-24 pb-16 sm:pt-32 sm:pb-24 md:pt-40 md:pb-32 px-4 sm:px-6 z-10 text-center overflow-hidden">
+      <section className="relative pt-32 pb-16 sm:pt-40 sm:pb-24 md:pt-48 md:pb-32 px-4 sm:px-6 z-10 text-center overflow-hidden">
         {/* Grid Background with fade-out mask starting around the mockup */}
         <div className="absolute inset-x-0 top-0 h-[650px] ez-grid-bg pointer-events-none z-0" style={{
           maskImage: 'linear-gradient(to bottom, black 55%, transparent 100%)',
