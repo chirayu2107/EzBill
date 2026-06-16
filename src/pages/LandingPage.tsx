@@ -190,7 +190,7 @@ const LandingPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-surface-light dark:bg-[#000000] text-gray-900 dark:text-gray-100 transition-colors duration-300 overflow-x-hidden w-full">
+    <div className="relative min-h-screen bg-surface-light dark:bg-[#000000] text-gray-900 dark:text-gray-100 transition-colors duration-300 overflow-x-hidden w-full">
       {/* Decorative Orbs — dark mode only */}
       <div className="absolute top-0 left-1/4 w-[300px] md:w-[500px] h-[300px] md:h-[500px] bg-transparent dark:bg-blue-500/10 rounded-full blur-3xl pointer-events-none z-0" />
       <div className="absolute top-1/3 right-1/4 w-[250px] md:w-[400px] h-[250px] md:h-[400px] bg-transparent dark:bg-blue-500/5 rounded-full blur-3xl pointer-events-none z-0" />
@@ -407,7 +407,7 @@ const LandingPage: React.FC = () => {
               variants={stagger}
               initial="hidden"
               whileInView="visible"
-              viewport={{ once: false, amount: 0.3 }}
+              viewport={{ once: true, amount: 0.3 }}
             >
               <motion.h2 variants={fadeUp} style={{ fontFamily: "'Inter', sans-serif" }} className="text-3xl sm:text-4xl lg:text-[2.75rem] font-bold tracking-[-0.03em] leading-[1.1] pb-2 text-gray-900 dark:text-white">
                 Who said billing has to<br />
@@ -418,7 +418,7 @@ const LandingPage: React.FC = () => {
               variants={fadeUp}
               initial="hidden"
               whileInView="visible"
-              viewport={{ once: false, amount: 0.3 }}
+              viewport={{ once: true, amount: 0.3 }}
               className="text-gray-500 dark:text-zinc-400 text-sm sm:text-base leading-relaxed max-w-xl"
             >
               <p>
@@ -439,7 +439,7 @@ const LandingPage: React.FC = () => {
             variants={stagger}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: false, amount: 0.3 }}
+            viewport={{ once: true, amount: 0.3 }}
           >
             <motion.h2 variants={fadeUp} style={{ fontFamily: "'Inter', sans-serif" }} className="text-3xl sm:text-4xl lg:text-[2.75rem] font-bold tracking-[-0.03em] leading-[1.1] pb-2 mb-6 text-gray-900 dark:text-white">
               Everything you need.<br />
@@ -458,7 +458,7 @@ const LandingPage: React.FC = () => {
             variants={stagger}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: false, amount: 0.1 }}
+            viewport={{ once: true, amount: 0.1 }}
           >
             {/* ROW 1: Card 1 - Smart Invoicing (Wide - 2 cols) */}
             <motion.div variants={fadeUp} className="lg:col-span-2 bg-gradient-to-b from-[#ffffff] to-[#fcfcfd] dark:bg-gradient-to-b dark:from-[#09090b] dark:to-[#030304] border border-gray-200/50 dark:border-white/[0.06] rounded-3xl p-6 sm:p-8 relative min-h-[480px] flex items-center shadow-lg dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_12px_45px_rgba(0,0,0,0.7)] hover:border-gray-300 dark:hover:border-white/[0.12] transition-all duration-500 group overflow-hidden">
@@ -969,7 +969,7 @@ const LandingPage: React.FC = () => {
           variants={stagger}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: false, amount: 0.3 }}
+          viewport={{ once: true, amount: 0.3 }}
         >
           <motion.h2 variants={fadeUp} style={{ fontFamily: "'Inter', sans-serif" }} className="text-3xl sm:text-4xl lg:text-[2.75rem] font-bold tracking-[-0.03em] leading-[1.1] pb-2 mb-4 text-gray-900 dark:text-white">
             Transparent pricing,<br />
@@ -1019,7 +1019,7 @@ const LandingPage: React.FC = () => {
           variants={stagger}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: false, amount: 0.15 }}
+          viewport={{ once: true, amount: 0.15 }}
         >
           {/* Free Tier */}
           <motion.div variants={fadeUp} className="p-6 sm:p-8 rounded-2xl sm:rounded-3xl border border-gray-200 dark:border-white/[0.04] bg-white/80 dark:bg-[#1A1A1D] flex flex-col justify-between">
@@ -1114,7 +1114,7 @@ const LandingPage: React.FC = () => {
             variants={stagger}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: false, amount: 0.2 }}
+            viewport={{ once: true, amount: 0.2 }}
           >
             <motion.h2
               variants={fadeUp}
@@ -1144,7 +1144,7 @@ const LandingPage: React.FC = () => {
               variants={fadeUp}
               initial="hidden"
               whileInView="visible"
-              viewport={{ once: false, amount: 0.2 }}
+              viewport={{ once: true, amount: 0.2 }}
             >
               <div className="relative min-h-[260px]">
                 <AnimatePresence initial={false} custom={direction} mode="wait">
@@ -1197,7 +1197,7 @@ const LandingPage: React.FC = () => {
               variants={stagger}
               initial="hidden"
               whileInView="visible"
-              viewport={{ once: false, amount: 0.15 }}
+              viewport={{ once: true, amount: 0.15 }}
             >
               {/* Row 1: Top images */}
               <motion.img
@@ -1247,7 +1247,7 @@ const LandingPage: React.FC = () => {
             variants={stagger}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: false, amount: 0.3 }}
+            viewport={{ once: true, amount: 0.3 }}
           >
             <motion.h2 variants={fadeUp} style={{ fontFamily: "'Inter', sans-serif" }} className="text-3xl sm:text-4xl lg:text-[2.75rem] font-bold tracking-[-0.03em] leading-[1.1] pb-2 mb-5 text-gray-900 dark:text-white">
               Frequently asked<br />
@@ -1263,7 +1263,7 @@ const LandingPage: React.FC = () => {
             variants={stagger}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: false, amount: 0.1 }}
+            viewport={{ once: true, amount: 0.1 }}
           >
             {faqs.map((faq, i) => (
               <motion.div key={i} variants={fadeUp}>
@@ -1293,15 +1293,16 @@ const LandingPage: React.FC = () => {
       </section>
 
       {/* Final CTA & Footer Wrapper */}
-      <div className="relative overflow-hidden border-t border-gray-200/50 dark:border-white/[0.04] bg-white dark:bg-[#000000]">
+      <div className="relative overflow-visible border-t border-gray-200/50 dark:border-white/[0.04] bg-white dark:bg-[#000000]">
         
         {/* Subtle Glow & Grid Lines (Cobalt Style) */}
-        <div className="absolute inset-0 pointer-events-none block">
+        <div className="absolute inset-0 pointer-events-none block overflow-hidden">
            <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(0,0,0,0.02)_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,rgba(255,255,255,0.015)_1px,transparent_1px)] bg-[size:48px_100%] md:bg-[size:64px_100%]" />
            <div className="absolute inset-0 bg-gradient-to-b from-white via-transparent to-white dark:from-[#000000] dark:via-transparent dark:to-[#000000]" />
-           <div className="absolute bottom-[-150px] left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-blue-500/10 dark:bg-blue-600/10 blur-[100px] dark:blur-[120px] rounded-full" />
-           <div className="absolute bottom-[-100px] left-1/2 -translate-x-1/2 w-[500px] h-[300px] bg-sky-400/15 dark:bg-sky-400/10 blur-[60px] dark:blur-[80px] rounded-full" />
         </div>
+        {/* Glow orbs — kept outside overflow-hidden so they render on mobile */}
+        <div className="absolute bottom-[-80px] sm:bottom-[-150px] left-1/2 -translate-x-1/2 w-[400px] sm:w-[600px] md:w-[800px] h-[300px] sm:h-[400px] md:h-[500px] bg-blue-500/10 dark:bg-blue-600/10 blur-[80px] sm:blur-[100px] dark:blur-[100px] md:dark:blur-[120px] rounded-full pointer-events-none" />
+        <div className="absolute bottom-[-50px] sm:bottom-[-100px] left-1/2 -translate-x-1/2 w-[280px] sm:w-[400px] md:w-[500px] h-[200px] sm:h-[250px] md:h-[300px] bg-sky-400/15 dark:bg-sky-400/10 blur-[50px] sm:blur-[60px] dark:blur-[60px] md:dark:blur-[80px] rounded-full pointer-events-none" />
 
       {/* CTA Section */}
       <section className="relative py-14 sm:py-20 z-10">
@@ -1314,7 +1315,7 @@ const LandingPage: React.FC = () => {
               variants={stagger}
               initial="hidden"
               whileInView="visible"
-              viewport={{ once: false, amount: 0.3 }}
+              viewport={{ once: true, amount: 0.3 }}
             >
               <motion.h2 variants={fadeUp} style={{ fontFamily: "'Inter', sans-serif" }} className="text-3xl sm:text-4xl lg:text-[2.75rem] font-bold tracking-[-0.03em] leading-[1.1] mb-3 text-gray-900 dark:text-white">
                 Join over <span className="text-blue-600 dark:text-blue-400">500+</span> businesses<br />
