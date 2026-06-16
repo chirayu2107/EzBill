@@ -5,7 +5,7 @@ import { useState } from "react"
 import { Link } from "react-router-dom"
 import { useAuth } from "../../context/AuthContext"
 import { useToast } from "../../hooks/useToast"
-import { Mail, Lock, UserPlus, Receipt, User } from "lucide-react"
+import { Mail, Lock, UserPlus, User, Eye, EyeOff } from "lucide-react"
 import Button from "../UI/Button"
 import Card from "../UI/Card"
 
@@ -23,6 +23,7 @@ const Signup: React.FC = () => {
   const [email, setEmail] = useState("")
   const [name, setName] = useState("")
   const [password, setPassword] = useState("")
+  const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
 
@@ -67,16 +68,12 @@ const Signup: React.FC = () => {
       >
         <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/60 to-black/70 z-0" />
         {/* Ambient gradient orbs over image */}
-        <div className="absolute top-1/3 left-1/4 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl z-0" />
-        <div className="absolute bottom-1/4 right-1/3 w-48 h-48 bg-green-500/8 rounded-full blur-3xl z-0" />
+        <div className="absolute top-1/3 left-1/4 w-64 h-64 bg-blue-500/10 rounded-full blur-3xl z-0" />
+        <div className="absolute bottom-1/4 right-1/3 w-48 h-48 bg-indigo-500/8 rounded-full blur-3xl z-0" />
         
         <div className="relative z-10 text-center max-w-md">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 border border-white/20 text-white text-xs font-medium mb-4">
-            <Receipt className="w-3 h-3" />
-            Professional Invoicing
-          </div>
           <h2 className="text-2xl md:text-4xl font-bold mb-4 leading-tight text-white tracking-heading-tight">
-            Professional Invoicing <br />Made <span className="text-emerald-400">Simple</span>
+            Professional Invoicing <br />Made <span className="text-white">Simple</span>
           </h2>
           <p className="text-gray-300 mb-4 md:mb-6 text-sm md:text-base leading-relaxed">
             Streamline your billing with auto GST, brand management, and instant PDF generation.
@@ -86,7 +83,7 @@ const Signup: React.FC = () => {
               {avatarUrls.map((url, index) => (
                 <img
                   key={index}
-                  className="w-9 h-9 rounded-full border-2 border-emerald-500/50 object-cover"
+                  className="w-9 h-9 rounded-full border-2 border-white/30 object-cover"
                   src={url}
                   alt={`user${index + 1}`}
                 />
@@ -105,17 +102,15 @@ const Signup: React.FC = () => {
       {/* Right Side: Signup Form */}
       <div className="w-full md:w-1/2 flex items-center justify-center min-h-[calc(100vh-16rem)] md:min-h-screen px-4 sm:px-6 py-10 sm:py-12 relative">
         {/* Ambient gradients */}
-        <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-emerald-500/4 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-blue-500/4 rounded-full blur-3xl pointer-events-none" />
         
         <div className="w-full max-w-md my-auto relative z-10">
           <div className="text-center mb-8">
             <div className="flex items-center justify-center gap-3 mb-4">
-              <Link to="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-                <div className="w-11 h-11 bg-gradient-to-br from-emerald-500 to-green-600 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/20">
-                  <Receipt className="w-5 h-5 text-white" />
-                </div>
+              <a href="/" className="flex items-center gap-3">
+                <img src="/EzBill.png?v=3" alt="EzBill" className="w-11 h-11 shadow-lg shadow-blue-600/20 shrink-0" />
                 <h1 className="text-2xl font-bold tracking-heading-tight text-gray-900 dark:text-white">EzBill</h1>
-              </Link>
+              </a>
             </div>
             <p className="text-gray-500 dark:text-gray-400 text-sm">Start your 30-day free trial</p>
           </div>
@@ -137,7 +132,7 @@ const Signup: React.FC = () => {
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full pl-10 pr-3 py-2.5 bg-gray-50 dark:bg-[#1A1A1D] border border-gray-200 dark:border-white/[0.04] rounded-xl text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500/40 transition-all placeholder:text-gray-400 dark:placeholder:text-[#63636E]"
+                    className="w-full pl-10 pr-3 py-2.5 bg-gray-50 dark:bg-[#121214] border border-gray-200 dark:border-white/[0.04] rounded-xl text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500/40 transition-all placeholder:text-gray-400 dark:placeholder:text-[#63636E]"
                     placeholder="Your full name"
                     required
                     disabled={loading}
@@ -154,7 +149,7 @@ const Signup: React.FC = () => {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full pl-10 pr-3 py-2.5 bg-gray-50 dark:bg-[#1A1A1D] border border-gray-200 dark:border-white/[0.04] rounded-xl text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500/40 transition-all placeholder:text-gray-400 dark:placeholder:text-[#63636E]"
+                    className="w-full pl-10 pr-3 py-2.5 bg-gray-50 dark:bg-[#121214] border border-gray-200 dark:border-white/[0.04] rounded-xl text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500/40 transition-all placeholder:text-gray-400 dark:placeholder:text-[#63636E]"
                     placeholder="Enter your email"
                     required
                     disabled={loading}
@@ -168,25 +163,33 @@ const Signup: React.FC = () => {
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
                   <input
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="w-full pl-10 pr-3 py-2.5 bg-gray-50 dark:bg-[#1A1A1D] border border-gray-200 dark:border-white/[0.04] rounded-xl text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500/40 transition-all placeholder:text-gray-400 dark:placeholder:text-[#63636E]"
+                    className="w-full pl-10 pr-10 py-2.5 bg-gray-50 dark:bg-[#121214] border border-gray-200 dark:border-white/[0.04] rounded-xl text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500/40 transition-all placeholder:text-gray-400 dark:placeholder:text-[#63636E]"
                     placeholder="Create a password"
                     required
                     disabled={loading}
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                    tabIndex={-1}
+                  >
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
                 </div>
               </div>
 
               {/* Terms */}
               <div className="text-xs text-gray-500 dark:text-gray-400 text-center">
                 By signing up, you agree to our{" "}
-                <Link to="/terms" className="text-emerald-600 dark:text-emerald-400 hover:underline">
+                <Link to="/terms" className="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                   Terms of Service
                 </Link>{" "}
                 and{" "}
-                <Link to="/privacy" className="text-emerald-600 dark:text-emerald-400 hover:underline">
+                <Link to="/privacy" className="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">
                   Privacy Policy
                 </Link>
                 .
@@ -214,7 +217,7 @@ const Signup: React.FC = () => {
               {/* Link to login */}
               <div className="text-center text-xs text-gray-500 dark:text-gray-400">
                 Already have an account?{" "}
-                <Link to="/login" className="text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 font-medium transition-colors">
+                <Link to="/login" className="text-blue-600 dark:text-blue-400 hover:text-blue-700 font-medium transition-colors">
                   Sign in
                 </Link>
               </div>

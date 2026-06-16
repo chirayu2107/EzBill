@@ -28,14 +28,14 @@ const Button: React.FC<ButtonProps> = ({
     "inline-flex items-center justify-center gap-2 font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-gray-900 relative overflow-hidden"
 
   const variantClasses = {
-    // Primary: Dark near-black with white text (Naina style)
+    // Primary: Dark near-black with white text
     primary: "bg-gray-900 dark:bg-white text-white dark:text-gray-900 hover:bg-black dark:hover:bg-gray-100 focus:ring-gray-500 shadow-sm hover:shadow-md",
-    // Accent: Brand gradient with glow
-    accent: "bg-gradient-to-r from-emerald-500 via-green-500 to-teal-500 text-white hover:shadow-lg hover:shadow-emerald-500/20 focus:ring-emerald-500 hover:scale-[1.02] active:scale-[0.98]",
+    // Accent: Single solid blue-600
+    accent: "bg-blue-600 text-white hover:bg-blue-700 hover:shadow-lg hover:shadow-blue-600/20 focus:ring-blue-600 hover:scale-[1.02] active:scale-[0.98] btn-shine",
     // Secondary: Transparent with border
-    secondary: "bg-transparent border border-gray-200 dark:border-white/[0.04] text-gray-700 dark:text-[#8B8B96] hover:bg-gray-50 dark:hover:bg-[#212124] hover:border-gray-300 dark:hover:border-white/[0.06] focus:ring-gray-500",
+    secondary: "bg-transparent border border-gray-200 dark:border-white/[0.04] text-gray-700 dark:text-[#8B8B96] hover:bg-gray-50 dark:hover:bg-[#212124] hover:border-gray-300 dark:hover:border-white/[0.06] focus:ring-blue-600",
     // Success
-    success: "bg-green-600 text-white hover:bg-green-700 focus:ring-green-500 shadow-sm",
+    success: "bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-600 shadow-sm",
     // Danger: With subtle glow
     danger: "bg-red-600 text-white hover:bg-red-700 focus:ring-red-500 shadow-sm hover:shadow-red-500/20",
   }

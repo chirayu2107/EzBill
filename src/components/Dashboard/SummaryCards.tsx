@@ -53,16 +53,16 @@ const SummaryCards: React.FC = () => {
       title: "Total Revenue",
       value: formatCurrency(summary.totalRevenue),
       icon: TrendingUp,
-      color: "text-emerald-500",
-      bgColor: "bg-emerald-500/8",
+      color: "text-blue-500",
+      bgColor: "bg-blue-500/8",
       changeKey: "revenueChange",
     },
     {
       title: "Paid Amount",
       value: formatCurrency(summary.paidAmount),
       icon: IndianRupeeIcon,
-      color: "text-green-500",
-      bgColor: "bg-green-500/8",
+      color: "text-blue-500",
+      bgColor: "bg-blue-500/8",
       changeKey: "paidChange",
     },
     {
@@ -123,7 +123,7 @@ const SummaryCards: React.FC = () => {
             </div>
 
             <p className={`${
-              getSentiment(card) === "good" ? "text-green-600 dark:text-green-400" : getSentiment(card) === "bad" ? "text-red-500 dark:text-red-400" : "text-gray-400"
+              getSentiment(card) === "good" ? "text-blue-600 dark:text-blue-400" : getSentiment(card) === "bad" ? "text-red-500 dark:text-red-400" : "text-gray-400"
             } text-xs mt-3 font-medium ez-number`}>
               {formatDisplayChange(card)} <span className="text-gray-400 dark:text-gray-500 font-normal font-sans text-[11px]">vs last month</span>
             </p>

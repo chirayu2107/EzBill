@@ -151,7 +151,7 @@ const LogoUpload: React.FC<LogoUploadProps> = ({ currentLogo, onLogoChange, disa
               />
             </div>
           </div>
-          <div className="flex items-center gap-2 text-sm text-green-600 dark:text-green-400 transition-colors">
+          <div className="flex items-center gap-2 text-sm text-blue-600 dark:text-blue-400 transition-colors">
             <Check className="w-4 h-4" />
             <span>Logo uploaded and auto-resized to 1:1</span>
           </div>
@@ -165,10 +165,10 @@ const LogoUpload: React.FC<LogoUploadProps> = ({ currentLogo, onLogoChange, disa
         <div
           className={`relative border-2 border-dashed rounded-xl p-8 text-center transition-colors ${
             dragActive
-              ? "border-emerald-500 bg-emerald-500/5"
+              ? "border-blue-500 bg-blue-500/5"
               : disabled
                 ? "border-gray-200 dark:border-white/[0.04] bg-gray-50 dark:bg-[#212124]"
-                : "border-gray-200 dark:border-white/[0.04] hover:border-emerald-500 dark:hover:border-white/[0.06] bg-gray-50 dark:bg-[#1A1A1D] cursor-pointer"
+                : "border-gray-200 dark:border-white/[0.04] hover:border-blue-500 dark:hover:border-white/[0.06] bg-gray-50 dark:bg-[#1A1A1D] cursor-pointer"
           }`}
           onDragEnter={handleDrag}
           onDragLeave={handleDrag}
@@ -188,7 +188,7 @@ const LogoUpload: React.FC<LogoUploadProps> = ({ currentLogo, onLogoChange, disa
           <div className="space-y-4">
             <div className="mx-auto w-12 h-12 bg-gray-100 dark:bg-gray-600 rounded-full flex items-center justify-center transition-colors">
               {uploading ? (
-                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-emerald-500"></div>
+                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500"></div>
               ) : (
                 <ImageIcon className="w-6 h-6 text-gray-400" />
               )}

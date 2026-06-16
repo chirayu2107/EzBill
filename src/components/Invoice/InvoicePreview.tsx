@@ -292,10 +292,10 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({ invoice, onClose, autoD
                     {/* Overall Discount */}
                     {invoice.discountAmount && invoice.discountAmount > 0 ? (
                       <tr>
-                        <td colSpan={7} style={tdAltStyle({ textAlign: "right", fontWeight: 700, color: "#059669" })}>
+                        <td colSpan={7} style={tdAltStyle({ textAlign: "right", fontWeight: 700, color: "#1d4ed8" })}>
                           Overall Discount {invoice.discountType === "percentage" ? `(${invoice.discountValue}%)` : ""}
                         </td>
-                        <td style={tdAltStyle({ textAlign: "right", fontWeight: 700, color: "#059669" })}>
+                        <td style={tdAltStyle({ textAlign: "right", fontWeight: 700, color: "#1d4ed8" })}>
                           -{formatCurrency(invoice.discountAmount).replace("₹", "")}
                         </td>
                       </tr>

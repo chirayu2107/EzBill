@@ -31,6 +31,9 @@ function AppContent() {
       <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <Routes>
           <Route path="/" element={<LandingPage />} />
+          <Route path="/features" element={<LandingPage />} />
+          <Route path="/pricing" element={<LandingPage />} />
+          <Route path="/faq" element={<LandingPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />

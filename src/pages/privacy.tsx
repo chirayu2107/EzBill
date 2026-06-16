@@ -104,7 +104,7 @@ const PrivacyPage = () => {
       <header className="sticky top-0 z-50 backdrop-blur-xl bg-white/80 dark:bg-[#0C0C0E]/80 border-b border-gray-100 dark:border-white/[0.04]">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-            <div className="w-7 h-7 bg-gradient-to-br from-emerald-500 to-green-600 rounded-lg flex items-center justify-center">
+            <div className="w-7 h-7 bg-blue-600 rounded-lg flex items-center justify-center">
               <Receipt className="w-3.5 h-3.5 text-white" />
             </div>
             <span className="font-bold text-gray-900 dark:text-white">EzBill</span>
@@ -120,8 +120,8 @@ const PrivacyPage = () => {
         {/* Hero */}
         <div className="pt-12 sm:pt-20 pb-10 sm:pb-14 border-b border-gray-100 dark:border-white/[0.04]">
           <div className="flex items-center gap-2 mb-4">
-            <Shield className="w-5 h-5 text-emerald-500" />
-            <span className="text-xs font-semibold uppercase tracking-widest text-emerald-600 dark:text-emerald-400">
+            <Shield className="w-5 h-5 text-blue-500" />
+            <span className="text-xs font-semibold uppercase tracking-widest text-blue-600 dark:text-blue-400">
               Privacy Policy
             </span>
           </div>
@@ -148,7 +148,7 @@ const PrivacyPage = () => {
                     href={`#${s.id}`}
                     className={`block px-3 py-1.5 rounded-lg text-[13px] font-medium transition-all duration-200 ${
                       activeSection === s.id
-                        ? "text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-500/8"
+                        ? "text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-500/8"
                         : "text-gray-500 dark:text-[#55555E] hover:text-gray-900 dark:hover:text-[#A0A0AB]"
                     }`}
                   >
@@ -188,7 +188,7 @@ const PrivacyPage = () => {
               </p>
               <a
                 href="mailto:support@ezbill.app"
-                className="text-sm font-semibold text-emerald-600 dark:text-emerald-400 hover:underline underline-offset-2"
+                className="text-sm font-semibold text-blue-600 dark:text-blue-400 hover:underline underline-offset-2"
               >
                 support@ezbill.app →
               </a>

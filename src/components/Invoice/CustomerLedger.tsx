@@ -161,8 +161,8 @@ const CustomerLedger: React.FC<CustomerLedgerProps> = ({ customerName, invoices,
         {/* Modal Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 dark:border-white/[0.04]">
           <div className="flex items-center gap-3">
-            <div className="p-2 bg-emerald-500/10 rounded-xl">
-              <BookOpen className="w-5 h-5 text-emerald-500" />
+            <div className="p-2 bg-blue-500/10 rounded-xl">
+              <BookOpen className="w-5 h-5 text-blue-500" />
             </div>
             <div>
               <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Customer Ledger</h2>
@@ -173,7 +173,7 @@ const CustomerLedger: React.FC<CustomerLedgerProps> = ({ customerName, invoices,
             <button
               onClick={handleDownloadPDF}
               disabled={downloading}
-              className="flex items-center gap-2 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium rounded-lg transition-colors disabled:opacity-60"
+              className="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors disabled:opacity-60"
             >
               {downloading ? (
                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white" />
@@ -200,14 +200,14 @@ const CustomerLedger: React.FC<CustomerLedgerProps> = ({ customerName, invoices,
               type="date"
               value={fromDate}
               onChange={(e) => setFromDate(e.target.value)}
-              className="text-sm px-3 py-1.5 bg-white dark:bg-[#212124] border border-gray-200 dark:border-white/[0.04] rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-colors"
+              className="text-sm px-3 py-1.5 bg-white dark:bg-[#212124] border border-gray-200 dark:border-white/[0.04] rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
             />
             <span className="text-gray-400 text-sm">to</span>
             <input
               type="date"
               value={toDate}
               onChange={(e) => setToDate(e.target.value)}
-              className="text-sm px-3 py-1.5 bg-white dark:bg-[#212124] border border-gray-200 dark:border-white/[0.04] rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-colors"
+              className="text-sm px-3 py-1.5 bg-white dark:bg-[#212124] border border-gray-200 dark:border-white/[0.04] rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500 transition-colors"
             />
           </div>
           <span className="text-xs text-gray-400 ml-auto">{filteredInvoices.length} invoice(s) in range</span>

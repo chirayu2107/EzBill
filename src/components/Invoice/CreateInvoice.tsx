@@ -245,8 +245,8 @@ const CreateInvoice: React.FC = () => {
         animate="visible"
       >
         <motion.div className="flex items-center gap-3 md:gap-4" variants={itemVariants}>
-          <div className="p-2 md:p-3 bg-emerald-500/10 rounded-lg">
-            <FileText className="w-5 h-5 md:w-6 md:h-6 text-emerald-500" />
+          <div className="p-2 md:p-3 bg-blue-500/10 rounded-lg">
+            <FileText className="w-5 h-5 md:w-6 md:h-6 text-blue-500" />
           </div>
           <div>
             <h1 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white transition-colors">
@@ -275,7 +275,7 @@ const CreateInvoice: React.FC = () => {
                         setShowSuggestions(true)
                       }}
                       onFocus={() => setShowSuggestions(true)}
-                      className="w-full px-3.5 py-2.5 bg-white dark:bg-[#1A1A1D] border border-gray-200 dark:border-white/[0.04] rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-400/40 text-sm transition-all placeholder:text-gray-400"
+                      className="w-full px-3.5 py-2.5 bg-white dark:bg-[#1A1A1D] border border-gray-200 dark:border-white/[0.04] rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400/40 text-sm transition-all placeholder:text-gray-400"
                       placeholder="Enter customer name"
                       required
                       autoComplete="off"
@@ -290,9 +290,9 @@ const CreateInvoice: React.FC = () => {
                             key={name}
                             type="button"
                             onMouseDown={() => handleSelectCustomer(name)}
-                            className="w-full text-left px-4 py-2.5 text-sm text-gray-900 dark:text-white hover:bg-emerald-50 dark:hover:bg-[#212124] flex items-center gap-2 transition-colors"
+                            className="w-full text-left px-4 py-2.5 text-sm text-gray-900 dark:text-white hover:bg-blue-50 dark:hover:bg-[#212124] flex items-center gap-2 transition-colors"
                           >
-                            <span className="w-6 h-6 rounded-full bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center text-emerald-600 dark:text-emerald-400 font-semibold text-xs flex-shrink-0">
+                            <span className="w-6 h-6 rounded-full bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center text-blue-600 dark:text-blue-400 font-semibold text-xs flex-shrink-0">
                               {name.charAt(0).toUpperCase()}
                             </span>
                             <span>{name}</span>
@@ -308,7 +308,7 @@ const CreateInvoice: React.FC = () => {
                   <textarea
                     value={customerAddress}
                     onChange={(e) => setCustomerAddress(e.target.value)}
-                    className="w-full px-3.5 py-2.5 bg-white dark:bg-[#1A1A1D] border border-gray-200 dark:border-white/[0.04] rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-400/40 text-sm transition-all placeholder:text-gray-400"
+                    className="w-full px-3.5 py-2.5 bg-white dark:bg-[#1A1A1D] border border-gray-200 dark:border-white/[0.04] rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400/40 text-sm transition-all placeholder:text-gray-400"
                     placeholder="Enter customer address"
                     rows={3}
                     required
@@ -320,7 +320,7 @@ const CreateInvoice: React.FC = () => {
                     type="text"
                     value={customerState}
                     onChange={(e) => setCustomerState(e.target.value)}
-                    className="w-full px-3.5 py-2.5 bg-white dark:bg-[#1A1A1D] border border-gray-200 dark:border-white/[0.04] rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-400/40 text-sm transition-all placeholder:text-gray-400"
+                    className="w-full px-3.5 py-2.5 bg-white dark:bg-[#1A1A1D] border border-gray-200 dark:border-white/[0.04] rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400/40 text-sm transition-all placeholder:text-gray-400"
                     placeholder="Enter customer state"
                     required
                   />
@@ -331,7 +331,7 @@ const CreateInvoice: React.FC = () => {
                     type="text"
                     value={customerGSTIN}
                     onChange={(e) => setCustomerGSTIN(e.target.value.toUpperCase())}
-                    className="w-full px-3.5 py-2.5 bg-white dark:bg-[#1A1A1D] border border-gray-200 dark:border-white/[0.04] rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-400/40 text-sm transition-all placeholder:text-gray-400"
+                    className="w-full px-3.5 py-2.5 bg-white dark:bg-[#1A1A1D] border border-gray-200 dark:border-white/[0.04] rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400/40 text-sm transition-all placeholder:text-gray-400"
                     placeholder="Enter GSTIN/UIN (optional)"
                   />
                 </div>
@@ -341,7 +341,7 @@ const CreateInvoice: React.FC = () => {
                     type="text"
                     value={customerPAN}
                     onChange={(e) => setCustomerPAN(e.target.value.toUpperCase())}
-                    className="w-full px-3.5 py-2.5 bg-white dark:bg-[#1A1A1D] border border-gray-200 dark:border-white/[0.04] rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-400/40 text-sm transition-all placeholder:text-gray-400"
+                    className="w-full px-3.5 py-2.5 bg-white dark:bg-[#1A1A1D] border border-gray-200 dark:border-white/[0.04] rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400/40 text-sm transition-all placeholder:text-gray-400"
                     placeholder="Enter PAN number (optional)"
                   />
                 </div>
@@ -357,7 +357,7 @@ const CreateInvoice: React.FC = () => {
                     type="date"
                     value={invoiceDate}
                     onChange={(e) => setInvoiceDate(e.target.value)}
-                    className="w-full px-3.5 py-2.5 bg-white dark:bg-[#1A1A1D] border border-gray-200 dark:border-white/[0.04] rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-400/40 text-sm transition-all placeholder:text-gray-400"
+                    className="w-full px-3.5 py-2.5 bg-white dark:bg-[#1A1A1D] border border-gray-200 dark:border-white/[0.04] rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400/40 text-sm transition-all placeholder:text-gray-400"
                     required
                   />
                 </div>
@@ -369,7 +369,7 @@ const CreateInvoice: React.FC = () => {
                     {user?.invoicePrefix ? (
                       <p>
                         ✓ Next invoice will be numbered:{" "}
-                        <span className="text-emerald-600 dark:text-emerald-400 font-medium ez-mono">
+                        <span className="text-blue-600 dark:text-blue-400 font-medium ez-mono">
                           {user.invoicePrefix}-{invoiceFY}-XXXX
                         </span>
                       </p>
@@ -442,7 +442,7 @@ const CreateInvoice: React.FC = () => {
                           type="text"
                           value={item.name}
                           onChange={(e) => updateItem(item.id, "name", e.target.value)}
-                          className="w-full px-3.5 py-2.5 bg-white dark:bg-[#1A1A1D] border border-gray-200 dark:border-white/[0.04] hover:border-gray-300 dark:hover:border-white/[0.1] rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-sm transition-all placeholder:text-gray-500"
+                          className="w-full px-3.5 py-2.5 bg-white dark:bg-[#1A1A1D] border border-gray-200 dark:border-white/[0.04] hover:border-gray-300 dark:hover:border-white/[0.1] rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-sm transition-all placeholder:text-gray-500"
                           placeholder="Enter item name"
                           required
                         />
@@ -454,7 +454,7 @@ const CreateInvoice: React.FC = () => {
                             type="text"
                             value={item.hsnSac}
                             onChange={(e) => updateItem(item.id, "hsnSac", e.target.value)}
-                            className="w-full px-2.5 py-2 bg-white dark:bg-[#1A1A1D] border border-gray-200 dark:border-white/[0.04] hover:border-gray-300 dark:hover:border-white/[0.1] rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-xs transition-all text-center placeholder:text-gray-500"
+                            className="w-full px-2.5 py-2 bg-white dark:bg-[#1A1A1D] border border-gray-200 dark:border-white/[0.04] hover:border-gray-300 dark:hover:border-white/[0.1] rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-xs transition-all text-center placeholder:text-gray-500"
                             placeholder="HSN"
                           />
                         </div>
@@ -464,7 +464,7 @@ const CreateInvoice: React.FC = () => {
                             type="number"
                             value={item.quantity}
                             onChange={(e) => updateItem(item.id, "quantity", Number.parseInt(e.target.value) || 0)}
-                            className="w-full px-2.5 py-2 bg-white dark:bg-[#1A1A1D] border border-gray-200 dark:border-white/[0.04] hover:border-gray-300 dark:hover:border-white/[0.1] rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-xs transition-all text-center"
+                            className="w-full px-2.5 py-2 bg-white dark:bg-[#1A1A1D] border border-gray-200 dark:border-white/[0.04] hover:border-gray-300 dark:hover:border-white/[0.1] rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-xs transition-all text-center"
                             min="1"
                             required
                           />
@@ -474,7 +474,7 @@ const CreateInvoice: React.FC = () => {
                           <select
                             value={item.unit || "pcs"}
                             onChange={(e) => handleUnitChange(item.id, e.target.value)}
-                            className="w-full px-2.5 py-2 bg-white dark:bg-[#1A1A1D] border border-gray-200 dark:border-white/[0.04] hover:border-gray-300 dark:hover:border-white/[0.1] rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-xs transition-all text-center cursor-pointer"
+                            className="w-full px-2.5 py-2 bg-white dark:bg-[#1A1A1D] border border-gray-200 dark:border-white/[0.04] hover:border-gray-300 dark:hover:border-white/[0.1] rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-xs transition-all text-center cursor-pointer"
                           >
                             <option value="pcs">pcs</option>
                             <option value="kg">kg</option>
@@ -495,7 +495,7 @@ const CreateInvoice: React.FC = () => {
                             {item.unit && !["pcs", "kg", "nos", "ltr", "box", "mtr", "hrs", "days", "set", "pkts", "bags", "g", "tons", "sqft", "sqm", "srv"].includes(item.unit) && (
                               <option value={item.unit}>{item.unit}</option>
                             )}
-                            <option value="custom" className="text-emerald-500 font-semibold">+ Custom...</option>
+                            <option value="custom" className="text-blue-500 font-semibold">+ Custom...</option>
                           </select>
                         </div>
                       </div>
@@ -507,7 +507,7 @@ const CreateInvoice: React.FC = () => {
                             placeholder="Rate"
                             value={item.rate === 0 ? "" : item.rate}
                             onChange={(e) => updateItem(item.id, "rate", Number.parseFloat(e.target.value) || 0)}
-                            className="w-full px-2.5 py-2 bg-white dark:bg-[#1A1A1D] border border-gray-200 dark:border-white/[0.04] hover:border-gray-300 dark:hover:border-white/[0.1] rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-xs transition-all text-right"
+                            className="w-full px-2.5 py-2 bg-white dark:bg-[#1A1A1D] border border-gray-200 dark:border-white/[0.04] hover:border-gray-300 dark:hover:border-white/[0.1] rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-xs transition-all text-right"
                             min="0"
                             step="0.01"
                             required
@@ -520,7 +520,7 @@ const CreateInvoice: React.FC = () => {
                             placeholder="0"
                             value={item.discount === 0 ? "" : item.discount}
                             onChange={(e) => updateItem(item.id, "discount", Number.parseFloat(e.target.value) || 0)}
-                            className="w-full px-2.5 py-2 bg-white dark:bg-[#1A1A1D] border border-gray-200 dark:border-white/[0.04] hover:border-gray-300 dark:hover:border-white/[0.1] rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-xs transition-all text-center"
+                            className="w-full px-2.5 py-2 bg-white dark:bg-[#1A1A1D] border border-gray-200 dark:border-white/[0.04] hover:border-gray-300 dark:hover:border-white/[0.1] rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-xs transition-all text-center"
                             min="0"
                             max="100"
                             step="0.1"
@@ -553,7 +553,7 @@ const CreateInvoice: React.FC = () => {
                           type="text"
                           value={item.name}
                           onChange={(e) => updateItem(item.id, "name", e.target.value)}
-                          className="w-full px-3 py-2 bg-white dark:bg-[#151518] border border-gray-200 dark:border-white/[0.04] hover:border-gray-300 dark:hover:border-white/[0.1] rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-sm transition-all placeholder:text-gray-500"
+                          className="w-full px-3 py-2 bg-white dark:bg-[#151518] border border-gray-200 dark:border-white/[0.04] hover:border-gray-300 dark:hover:border-white/[0.1] rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-sm transition-all placeholder:text-gray-500"
                           placeholder="Items"
                           required
                         />
@@ -563,7 +563,7 @@ const CreateInvoice: React.FC = () => {
                           type="text"
                           value={item.hsnSac}
                           onChange={(e) => updateItem(item.id, "hsnSac", e.target.value)}
-                          className="w-full px-3 py-2 bg-white dark:bg-[#151518] border border-gray-200 dark:border-white/[0.04] hover:border-gray-300 dark:hover:border-white/[0.1] rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-sm transition-all text-center placeholder:text-gray-500"
+                          className="w-full px-3 py-2 bg-white dark:bg-[#151518] border border-gray-200 dark:border-white/[0.04] hover:border-gray-300 dark:hover:border-white/[0.1] rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-sm transition-all text-center placeholder:text-gray-500"
                           placeholder="HSN"
                         />
                       </div>
@@ -572,7 +572,7 @@ const CreateInvoice: React.FC = () => {
                           type="number"
                           value={item.quantity}
                           onChange={(e) => updateItem(item.id, "quantity", Number.parseInt(e.target.value) || 0)}
-                          className="w-full px-3 py-2 bg-white dark:bg-[#151518] border border-gray-200 dark:border-white/[0.04] hover:border-gray-300 dark:hover:border-white/[0.1] rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-sm transition-all text-center"
+                          className="w-full px-3 py-2 bg-white dark:bg-[#151518] border border-gray-200 dark:border-white/[0.04] hover:border-gray-300 dark:hover:border-white/[0.1] rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-sm transition-all text-center"
                           min="1"
                           required
                         />
@@ -581,7 +581,7 @@ const CreateInvoice: React.FC = () => {
                         <select
                           value={item.unit || "pcs"}
                           onChange={(e) => handleUnitChange(item.id, e.target.value)}
-                          className="w-full px-2 py-2 bg-white dark:bg-[#151518] border border-gray-200 dark:border-white/[0.04] hover:border-gray-300 dark:hover:border-white/[0.1] rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-sm transition-all text-center cursor-pointer"
+                          className="w-full px-2 py-2 bg-white dark:bg-[#151518] border border-gray-200 dark:border-white/[0.04] hover:border-gray-300 dark:hover:border-white/[0.1] rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-sm transition-all text-center cursor-pointer"
                         >
                           <option value="pcs">pcs</option>
                           <option value="kg">kg</option>
@@ -602,7 +602,7 @@ const CreateInvoice: React.FC = () => {
                           {item.unit && !["pcs", "kg", "nos", "ltr", "box", "mtr", "hrs", "days", "set", "pkts", "bags", "g", "tons", "sqft", "sqm", "srv"].includes(item.unit) && (
                             <option value={item.unit}>{item.unit}</option>
                           )}
-                          <option value="custom" className="text-emerald-500 font-semibold">+ Custom...</option>
+                          <option value="custom" className="text-blue-500 font-semibold">+ Custom...</option>
                         </select>
                       </div>
                       <div className="md:col-span-1.5">
@@ -611,7 +611,7 @@ const CreateInvoice: React.FC = () => {
                           placeholder="Rate"
                           value={item.rate === 0 ? "" : item.rate}
                           onChange={(e) => updateItem(item.id, "rate", Number.parseFloat(e.target.value) || 0)}
-                          className="w-full px-3 py-2 bg-white dark:bg-[#151518] border border-gray-200 dark:border-white/[0.04] hover:border-gray-300 dark:hover:border-white/[0.1] rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-sm transition-all text-right"
+                          className="w-full px-3 py-2 bg-white dark:bg-[#151518] border border-gray-200 dark:border-white/[0.04] hover:border-gray-300 dark:hover:border-white/[0.1] rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-sm transition-all text-right"
                           min="0"
                           step="0.01"
                           required
@@ -623,7 +623,7 @@ const CreateInvoice: React.FC = () => {
                           placeholder="0"
                           value={item.discount === 0 ? "" : item.discount}
                           onChange={(e) => updateItem(item.id, "discount", Number.parseFloat(e.target.value) || 0)}
-                          className="w-full px-3 py-2 bg-white dark:bg-[#151518] border border-gray-200 dark:border-white/[0.04] hover:border-gray-300 dark:hover:border-white/[0.1] rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-sm transition-all text-center"
+                          className="w-full px-3 py-2 bg-white dark:bg-[#151518] border border-gray-200 dark:border-white/[0.04] hover:border-gray-300 dark:hover:border-white/[0.1] rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-sm transition-all text-center"
                           min="0"
                           max="100"
                           step="0.1"
@@ -666,7 +666,7 @@ const CreateInvoice: React.FC = () => {
                     <select
                       value={overallDiscountType}
                       onChange={(e) => setOverallDiscountType(e.target.value as "percentage" | "flat")}
-                      className="px-2.5 py-1.5 text-xs bg-white dark:bg-[#151518] border border-gray-200 dark:border-white/[0.04] rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 transition-all font-semibold cursor-pointer"
+                      className="px-2.5 py-1.5 text-xs bg-white dark:bg-[#151518] border border-gray-200 dark:border-white/[0.04] rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all font-semibold cursor-pointer"
                     >
                       <option value="percentage">Percentage (%)</option>
                       <option value="flat">Flat Amount (₹)</option>
@@ -677,12 +677,12 @@ const CreateInvoice: React.FC = () => {
                       type="number"
                       value={overallDiscountValue === 0 ? "" : overallDiscountValue}
                       onChange={(e) => setOverallDiscountValue(Math.max(0, Number.parseFloat(e.target.value) || 0))}
-                      className="w-28 px-3 py-1.5 bg-white dark:bg-[#151518] border border-gray-200 dark:border-white/[0.04] rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 text-sm text-right font-medium transition-all"
+                      className="w-28 px-3 py-1.5 bg-white dark:bg-[#151518] border border-gray-200 dark:border-white/[0.04] rounded-xl text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 text-sm text-right font-medium transition-all"
                       placeholder="0"
                       min="0"
                     />
                     {overallDiscountAmount > 0 && (
-                      <span className="text-xs text-emerald-500 dark:text-emerald-400 font-bold bg-emerald-50 dark:bg-emerald-500/10 px-2 py-1 rounded-lg">
+                      <span className="text-xs text-blue-500 dark:text-blue-400 font-bold bg-blue-50 dark:bg-blue-500/10 px-2 py-1 rounded-lg">
                         -{formatCurrency(overallDiscountAmount)}
                       </span>
                     )}
@@ -715,7 +715,7 @@ const CreateInvoice: React.FC = () => {
                 )}
                 <div className="flex justify-between text-lg md:text-xl font-bold text-gray-900 dark:text-white border-t border-gray-200 dark:border-white/[0.04] pt-3 transition-colors">
                   <span>TOTAL:</span>
-                  <span className="text-emerald-500 dark:text-emerald-400 ez-mono">{formatCurrency(total)}</span>
+                  <span className="text-blue-500 dark:text-blue-400 ez-mono">{formatCurrency(total)}</span>
                 </div>
               </div>
             </Card>

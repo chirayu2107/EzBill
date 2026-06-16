@@ -28,7 +28,7 @@ const InvoicesPage: React.FC = () => {
 
   const stats = [
     { value: "all", label: "All Invoices", count: invoices.length, color: "text-gray-900 dark:text-[#F0F0F3]", bg: "bg-gray-50 dark:bg-[#1A1A1D]", activeBg: "bg-gray-100 dark:bg-[#212124]", border: "border-gray-200 dark:border-white/[0.08]" },
-    { value: "paid", label: "Paid", count: invoices.filter(i => i.status === "paid").length, color: "text-emerald-600 dark:text-emerald-400", bg: "bg-emerald-50 dark:bg-emerald-500/8", activeBg: "bg-emerald-100 dark:bg-emerald-500/15", border: "border-emerald-200 dark:border-emerald-500/25" },
+    { value: "paid", label: "Paid", count: invoices.filter(i => i.status === "paid").length, color: "text-blue-600 dark:text-blue-400", bg: "bg-blue-50 dark:bg-blue-500/8", activeBg: "bg-blue-100 dark:bg-blue-500/15", border: "border-blue-200 dark:border-blue-500/25" },
     { value: "unpaid", label: "Unpaid", count: invoices.filter(i => i.status === "unpaid").length, color: "text-amber-600 dark:text-amber-400", bg: "bg-amber-50 dark:bg-amber-500/8", activeBg: "bg-amber-100 dark:bg-amber-500/15", border: "border-amber-200 dark:border-amber-500/25" },
     { value: "overdue", label: "Overdue", count: invoices.filter(i => i.status === "overdue").length, color: "text-red-500 dark:text-red-400", bg: "bg-red-50 dark:bg-red-500/8", activeBg: "bg-red-100 dark:bg-red-500/15", border: "border-red-200 dark:border-red-500/25" },
   ]
@@ -95,7 +95,7 @@ const InvoicesPage: React.FC = () => {
             placeholder="Search invoices by customer name or invoice number..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-11 pr-4 py-3 bg-white dark:bg-[#1A1A1D] border border-gray-200 dark:border-white/[0.04] rounded-xl text-sm text-gray-900 dark:text-[#F0F0F3] focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-400/40 transition-all placeholder:text-gray-400 dark:placeholder:text-[#63636E] shadow-sm"
+            className="w-full pl-11 pr-4 py-3 bg-white dark:bg-[#1A1A1D] border border-gray-200 dark:border-white/[0.04] rounded-xl text-sm text-gray-900 dark:text-[#F0F0F3] focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400/40 transition-all placeholder:text-gray-400 dark:placeholder:text-[#63636E] shadow-sm"
           />
         </div>
 
@@ -119,7 +119,7 @@ const InvoicesPage: React.FC = () => {
           <div className="text-xs text-gray-500 dark:text-gray-400">
             <span className="font-semibold text-gray-900 dark:text-white ez-number">{filteredInvoices.length}</span> of {invoices.length}
             {searchTerm && (
-              <> · <button onClick={() => setSearchTerm("")} className="text-emerald-600 dark:text-emerald-400 hover:underline">Clear</button></>
+              <> · <button onClick={() => setSearchTerm("")} className="text-blue-600 dark:text-blue-400 hover:underline">Clear</button></>
             )}
           </div>
         </div>

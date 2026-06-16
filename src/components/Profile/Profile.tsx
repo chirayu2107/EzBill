@@ -47,13 +47,13 @@ function FormInput({
     <div>
       <label className="block text-[13px] font-medium text-gray-700 dark:text-gray-300 mb-2 transition-colors">
         {label}
-        {required && <span className="text-emerald-500 ml-0.5">*</span>}
+        {required && <span className="text-blue-500 ml-0.5">*</span>}
       </label>
       <div className="relative group">
         {Icon && (
           <Icon
             size={16}
-            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 group-focus-within:text-emerald-500 transition-colors z-10"
+            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 group-focus-within:text-blue-600 transition-colors z-10"
           />
         )}
         <input
@@ -68,7 +68,7 @@ function FormInput({
             border border-gray-200 dark:border-white/[0.08]
             rounded-xl text-[14px] text-gray-900 dark:text-white
             placeholder:text-gray-400 dark:placeholder:text-gray-600
-            focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500/50
+            focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500/50
             disabled:opacity-60 disabled:cursor-not-allowed
             transition-all duration-200
             shadow-[inset_0_1px_2px_rgba(0,0,0,0.04)]
@@ -105,13 +105,13 @@ function FormTextarea({
     <div>
       <label className="block text-[13px] font-medium text-gray-700 dark:text-gray-300 mb-2 transition-colors">
         {label}
-        {required && <span className="text-emerald-500 ml-0.5">*</span>}
+        {required && <span className="text-blue-500 ml-0.5">*</span>}
       </label>
       <div className="relative group">
         {Icon && (
           <Icon
             size={16}
-            className="absolute left-3.5 top-3 text-gray-400 dark:text-gray-500 group-focus-within:text-emerald-500 transition-colors z-10"
+            className="absolute left-3.5 top-3 text-gray-400 dark:text-gray-500 group-focus-within:text-blue-600 transition-colors z-10"
           />
         )}
         <textarea
@@ -126,7 +126,7 @@ function FormTextarea({
             border border-gray-200 dark:border-white/[0.08]
             rounded-xl text-[14px] text-gray-900 dark:text-white
             placeholder:text-gray-400 dark:placeholder:text-gray-600
-            focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500/50
+            focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500/50
             disabled:opacity-60 disabled:cursor-not-allowed
             transition-all duration-200 resize-none
             shadow-[inset_0_1px_2px_rgba(0,0,0,0.04)]
@@ -319,8 +319,8 @@ const Profile: React.FC = () => {
       <div className="max-w-4xl mx-auto pt-24 md:pt-8">
         <div className="flex items-center justify-center py-20">
           <div className="text-center">
-            <div className="size-10 rounded-xl bg-emerald-500/10 flex items-center justify-center mx-auto mb-4">
-              <div className="size-5 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
+            <div className="size-10 rounded-xl bg-blue-500/10 flex items-center justify-center mx-auto mb-4">
+              <div className="size-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
             </div>
             <p className="text-gray-500 dark:text-gray-400 text-sm font-medium">Loading profile...</p>
           </div>
@@ -338,7 +338,7 @@ const Profile: React.FC = () => {
         <div
           className="h-36 sm:h-44 rounded-2xl overflow-hidden relative"
           style={{
-            background: "linear-gradient(135deg, #059669 0%, #10b981 30%, #34d399 65%, #10b981 100%)",
+            background: "linear-gradient(135deg, #1d4ed8 0%, #2563eb 30%, #60a5fa 65%, #2563eb 100%)",
           }}
         >
           {/* Dot pattern — subtle */}
@@ -352,11 +352,11 @@ const Profile: React.FC = () => {
           {/* Soft gradient orbs */}
           <div
             className="absolute -top-16 right-20 w-[350px] h-[350px] rounded-full opacity-30"
-            style={{ background: "radial-gradient(circle, rgba(167,243,208,0.5), transparent 70%)" }}
+            style={{ background: "radial-gradient(circle, rgba(147,197,253,0.4), transparent 70%)" }}
           />
           <div
             className="absolute bottom-[-30%] left-[10%] w-[250px] h-[250px] rounded-full opacity-25"
-            style={{ background: "radial-gradient(circle, rgba(110,231,183,0.4), transparent 70%)" }}
+            style={{ background: "radial-gradient(circle, rgba(96,165,250,0.3), transparent 70%)" }}
           />
           {/* Specular top edge */}
           <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/25 to-transparent" />
@@ -367,8 +367,8 @@ const Profile: React.FC = () => {
           <div
             className="size-[88px] rounded-full flex items-center justify-center text-white font-bold text-2xl ring-4 ring-white dark:ring-gray-900"
             style={{
-              background: "linear-gradient(135deg, #10b981 0%, #059669 60%, #047857 100%)",
-              boxShadow: "0 4px 20px rgba(16,185,129,0.35), 0 2px 8px rgba(0,0,0,0.12)",
+              background: "linear-gradient(135deg, #2563eb 0%, #1d4ed8 60%, #1e40af 100%)",
+              boxShadow: "0 4px 20px rgba(37,99,235,0.35), 0 2px 8px rgba(0,0,0,0.12)",
             }}
           >
             {initials}
@@ -425,8 +425,8 @@ const Profile: React.FC = () => {
                            text-[13px] font-semibold text-white
                            transition-all duration-200 disabled:opacity-60"
                 style={{
-                  background: "linear-gradient(135deg, #10b981 0%, #059669 50%, #047857 100%)",
-                  boxShadow: "0 0 16px rgba(16,185,129,0.3), 0 4px 12px rgba(0,0,0,0.1)",
+                  background: "linear-gradient(135deg, #2563eb 0%, #1d4ed8 50%, #1e40af 100%)",
+                  boxShadow: "0 0 16px rgba(37,99,235,0.3), 0 4px 12px rgba(0,0,0,0.1)",
                 }}
               >
                 {saving ? (
@@ -477,7 +477,7 @@ const Profile: React.FC = () => {
                   relative flex items-center gap-2 px-4 py-3 text-[13px] font-medium
                   transition-colors duration-200 -mb-px
                   ${isActive
-                    ? "text-emerald-600 dark:text-emerald-400"
+                    ? "text-blue-600 dark:text-blue-400"
                     : "text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
                   }
                 `}
@@ -493,7 +493,7 @@ const Profile: React.FC = () => {
             style={{
               left: indicatorStyle.left,
               width: indicatorStyle.width,
-              background: "linear-gradient(90deg, #10b981, #059669)",
+              background: "linear-gradient(90deg, #2563eb, #1d4ed8)",
             }}
           />
         </div>
@@ -673,7 +673,7 @@ const Profile: React.FC = () => {
 
                 <div>
                   <label className="block text-[13px] font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    Invoice Prefix<span className="text-emerald-500 ml-0.5">*</span>
+                    Invoice Prefix<span className="text-blue-500 ml-0.5">*</span>
                   </label>
                   <div className="flex gap-2.5">
                     <input
@@ -681,7 +681,7 @@ const Profile: React.FC = () => {
                       value={formData.invoicePrefix}
                       onChange={(e) => handlePrefixChange(e.target.value)}
                       disabled={!isEditing}
-                      className="flex-1 px-3.5 py-2.5 bg-white dark:bg-[#1A1A1D] border border-gray-200 dark:border-white/[0.08] rounded-xl text-[14px] text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500/50 disabled:opacity-60 transition-all shadow-[inset_0_1px_2px_rgba(0,0,0,0.04)]"
+                      className="flex-1 px-3.5 py-2.5 bg-white dark:bg-[#1A1A1D] border border-gray-200 dark:border-white/[0.08] rounded-xl text-[14px] text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500/50 disabled:opacity-60 transition-all shadow-[inset_0_1px_2px_rgba(0,0,0,0.04)]"
                       placeholder="e.g. ABCD"
                       minLength={2}
                       maxLength={6}
@@ -703,7 +703,7 @@ const Profile: React.FC = () => {
                     )}
                   </div>
                   {formData.invoicePrefix && (
-                    <p className="text-[12px] text-emerald-600 dark:text-emerald-400 font-medium mt-2 font-mono">
+                    <p className="text-[12px] text-blue-600 dark:text-blue-400 font-medium mt-2 font-mono">
                       Preview: {formData.invoicePrefix}-{new Date().getFullYear()}-1, {formData.invoicePrefix}-{new Date().getFullYear()}-2, …
                     </p>
                   )}
@@ -760,7 +760,7 @@ const Profile: React.FC = () => {
                     <h2 className="text-[15px] font-semibold text-gray-900 dark:text-white tracking-tight">Profile Completion</h2>
                     <p className="text-[12px] text-gray-400 dark:text-gray-500 mt-0.5">Track what's left to fill in.</p>
                   </div>
-                  <span className="text-[22px] font-bold text-emerald-600 dark:text-emerald-400 font-mono tabular-nums">
+                  <span className="text-[22px] font-bold text-blue-600 dark:text-blue-400 font-mono tabular-nums">
                     {Math.round((completionCount / completionTotal) * 100)}%
                   </span>
                 </div>
@@ -771,7 +771,7 @@ const Profile: React.FC = () => {
                     className="h-full rounded-full transition-all duration-700 ease-out"
                     style={{
                       width: `${(completionCount / completionTotal) * 100}%`,
-                      background: "linear-gradient(90deg, #10b981, #059669)",
+                      background: "linear-gradient(90deg, #2563eb, #1d4ed8)",
                     }}
                   />
                 </div>
@@ -781,7 +781,7 @@ const Profile: React.FC = () => {
                     <div key={item.label} className="flex items-center justify-between py-1">
                       <span className="text-[13px] text-gray-600 dark:text-gray-400">{item.label}</span>
                       {item.done ? (
-                        <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400">
+                        <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-blue-600 dark:text-blue-400">
                           <Check size={12} strokeWidth={3} />
                           Done
                         </span>
@@ -851,13 +851,13 @@ const Profile: React.FC = () => {
             <div
               className="rounded-2xl overflow-hidden"
               style={{
-                background: "linear-gradient(135deg, rgba(16,185,129,0.04) 0%, rgba(5,150,105,0.06) 100%)",
-                border: "1px solid rgba(16,185,129,0.12)",
+                background: "linear-gradient(135deg, rgba(37,99,235,0.04) 0%, rgba(29,78,216,0.06) 100%)",
+                border: "1px solid rgba(37,99,235,0.12)",
               }}
             >
               <div className="p-5 flex items-start gap-4">
                 <div className="size-9 rounded-xl flex items-center justify-center shrink-0"
-                  style={{ background: "linear-gradient(135deg, #10b981 0%, #059669 100%)" }}
+                  style={{ background: "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)" }}
                 >
                   <Shield size={16} className="text-white" />
                 </div>

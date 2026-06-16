@@ -70,7 +70,7 @@ const FinancialYearChart: React.FC<FinancialYearChartProps> = ({ data, metric = 
 
   const isSales = metric === "sales"
   const isDark = theme === "dark"
-  const currentColor = isSales ? "#8b5cf6" : "#10b981"
+  const currentColor = isSales ? "#8b5cf6" : "#2563eb"
   const prevColor = isDark ? "rgba(255,255,255,0.25)" : "rgba(0,0,0,0.25)"
   const currentGradId = `current-fy-${metric}-grad`
   const gridColor = isDark ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.05)"
@@ -118,7 +118,7 @@ const FinancialYearChart: React.FC<FinancialYearChartProps> = ({ data, metric = 
             {prevVal > 0 && (
               <div className="border-t border-gray-100 dark:border-white/[0.04] pt-1.5 mt-1.5 flex items-center gap-2">
                 <span className="text-gray-500 dark:text-gray-500">Change:</span>
-                <span className={`font-bold ml-auto ${change >= 0 ? "text-emerald-600" : "text-rose-600"}`}>
+                <span className={`font-bold ml-auto ${change >= 0 ? "text-blue-600" : "text-rose-600"}`}>
                   {change >= 0 ? "+" : ""}{change.toFixed(1)}%
                 </span>
               </div>
@@ -144,8 +144,8 @@ const FinancialYearChart: React.FC<FinancialYearChartProps> = ({ data, metric = 
     return (
       <div className="w-full h-80 md:h-96 flex items-center justify-center" id="fy-chart">
         <div className="text-center">
-          <div className="w-8 h-8 rounded-xl bg-emerald-500/10 flex items-center justify-center mx-auto mb-2">
-            <div className="w-4 h-4 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
+          <div className="w-8 h-8 rounded-xl bg-blue-500/10 flex items-center justify-center mx-auto mb-2">
+            <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
           </div>
           <p className="text-gray-400 text-xs">Loading chart…</p>
         </div>

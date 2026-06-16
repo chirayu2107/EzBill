@@ -29,7 +29,7 @@ const PurchaseBillTable: React.FC<PurchaseBillTableProps> = ({ bills, onViewBill
   const getStatusColor = (status: PurchaseBill["status"]) => {
     switch (status) {
       case "paid":
-        return "bg-green-500/10 text-green-500 border-green-500/20"
+        return "bg-blue-500/10 text-blue-500 border-blue-500/20"
       case "unpaid":
         return "bg-yellow-500/10 text-yellow-500 border-yellow-500/20"
       case "overdue":
@@ -295,7 +295,7 @@ const PurchaseBillTable: React.FC<PurchaseBillTableProps> = ({ bills, onViewBill
                           <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
                             <button
                               onClick={() => onViewBill(bill)}
-                              className="p-2 text-emerald-500 hover:bg-emerald-500/10 rounded-lg transition-colors"
+                              className="p-2 text-blue-500 hover:bg-blue-500/10 rounded-lg transition-colors"
                               title="View Bill"
                             >
                               <Eye className="w-4 h-4" />
@@ -325,7 +325,7 @@ const PurchaseBillTable: React.FC<PurchaseBillTableProps> = ({ bills, onViewBill
                               className={`p-2 rounded-lg transition-colors ${
                                 bill.status === "paid"
                                   ? "text-yellow-500 hover:bg-yellow-500/10"
-                                  : "text-green-500 hover:bg-green-500/10"
+                                  : "text-blue-500 hover:bg-blue-500/10"
                               }`}
                               title={bill.status === "paid" ? "Mark as Unpaid" : "Mark as Paid"}
                             >

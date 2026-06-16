@@ -20,12 +20,12 @@ export default {
       boxShadow: {
         // Naina multi-layer card shadows
         'ez': 'inset 0 0 0 1px rgba(0,0,0,0.03), 0 1px 2px rgba(0,0,0,0.06), 0 8px 24px rgba(0,0,0,0.04)',
-        'ez-hover': 'inset 0 0 0 1px rgba(16,185,129,0.15), 0 2px 4px rgba(0,0,0,0.06), 0 16px 48px rgba(0,0,0,0.06), 0 0 24px rgba(16,185,129,0.08)',
+        'ez-hover': 'inset 0 0 0 1px rgba(37,99,235,0.12), 0 2px 4px rgba(0,0,0,0.04), 0 16px 48px rgba(0,0,0,0.04), 0 0 24px rgba(37,99,235,0.06)',
         'ez-elevated': 'inset 0 0 0 1px rgba(0,0,0,0.04), 0 4px 8px rgba(0,0,0,0.08), 0 24px 64px rgba(0,0,0,0.06)',
-        'ez-glow': '0 0 20px rgba(16,185,129,0.12), 0 0 60px rgba(16,185,129,0.06)',
+        'ez-glow': '0 0 20px rgba(37,99,235,0.1), 0 0 60px rgba(37,99,235,0.05)',
         // Dark mode variants
         'ez-dark': 'inset 0 0 0 1px rgba(255,255,255,0.06), 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.2)',
-        'ez-dark-hover': 'inset 0 0 0 1px rgba(16,185,129,0.2), 0 2px 4px rgba(0,0,0,0.3), 0 16px 48px rgba(0,0,0,0.3), 0 0 24px rgba(16,185,129,0.1)',
+        'ez-dark-hover': 'inset 0 0 0 1px rgba(59,130,246,0.18), 0 2px 4px rgba(0,0,0,0.3), 0 16px 48px rgba(0,0,0,0.3), 0 0 24px rgba(59,130,246,0.08)',
         'ez-dark-elevated': 'inset 0 0 0 1px rgba(255,255,255,0.08), 0 4px 8px rgba(0,0,0,0.4), 0 24px 64px rgba(0,0,0,0.3)',
       },
       letterSpacing: {

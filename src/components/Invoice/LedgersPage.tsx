@@ -71,12 +71,12 @@ const LedgersPage: React.FC = () => {
 
       {/* Stats row */}
       <motion.div className="grid grid-cols-2 md:grid-cols-3 gap-3" variants={itemVariants}>
-        <div className="rounded-2xl border border-emerald-200 dark:border-emerald-500/20 bg-emerald-50 dark:bg-emerald-500/5 p-4 text-center">
-          <div className="text-2xl font-bold text-emerald-600 dark:text-emerald-400 ez-number">{customerGroups.length}</div>
+        <div className="rounded-2xl border border-blue-200 dark:border-blue-500/20 bg-blue-50 dark:bg-blue-500/5 p-4 text-center">
+          <div className="text-2xl font-bold text-blue-600 dark:text-blue-400 ez-number">{customerGroups.length}</div>
           <div className="text-[11px] font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider mt-1">Total Customers</div>
         </div>
-        <div className="rounded-2xl border border-green-200 dark:border-green-500/20 bg-green-50 dark:bg-green-500/5 p-4 text-center">
-          <div className="text-2xl font-bold text-green-600 dark:text-green-400 ez-number">
+        <div className="rounded-2xl border border-blue-200 dark:border-blue-500/20 bg-blue-50 dark:bg-blue-500/5 p-4 text-center">
+          <div className="text-2xl font-bold text-blue-600 dark:text-blue-400 ez-number">
             ₹{customerGroups.reduce((s, g) => s + g.totalPaid, 0).toLocaleString("en-IN", { maximumFractionDigits: 0 })}
           </div>
           <div className="text-[11px] font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider mt-1">Total Received</div>
@@ -98,7 +98,7 @@ const LedgersPage: React.FC = () => {
             placeholder="Search customer..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-11 pr-4 py-3 bg-white dark:bg-[#1A1A1D] border border-gray-200 dark:border-white/[0.04] rounded-xl text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-400/40 transition-all placeholder:text-gray-400 shadow-sm"
+            className="w-full pl-11 pr-4 py-3 bg-white dark:bg-[#1A1A1D] border border-gray-200 dark:border-white/[0.04] rounded-xl text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400/40 transition-all placeholder:text-gray-400 shadow-sm"
           />
         </div>
       </motion.div>
@@ -139,7 +139,7 @@ const LedgersPage: React.FC = () => {
                     >
                       <td className="py-3.5 px-4">
                         <div className="flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-500 to-green-600 flex items-center justify-center text-white font-semibold text-xs flex-shrink-0">
+                          <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white font-semibold text-xs flex-shrink-0">
                             {group.name.charAt(0).toUpperCase()}
                           </div>
                           <div>
@@ -154,11 +154,11 @@ const LedgersPage: React.FC = () => {
                       <td className="py-3.5 px-4 text-right font-medium text-gray-900 dark:text-white hidden sm:table-cell ez-number">
                         ₹{group.totalInvoiced.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
                       </td>
-                      <td className="py-3.5 px-4 text-right text-emerald-600 dark:text-emerald-400 font-medium hidden sm:table-cell ez-number">
+                      <td className="py-3.5 px-4 text-right text-blue-600 dark:text-blue-400 font-medium hidden sm:table-cell ez-number">
                         ₹{group.totalPaid.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
                       </td>
                       <td className="py-3.5 px-4 text-right">
-                        <span className={`font-semibold ez-number ${group.balance > 0 ? "text-amber-600 dark:text-amber-400" : "text-emerald-600 dark:text-emerald-400"}`}>
+                        <span className={`font-semibold ez-number ${group.balance > 0 ? "text-amber-600 dark:text-amber-400" : "text-blue-600 dark:text-blue-400"}`}>
                           ₹{group.balance.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
                         </span>
                       </td>

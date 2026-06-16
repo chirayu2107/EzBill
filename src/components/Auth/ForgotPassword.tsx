@@ -5,7 +5,7 @@ import { useState } from "react"
 import { Link } from "react-router-dom"
 import { resetPassword } from "../../services/firebaseService"
 import { useToast } from "../../hooks/useToast"
-import { Mail, ArrowLeft, Receipt, CheckCircle, Send } from "lucide-react"
+import { Mail, ArrowLeft, CheckCircle, Send } from "lucide-react"
 import Button from "../UI/Button"
 import Card from "../UI/Card"
 
@@ -54,15 +54,15 @@ const ForgotPassword: React.FC = () => {
     <div className="min-h-screen flex items-center justify-center bg-surface-light dark:bg-[#0C0C0E] text-gray-900 dark:text-white transition-colors duration-300 relative px-4">
       {/* Ambient background gradients */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-1/4 left-1/3 w-[500px] h-[500px] bg-transparent dark:bg-emerald-500/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 right-1/3 w-[400px] h-[400px] bg-transparent dark:bg-green-500/4 rounded-full blur-3xl" />
+        <div className="absolute -top-1/4 left-1/3 w-[500px] h-[500px] bg-transparent dark:bg-blue-500/5 rounded-full blur-3xl" />
+        <div className="absolute bottom-1/4 right-1/3 w-[400px] h-[400px] bg-transparent dark:bg-blue-500/4 rounded-full blur-3xl" />
       </div>
 
       <div className="w-full max-w-md relative z-10">
         {/* Back to login */}
         <Link
           to="/login"
-          className="inline-flex items-center gap-2 text-sm text-gray-500 dark:text-[#8B8B96] hover:text-emerald-500 dark:hover:text-emerald-400 transition-colors mb-8 group"
+          className="inline-flex items-center gap-2 text-sm text-gray-500 dark:text-[#8B8B96] hover:text-blue-600 dark:hover:text-blue-400 transition-colors mb-8 group"
         >
           <ArrowLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
           Back to Sign In
@@ -71,12 +71,10 @@ const ForgotPassword: React.FC = () => {
         {/* Header */}
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-3 mb-4">
-            <Link to="/" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
-              <div className="w-11 h-11 bg-gradient-to-br from-emerald-500 to-green-600 rounded-xl flex items-center justify-center shadow-lg shadow-emerald-500/20">
-                <Receipt className="w-5 h-5 text-white" />
-              </div>
+            <a href="/" className="flex items-center gap-3">
+              <img src="/EzBill.png?v=3" alt="EzBill" className="w-11 h-11 shadow-lg shadow-blue-600/20 shrink-0" />
               <h1 className="text-2xl font-bold tracking-heading-tight text-gray-900 dark:text-white">EzBill</h1>
-            </Link>
+            </a>
           </div>
           <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-1">
             {sent ? "Check your email" : "Reset your password"}
@@ -92,8 +90,8 @@ const ForgotPassword: React.FC = () => {
           {sent ? (
             /* ─── Success State ─── */
             <div className="text-center py-4">
-              <div className="w-16 h-16 bg-emerald-50 dark:bg-emerald-500/10 rounded-2xl flex items-center justify-center mx-auto mb-5">
-                <CheckCircle className="w-8 h-8 text-emerald-500" />
+              <div className="w-16 h-16 bg-blue-50 dark:bg-blue-500/10 rounded-2xl flex items-center justify-center mx-auto mb-5">
+                <CheckCircle className="w-8 h-8 text-blue-500" />
               </div>
 
               <p className="text-sm text-gray-600 dark:text-[#8B8B96] mb-2">
@@ -145,7 +143,7 @@ const ForgotPassword: React.FC = () => {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full pl-10 pr-3 py-2.5 bg-gray-50 dark:bg-[#1A1A1D] border border-gray-200 dark:border-white/[0.04] rounded-xl text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500/40 focus:border-emerald-500/40 transition-all placeholder:text-gray-400 dark:placeholder:text-[#62626B]"
+                    className="w-full pl-10 pr-3 py-2.5 bg-gray-50 dark:bg-[#1A1A1D] border border-gray-200 dark:border-white/[0.04] rounded-xl text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500/40 transition-all placeholder:text-gray-400 dark:placeholder:text-[#62626B]"
                     placeholder="Enter your email address"
                     required
                     disabled={loading}
@@ -174,7 +172,7 @@ const ForgotPassword: React.FC = () => {
 
               <div className="text-center text-xs text-gray-500 dark:text-[#8B8B96]">
                 Remember your password?{" "}
-                <Link to="/login" className="text-emerald-600 dark:text-emerald-400 hover:text-emerald-700 font-medium transition-colors">
+                <Link to="/login" className="text-blue-600 dark:text-blue-400 hover:text-blue-700 font-medium transition-colors">
                   Sign in
                 </Link>
               </div>

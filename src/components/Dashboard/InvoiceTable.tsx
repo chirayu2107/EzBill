@@ -290,7 +290,7 @@ const InvoiceTable: React.FC<InvoiceTableProps> = ({ invoices, onViewInvoice, on
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.9 }}
                             onClick={() => onViewInvoice(invoice)}
-                            className="p-1.5 text-emerald-500 hover:bg-emerald-500/8 rounded-lg transition-colors"
+                            className="p-1.5 text-blue-500 hover:bg-blue-500/8 rounded-lg transition-colors"
                             title="View Invoice"
                           >
                             <Eye className="w-4 h-4" />
@@ -320,7 +320,7 @@ const InvoiceTable: React.FC<InvoiceTableProps> = ({ invoices, onViewInvoice, on
                             className={`p-1.5 rounded-lg transition-colors ${
                               invoice.status === "paid"
                                 ? "text-amber-500 hover:bg-amber-500/8"
-                                : "text-green-500 hover:bg-green-500/8"
+                                : "text-blue-500 hover:bg-blue-500/8"
                             }`}
                             title={invoice.status === "paid" ? "Mark as Unpaid" : "Mark as Paid"}
                           >

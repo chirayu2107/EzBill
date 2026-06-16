@@ -7,9 +7,8 @@ import { motion, AnimatePresence } from "framer-motion"
 import { useAuth } from "../../context/AuthContext"
 import { useTheme } from "../../context/ThemeContext"
 import {
-  LayoutDashboard, FileText, Plus, User, LogOut,
-  BarChart3, Menu, X, ShoppingBag, Sun, Moon, BookOpen,
-  FileSpreadsheet,
+  Gauge, Receipt, ShoppingCart, FilePlus2, BookMarked,
+  PieChart, TrendingUp, User, LogOut, Menu, X, Sun, Moon,
 } from "lucide-react"
 
 const COLLAPSED_W = 72
@@ -30,20 +29,20 @@ const Sidebar: React.FC = () => {
   const itemRefs = useRef<(HTMLAnchorElement | null)[]>([])
 
   const menuItems = [
-    { path: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
-    { path: "/dashboard/invoices", icon: FileText, label: "Invoices" },
-    { path: "/dashboard/purchase-bills", icon: ShoppingBag, label: "Purchase Bills" },
-    { path: "/dashboard/create-invoice", icon: Plus, label: "Create Invoice" },
-    { path: "/dashboard/ledgers", icon: BookOpen, label: "Ledgers" },
-    { path: "/dashboard/gst-reports", icon: FileSpreadsheet, label: "GST Reports" },
-    { path: "/dashboard/analytics", icon: BarChart3, label: "Analytics" },
+    { path: "/dashboard", icon: Gauge, label: "Dashboard" },
+    { path: "/dashboard/invoices", icon: Receipt, label: "Invoices" },
+    { path: "/dashboard/purchase-bills", icon: ShoppingCart, label: "Purchase Bills" },
+    { path: "/dashboard/create-invoice", icon: FilePlus2, label: "Create Invoice" },
+    { path: "/dashboard/ledgers", icon: BookMarked, label: "Ledgers" },
+    { path: "/dashboard/gst-reports", icon: PieChart, label: "GST Reports" },
+    { path: "/dashboard/analytics", icon: TrendingUp, label: "Analytics" },
   ]
 
   const mobileNavItems = [
-    { path: "/dashboard", icon: LayoutDashboard, label: "Home" },
-    { path: "/dashboard/invoices", icon: FileText, label: "Invoices" },
-    { path: "/dashboard/create-invoice", icon: Plus, label: "Create" },
-    { path: "/dashboard/analytics", icon: BarChart3, label: "Analytics" },
+    { path: "/dashboard", icon: Gauge, label: "Home" },
+    { path: "/dashboard/invoices", icon: Receipt, label: "Invoices" },
+    { path: "/dashboard/create-invoice", icon: FilePlus2, label: "Create" },
+    { path: "/dashboard/analytics", icon: TrendingUp, label: "Analytics" },
     { path: "/dashboard/profile", icon: User, label: "Profile" },
   ]
 
@@ -87,7 +86,7 @@ const Sidebar: React.FC = () => {
   return (
     <>
       {/* ═══ MOBILE TOP BAR ═══ */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-white dark:bg-[#141416] border-b border-gray-200 dark:border-white/[0.04]">
+      <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-white/95 dark:bg-black/95 backdrop-blur-md border-b border-gray-200/60 dark:border-white/[0.04]">
         <div className="flex items-center justify-between px-4 py-3">
           <button
             onClick={toggleMobileMenu}
@@ -95,10 +94,10 @@ const Sidebar: React.FC = () => {
           >
             {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
-          <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-            <img src="/EzBill.png" alt="EzBill" className="w-7 h-7 rounded-lg" />
+          <a href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+            <img src="/EzBill.png?v=3" alt="EzBill" className="w-7 h-7 shadow-md shadow-blue-600/25 shrink-0" />
             <h1 className="text-base font-semibold text-gray-900 dark:text-white">EzBill</h1>
-          </Link>
+          </a>
           <button
             onClick={toggleTheme}
             className="p-2 text-gray-500 dark:text-[#8B8B96] rounded-lg hover:bg-gray-50 dark:hover:bg-[#212124] transition-colors"
@@ -157,11 +156,11 @@ const Sidebar: React.FC = () => {
                     layoutId="mobile-nav-pill"
                     className="absolute -inset-x-1 -top-1 -bottom-1 rounded-[16px]"
                     style={theme === "dark" ? {
-                      background: "rgba(16, 185, 129, 0.12)",
+                      background: "rgba(59, 130, 246, 0.12)",
                       backdropFilter: "blur(20px) saturate(150%)",
                       WebkitBackdropFilter: "blur(20px) saturate(150%)",
-                      border: "0.5px solid rgba(16, 185, 129, 0.25)",
-                      boxShadow: "0 1px 8px rgba(16,185,129,0.1), inset 0 1px 0 rgba(255,255,255,0.05)",
+                      border: "0.5px solid rgba(59, 130, 246, 0.25)",
+                      boxShadow: "0 1px 8px rgba(59, 130, 246, 0.1), inset 0 1px 0 rgba(255,255,255,0.05)",
                     } : {
                       background: "rgba(255,255,255,0.50)",
                       backdropFilter: "blur(20px) saturate(180%)",
@@ -175,7 +174,7 @@ const Sidebar: React.FC = () => {
                 <item.icon
                   className={`relative z-10 w-[22px] h-[22px] transition-colors duration-150 ${
                     isActive
-                      ? "text-emerald-600 dark:text-emerald-400"
+                      ? "text-blue-600 dark:text-blue-400"
                       : "text-gray-400 dark:text-gray-400"
                   }`}
                   strokeWidth={isActive ? 2.2 : 1.6}
@@ -185,7 +184,7 @@ const Sidebar: React.FC = () => {
                     initial={{ opacity: 0, y: -2 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.15 }}
-                    className="relative z-10 text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 leading-tight mt-0.5"
+                    className="relative z-10 text-[10px] font-semibold text-blue-600 dark:text-blue-400 leading-tight mt-0.5"
                   >
                     {item.label}
                   </motion.span>
@@ -199,7 +198,7 @@ const Sidebar: React.FC = () => {
       {/* ═══ DESKTOP SIDEBAR ═══ */}
       <motion.div
         className="hidden lg:flex flex-col shrink-0 overflow-hidden cursor-pointer
-                   bg-white dark:bg-[#141416] border-r border-gray-100 dark:border-white/[0.04]"
+                   bg-white dark:bg-[#000000] border-r border-gray-100/80 dark:border-white/[0.04]"
         animate={{ width: isCollapsed ? COLLAPSED_W : EXPANDED_W }}
         transition={{ type: "spring", stiffness: 320, damping: 32 }}
         onClick={(e: React.MouseEvent) => {
@@ -211,24 +210,19 @@ const Sidebar: React.FC = () => {
       >
         {/* ── Top: Logo + Nav ── */}
         <div className="flex-1 flex flex-col pt-5 pb-3 overflow-hidden">
-          {/* Logo */}
-          <Link to="/" className={`flex items-center shrink-0 mb-5 hover:opacity-80 transition-opacity ${isCollapsed ? "justify-center px-0" : "gap-2.5 px-5"}`}>
-            <img
-              src="/EzBill.png"
-              alt="EzBill"
-              className="w-[34px] h-[34px] rounded-xl shrink-0"
-              style={{ boxShadow: "0 2px 8px rgba(16,185,129,0.18)" }}
-            />
+          {/* Logo — blue grid mark + wordmark */}
+          <a href="/" className={`flex items-center shrink-0 mb-5 hover:opacity-90 transition-opacity ${isCollapsed ? "justify-center px-0" : "gap-2.5 px-5"}`}>
+            <img src="/EzBill.png?v=3" alt="EzBill" className="w-[34px] h-[34px] shadow-lg shadow-blue-600/25 shrink-0" />
             {!isCollapsed && (
-              <motion.h1
+              <motion.span
                 initial={false}
                 animate={{ opacity: 1, x: 0 }}
                 className="text-[15px] font-bold tracking-tight text-gray-900 dark:text-white whitespace-nowrap"
               >
                 EzBill
-              </motion.h1>
+              </motion.span>
             )}
-          </Link>
+          </a>
 
           {/* Divider */}
           <div className={`h-px bg-gray-100 dark:bg-[#212124] shrink-0 ${isCollapsed ? "mx-3" : "mx-5"} mb-3`} />
@@ -251,39 +245,42 @@ const Sidebar: React.FC = () => {
                       isCollapsed ? "justify-center h-10 w-full" : "gap-3 px-3 h-10"
                     } ${
                       isActive
-                        ? "bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 font-semibold"
-                        : "text-gray-600 dark:text-[#8B8B96] hover:bg-gray-50 dark:hover:bg-[#212124] hover:text-gray-900 dark:hover:text-[#ECECEF] font-medium"
+                        ? "bg-blue-600/10 dark:bg-blue-500/[0.12] text-blue-700 dark:text-blue-400 font-semibold"
+                        : "text-gray-500 dark:text-[#8B8B96] hover:bg-gray-50 dark:hover:bg-white/[0.04] hover:text-gray-900 dark:hover:text-[#ECECEF] font-medium"
                     }`}
                     title={isCollapsed ? item.label : undefined}
                   >
-                    {/* Active accent bar */}
+                    {/* Active pill highlight — no bar, full bg */}
                     {isActive && (
                       <motion.div
                         layoutId="sidebar-active"
-                        className="absolute left-0 top-1.5 bottom-1.5 w-[3px] rounded-full"
-                        style={{ background: "linear-gradient(180deg, #10b981, #059669)" }}
-                        transition={{ type: "spring", stiffness: 350, damping: 30 }}
+                        className="absolute inset-0 rounded-xl"
+                        style={{
+                          background: "rgba(37,99,235,0.08)",
+                          border: "1px solid rgba(59,130,246,0.15)",
+                        }}
+                        transition={{ type: "spring", stiffness: 380, damping: 32 }}
                       />
                     )}
 
                     <Icon
-                      className={`w-[18px] h-[18px] shrink-0 transition-colors ${
-                        isActive ? "text-emerald-600 dark:text-emerald-400" : "text-gray-400 dark:text-[#55555E] group-hover:text-gray-600 dark:group-hover:text-[#9E9EA7]"
+                      className={`relative z-10 w-[18px] h-[18px] shrink-0 transition-colors ${
+                        isActive ? "text-blue-600 dark:text-blue-400" : "text-gray-400 dark:text-[#55555E] group-hover:text-gray-600 dark:group-hover:text-[#9E9EA7]"
                       }`}
-                      strokeWidth={isActive ? 2 : 1.75}
+                      strokeWidth={isActive ? 2 : 1.6}
                     />
 
                     {!isCollapsed && (
-                      <span className="text-[13px] whitespace-nowrap truncate">
+                      <span className="relative z-10 text-[13px] whitespace-nowrap truncate">
                         {item.label}
                       </span>
                     )}
 
                     {/* Tooltip — collapsed only */}
                     {isCollapsed && (
-                      <span className="absolute left-full ml-3 px-2.5 py-1.5 rounded-lg bg-gray-900 dark:bg-[#28282C] text-white text-[11px] font-medium whitespace-nowrap opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity duration-150 z-50 shadow-xl">
+                      <span className="absolute left-full ml-3 px-2.5 py-1.5 rounded-lg bg-gray-900 dark:bg-[#18181b] text-white text-[11px] font-medium whitespace-nowrap opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity duration-150 z-50 shadow-xl">
                         {item.label}
-                        <span className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-gray-900 dark:border-r-[#2B2B2F]" />
+                        <span className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-gray-900 dark:border-r-[#18181b]" />
                       </span>
                     )}
                   </Link>
@@ -301,30 +298,32 @@ const Sidebar: React.FC = () => {
             to="/dashboard/profile"
             className={`group relative flex items-center rounded-xl transition-all duration-200 ${isCollapsed ? "justify-center h-10" : "gap-2.5 px-2 py-2"} ${
               location.pathname === "/dashboard/profile"
-                ? "bg-emerald-50 dark:bg-emerald-500/10"
+                ? "bg-blue-50 dark:bg-blue-500/10"
                 : "hover:bg-gray-50 dark:hover:bg-[#212124]"
             }`}
             title={isCollapsed ? "Profile" : undefined}
           >
-            {/* Active accent bar */}
             {location.pathname === "/dashboard/profile" && (
               <motion.div
                 layoutId="sidebar-active"
-                className="absolute left-0 top-1.5 bottom-1.5 w-[3px] rounded-full"
-                style={{ background: "linear-gradient(180deg, #10b981, #059669)" }}
-                transition={{ type: "spring", stiffness: 350, damping: 30 }}
+                className="absolute inset-0 rounded-xl"
+                style={{
+                  background: "rgba(37,99,235,0.08)",
+                  border: "1px solid rgba(59,130,246,0.15)",
+                }}
+                transition={{ type: "spring", stiffness: 380, damping: 32 }}
               />
             )}
             <div
               className="w-8 h-8 rounded-full flex items-center justify-center text-white font-semibold text-xs shrink-0"
-              style={{ background: "linear-gradient(135deg, #10b981 0%, #059669 100%)" }}
+              style={{ background: "linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)" }}
             >
               {initial}
             </div>
             {!isCollapsed && (
               <div className="flex-1 min-w-0">
                 <p className={`text-[13px] font-medium truncate leading-tight ${
-                  location.pathname === "/dashboard/profile" ? "text-emerald-700 dark:text-emerald-400" : "text-gray-900 dark:text-white"
+                  location.pathname === "/dashboard/profile" ? "text-blue-700 dark:text-blue-400" : "text-gray-900 dark:text-white"
                 }`}>
                   {user?.fullName}
                 </p>
@@ -387,17 +386,17 @@ const Sidebar: React.FC = () => {
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
-            className="lg:hidden fixed left-0 top-0 h-full w-72 bg-white dark:bg-[#141416] border-r border-gray-100 dark:border-white/[0.04] flex flex-col z-50"
+            className="lg:hidden fixed left-0 top-0 h-full w-72 bg-white dark:bg-[#000000] border-r border-gray-100/80 dark:border-white/[0.04] flex flex-col z-50"
             variants={sidebarVariants}
             initial="closed"
             animate="open"
             exit="closed"
           >
             <div className="p-6 flex-1 overflow-y-auto">
-              <Link to="/" className="flex items-center gap-2.5 mb-6 mt-14 hover:opacity-80 transition-opacity">
-                <img src="/EzBill.png" alt="EzBill" className="w-8 h-8 rounded-lg" />
+              <a href="/" className="flex items-center gap-2.5 mb-6 mt-14 hover:opacity-80 transition-opacity">
+                <img src="/EzBill.png?v=3" alt="EzBill" className="w-8 h-8 shadow-md shadow-blue-600/25 shrink-0" />
                 <h1 className="text-base font-semibold text-gray-900 dark:text-white">EzBill</h1>
-              </Link>
+              </a>
 
               <nav className="space-y-1">
                 {menuItems.map((item, index) => {
@@ -409,13 +408,13 @@ const Sidebar: React.FC = () => {
                         onClick={closeMobileMenu}
                         className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors text-sm ${
                           isActive
-                            ? "bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 font-semibold"
+                            ? "bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-400 font-semibold"
                             : "text-gray-600 dark:text-[#8B8B96] hover:bg-gray-50 dark:hover:bg-[#212124]"
                         }`}
                       >
                         <item.icon
                           className={`w-5 h-5 ${
-                            isActive ? "text-emerald-600 dark:text-emerald-400" : "text-gray-400 dark:text-[#55555E]"
+                            isActive ? "text-blue-600 dark:text-blue-400" : "text-gray-400 dark:text-[#55555E]"
                           }`}
                           strokeWidth={isActive ? 2 : 1.8}
                         />
@@ -435,7 +434,7 @@ const Sidebar: React.FC = () => {
               <div className="mb-3 flex items-center gap-3">
                 <div
                   className="w-8 h-8 rounded-full flex items-center justify-center text-white font-medium text-sm shrink-0"
-                  style={{ background: "linear-gradient(135deg, #10b981, #059669)" }}
+                  style={{ background: "linear-gradient(135deg, #3b82f6, #2563eb)" }}
                 >
                   {initial}
                 </div>

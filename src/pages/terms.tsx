@@ -114,7 +114,7 @@ const TermsPage = () => {
       <header className="sticky top-0 z-50 backdrop-blur-xl bg-white/80 dark:bg-[#0C0C0E]/80 border-b border-gray-100 dark:border-white/[0.04]">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-14 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-            <div className="w-7 h-7 bg-gradient-to-br from-emerald-500 to-green-600 rounded-lg flex items-center justify-center">
+            <div className="w-7 h-7 bg-blue-600 rounded-lg flex items-center justify-center">
               <Receipt className="w-3.5 h-3.5 text-white" />
             </div>
             <span className="font-bold text-gray-900 dark:text-white">EzBill</span>
@@ -201,7 +201,7 @@ const TermsPage = () => {
               </p>
               <a
                 href="mailto:support@ezbill.app"
-                className="text-sm font-semibold text-emerald-600 dark:text-emerald-400 hover:underline underline-offset-2"
+                className="text-sm font-semibold text-blue-600 dark:text-blue-400 hover:underline underline-offset-2"
               >
                 support@ezbill.app →
               </a>

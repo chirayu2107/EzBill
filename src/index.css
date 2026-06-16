@@ -7,18 +7,18 @@
    Inspired by Linear, Arc Browser, Raycast, Vercel
    ═══════════════════════════════════════════════════════════ */
 
-/* ─── Design Tokens (Dark) ───
-   bg-base:      #0C0C0E   — deepest layer (app bg)
-   bg-surface:   #141416   — sidebar, main panels
-   bg-card:      #1A1A1D   — card background
-   bg-elevated:  #212124   — hover states, elevated surfaces
-   bg-muted:     #28282C   — subtle containers
-   border-base:  rgba(255,255,255,0.04)  — nearly invisible borders
-   border-hover: rgba(255,255,255,0.08)  — interactive borders
-   text-primary: #F0F0F3   — headings
-   text-secondary:#8B8B96  — body text
-   text-muted:   #55555E   — labels, placeholders
-   accent:       #10b981   — emerald brand
+/* ─── Design Tokens (Dark - Cobalt / Zinc style) ───
+   bg-base:      #000000   — absolute black for page background
+   bg-surface:   #09090b   — panels and layout container borders
+   bg-card:      #121214   — premium card background
+   bg-elevated:  #18181b   — hover states, inputs
+   bg-muted:     #27272a   — secondary badges
+   border-base:  rgba(255,255,255,0.06)  — crisp thin borders
+   border-hover: rgba(255,255,255,0.12)  — active border glows
+   text-primary: #FFFFFF   — titles, headings
+   text-secondary:#A1A1AA  — body copy
+   text-muted:   #71717A   — labels, placeholders
+   accent:       #2563eb   — brand cobalt blue
    ─── */
 
 /* ─── Base Layer ─── */
@@ -30,177 +30,196 @@
     text-rendering: optimizeLegibility;
     font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
     font-optical-sizing: auto;
+    overflow-x: hidden;
+    max-width: 100%;
   }
 
   body {
     @apply transition-colors duration-300;
-    background-color: #F8FAFC;
+    background-color: #FAFAFA;
     line-height: 1.6;
+    overflow-x: hidden;
+    max-width: 100%;
   }
 
   .dark body,
   html.dark body {
-    background-color: #0C0C0E;
-    color: #8B8B96;
+    background-color: #000000;
+    color: #A1A1AA;
   }
 
   ::selection {
-    background-color: rgba(16, 185, 129, 0.2);
+    background-color: rgba(37, 99, 235, 0.15);
     color: inherit;
   }
 
   .dark ::selection {
-    background-color: rgba(16, 185, 129, 0.35);
+    background-color: rgba(59, 130, 246, 0.3);
     color: #fff;
+  }
+
+  /* Prevent browser default serif/italic on semantic elements */
+  blockquote, q {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-style: normal;
+    quotes: none;
+  }
+
+  button, input, select, textarea {
+    font-family: inherit;
   }
 
   /* Scrollbar — ultra minimal */
   ::-webkit-scrollbar { width: 5px; height: 5px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb {
-    background-color: rgba(0,0,0,0.12);
+    background-color: rgba(0,0,0,0.1);
     border-radius: 9999px;
   }
-  ::-webkit-scrollbar-thumb:hover { background-color: rgba(0,0,0,0.22); }
+  ::-webkit-scrollbar-thumb:hover { background-color: rgba(0,0,0,0.18); }
   .dark ::-webkit-scrollbar-thumb {
-    background-color: rgba(255,255,255,0.05);
+    background-color: rgba(255,255,255,0.06);
   }
   .dark ::-webkit-scrollbar-thumb:hover {
-    background-color: rgba(255,255,255,0.10);
+    background-color: rgba(255,255,255,0.12);
   }
 
   /* Typography */
   h1, h2, h3, h4, h5, h6 {
-    letter-spacing: -0.025em;
+    letter-spacing: -0.03em;
     font-weight: 600;
-    line-height: 1.2;
+    line-height: 1.25;
   }
 
   h1 {
-    letter-spacing: -0.035em;
-    font-weight: 700;
+    letter-spacing: -0.04em;
+    font-weight: 800;
   }
 
   .dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6 {
-    color: #F0F0F3;
+    color: #FFFFFF;
   }
 }
 
 /* ─── Component Layer ─── */
 @layer components {
 
-  /* ═══ CARD — Near-invisible border, subtle elevation ═══ */
+  /* ═══ CARD — Matches landing page card style ═══ */
   .ez-card {
     position: relative;
-    background: #fff;
+    background: #ffffff;
     border: 1px solid rgba(0, 0, 0, 0.06);
-    border-radius: 16px;
+    border-radius: 14px;
     box-shadow:
-      0 1px 3px rgba(0, 0, 0, 0.04),
-      0 4px 12px rgba(0, 0, 0, 0.02);
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      0 1px 3px rgba(0, 0, 0, 0.03),
+      0 8px 20px -4px rgba(0, 0, 0, 0.04);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .dark .ez-card {
-    background: #1A1A1D;
-    border-color: rgba(255, 255, 255, 0.04);
+    background: #0d0d10;
+    border-color: rgba(255, 255, 255, 0.05);
     box-shadow:
-      0 1px 3px rgba(0, 0, 0, 0.4),
-      0 4px 16px rgba(0, 0, 0, 0.1);
+      0 1px 2px rgba(0, 0, 0, 0.6),
+      0 12px 28px -6px rgba(0, 0, 0, 0.5),
+      inset 0 1px 0 rgba(255, 255, 255, 0.03);
   }
 
   .ez-card-hover:hover {
-    border-color: rgba(0, 0, 0, 0.1);
+    border-color: rgba(0, 0, 0, 0.09);
     box-shadow:
-      0 2px 8px rgba(0, 0, 0, 0.06),
-      0 8px 24px rgba(0, 0, 0, 0.04);
+      0 4px 16px rgba(0, 0, 0, 0.04),
+      0 16px 32px -4px rgba(0, 0, 0, 0.05);
     transform: translateY(-1px);
   }
 
   .dark .ez-card-hover:hover {
-    border-color: rgba(255, 255, 255, 0.07);
+    border-color: rgba(255, 255, 255, 0.08);
     box-shadow:
-      0 4px 24px rgba(0, 0, 0, 0.3);
+      0 4px 24px rgba(0, 0, 0, 0.7),
+      0 0 28px rgba(59, 130, 246, 0.05);
     transform: translateY(-1px);
   }
 
-  /* ═══ BENTO CARD — Subtle tinted surfaces ═══ */
-  .ez-bento-emerald {
-    background: rgba(16, 185, 129, 0.06);
-    backdrop-filter: blur(16px) saturate(140%);
-    -webkit-backdrop-filter: blur(16px) saturate(140%);
-    border-color: rgba(16, 185, 129, 0.15);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
-  }
-  .dark .ez-bento-emerald {
-    background: rgba(16, 185, 129, 0.06);
-    border-color: rgba(16, 185, 129, 0.08);
-    box-shadow: none;
-  }
-
+  /* ═══ BENTO CARDS — Tinted surfaces matching landing page ═══ */
   .ez-bento-violet {
-    background: rgba(139, 92, 246, 0.06);
-    backdrop-filter: blur(16px) saturate(140%);
-    -webkit-backdrop-filter: blur(16px) saturate(140%);
-    border-color: rgba(139, 92, 246, 0.15);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    background: rgba(99, 102, 241, 0.03);
+    border-color: rgba(99, 102, 241, 0.10);
   }
   .dark .ez-bento-violet {
-    background: rgba(139, 92, 246, 0.06);
-    border-color: rgba(139, 92, 246, 0.08);
-    box-shadow: none;
+    background: rgba(99, 102, 241, 0.04);
+    border-color: rgba(99, 102, 241, 0.08);
+  }
+  .ez-bento-violet:hover {
+    border-color: rgba(99, 102, 241, 0.20);
+    box-shadow: 0 0 24px rgba(99, 102, 241, 0.07);
   }
 
   .ez-bento-amber {
-    background: rgba(245, 158, 11, 0.06);
-    backdrop-filter: blur(16px) saturate(140%);
-    -webkit-backdrop-filter: blur(16px) saturate(140%);
-    border-color: rgba(245, 158, 11, 0.15);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    background: rgba(245, 158, 11, 0.03);
+    border-color: rgba(245, 158, 11, 0.10);
   }
   .dark .ez-bento-amber {
-    background: rgba(245, 158, 11, 0.06);
+    background: rgba(245, 158, 11, 0.04);
     border-color: rgba(245, 158, 11, 0.08);
-    box-shadow: none;
+  }
+  .ez-bento-amber:hover {
+    border-color: rgba(245, 158, 11, 0.20);
+    box-shadow: 0 0 24px rgba(245, 158, 11, 0.07);
   }
 
   .ez-bento-blue {
-    background: rgba(59, 130, 246, 0.06);
-    backdrop-filter: blur(16px) saturate(140%);
-    -webkit-backdrop-filter: blur(16px) saturate(140%);
-    border-color: rgba(59, 130, 246, 0.15);
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    background: rgba(59, 130, 246, 0.03);
+    border-color: rgba(59, 130, 246, 0.10);
   }
   .dark .ez-bento-blue {
-    background: rgba(59, 130, 246, 0.06);
+    background: rgba(59, 130, 246, 0.04);
     border-color: rgba(59, 130, 246, 0.08);
-    box-shadow: none;
+  }
+  .ez-bento-blue:hover {
+    border-color: rgba(59, 130, 246, 0.20);
+    box-shadow: 0 0 24px rgba(59, 130, 246, 0.07);
   }
 
-  /* ═══ HERO CARD — Premium dark gradient ═══ */
+  /* ═══ HERO CARD — Deep navy matching landing page dark sections ═══ */
   .ez-hero-card {
     position: relative;
     overflow: hidden;
-    background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    border-radius: 20px;
+    background: linear-gradient(135deg, #0a0a0f 0%, #06070d 100%);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 16px;
     color: white;
+    box-shadow:
+      0 4px 32px rgba(0, 0, 0, 0.5),
+      inset 0 1px 0 rgba(255, 255, 255, 0.06);
   }
   .dark .ez-hero-card {
-    background: linear-gradient(145deg, #151517 0%, #1A1A1D 50%, #171719 100%);
-    border-color: rgba(255, 255, 255, 0.04);
+    background: linear-gradient(145deg, #080810 0%, #040408 60%, #000000 100%);
+    border-color: rgba(255, 255, 255, 0.05);
     box-shadow:
-      0 2px 12px rgba(0, 0, 0, 0.3),
-      0 8px 32px rgba(0, 0, 0, 0.15);
+      0 16px 48px rgba(0, 0, 0, 0.7),
+      inset 0 1px 0 rgba(255, 255, 255, 0.04);
   }
+  /* Blue ambient glow — top right */
   .ez-hero-card::before {
     content: '';
     position: absolute;
-    top: -50%;
-    right: -20%;
+    top: -30%;
+    right: -5%;
     width: 60%;
     height: 100%;
-    background: radial-gradient(ellipse, rgba(16, 185, 129, 0.15) 0%, transparent 70%);
+    background: radial-gradient(ellipse, rgba(37, 99, 235, 0.15) 0%, transparent 65%);
+    pointer-events: none;
+  }
+  /* Subtle bottom-left warmth */
+  .ez-hero-card::after {
+    content: '';
+    position: absolute;
+    bottom: -20%;
+    left: 5%;
+    width: 40%;
+    height: 60%;
+    background: radial-gradient(ellipse, rgba(59, 130, 246, 0.06) 0%, transparent 70%);
     pointer-events: none;
   }
 
@@ -279,7 +298,7 @@
     left: 0;
     right: 0;
     height: 2px;
-    background: linear-gradient(90deg, #10b981, #059669);
+    background: linear-gradient(90deg, #2563eb, #1d4ed8);
     z-index: 9999;
     animation: loadingBar 1.5s ease-in-out infinite;
   }
@@ -340,6 +359,43 @@
 @layer utilities {
   .tracking-heading { letter-spacing: -0.025em; }
   .tracking-heading-tight { letter-spacing: -0.035em; }
+
+  /* ═══ GRID BACKGROUND OVERLAY ═══ */
+  .ez-grid-bg {
+    background-size: 40px 40px;
+    background-image: 
+      linear-gradient(to right, rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+  }
+  .dark .ez-grid-bg {
+    background-image: 
+      linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  }
+  .ez-grid-mask {
+    mask-image: radial-gradient(ellipse at center, black 50%, transparent 90%);
+    -webkit-mask-image: radial-gradient(ellipse at center, black 50%, transparent 90%);
+  }
+
+  /* ═══ GLOSSY SHINE ACTION BUTTONS ═══ */
+  .btn-shine {
+    position: relative;
+    overflow: hidden;
+  }
+  .btn-shine::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -60%;
+    width: 25%;
+    height: 200%;
+    background: rgba(255, 255, 255, 0.16);
+    transform: rotate(30deg);
+    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .btn-shine:hover::after {
+    left: 140%;
+  }
 }
 
 /* ═══ TEXT SELECTION ═══ */
@@ -369,6 +425,21 @@ input, textarea, [contenteditable="true"] {
 @keyframes shimmer {
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
+}
+
+@keyframes dash {
+  to { stroke-dashoffset: -20; }
+}
+.animate-dash {
+  animation: dash 1s linear infinite;
+}
+
+@keyframes pulseGlow {
+  0%, 100% { opacity: 0.5; transform: scale(0.9); }
+  50% { opacity: 1; transform: scale(1.1); box-shadow: 0 0 12px currentColor; }
+}
+.animate-pulse-glow {
+  animation: pulseGlow 2s ease-in-out infinite;
 }
 
 /* ═══ REDUCED MOTION ═══ */

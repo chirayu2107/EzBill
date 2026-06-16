@@ -26,7 +26,7 @@ const Toast: React.FC<ToastProps> = ({ id, type, title, message, duration = 5000
   const getIcon = () => {
     switch (type) {
       case "success":
-        return <CheckCircle className="w-5 h-5 text-green-500" />
+        return <CheckCircle className="w-5 h-5 text-blue-500" />
       case "error":
         return <AlertCircle className="w-5 h-5 text-red-500" />
       case "warning":
@@ -45,7 +45,7 @@ const Toast: React.FC<ToastProps> = ({ id, type, title, message, duration = 5000
   const getColors = () => {
     switch (type) {
       case "success":
-        return "border-green-500/20"
+        return "border-blue-500/20"
       case "error":
         return "border-red-500/20"
       case "warning":
@@ -60,7 +60,7 @@ const Toast: React.FC<ToastProps> = ({ id, type, title, message, duration = 5000
   const getLabelColor = () => {
     switch (type) {
       case "success":
-        return "text-green-600 dark:text-green-400"
+        return "text-blue-600 dark:text-blue-400"
       case "error":
         return "text-red-600 dark:text-red-400"
       case "warning":

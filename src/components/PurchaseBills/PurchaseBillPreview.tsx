@@ -300,11 +300,11 @@ const PurchaseBillPreview: React.FC<PurchaseBillPreviewProps> = ({ bill, onClose
                     <tr className="bg-gray-50">
                       <td
                         colSpan={7}
-                        className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 text-right font-bold text-gray-900 text-emerald-600 dark:text-emerald-400"
+                        className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 text-right font-bold text-gray-900 text-blue-600 dark:text-blue-400"
                       >
                         Overall Discount {bill.discountType === "percentage" ? `(${bill.discountValue}%)` : ""}
                       </td>
-                      <td className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 text-right font-bold text-emerald-600 dark:text-emerald-400">
+                      <td className="border border-gray-400 md:border-gray-800 py-1 md:py-2 px-0.5 md:px-2 text-right font-bold text-blue-600 dark:text-blue-400">
                         -{formatCurrency(bill.discountAmount).replace("₹", "")}
                       </td>
                     </tr>
