@@ -104,6 +104,7 @@ const LandingPage: React.FC = () => {
   const { isAuthenticated } = useAuth()
   const { theme, resetToSystem } = useTheme()
   const location = useLocation()
+  const scrollContainerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const sectionId = location.pathname.substring(1) // "features", "pricing", "faq"
@@ -116,7 +117,7 @@ const LandingPage: React.FC = () => {
       }, 100)
       return () => clearTimeout(timer)
     } else if (location.pathname === "/") {
-      window.scrollTo({ top: 0, behavior: "smooth" })
+      scrollContainerRef.current?.scrollTo({ top: 0, behavior: "smooth" })
     }
   }, [location])
   const [isAnnual, setIsAnnual] = useState(false)
@@ -151,6 +152,8 @@ const LandingPage: React.FC = () => {
   })
 
   useEffect(() => {
+    const container = scrollContainerRef.current
+    if (!container) return
     const handleScroll = () => {
       if (!mockupRef.current) return
       const rect = mockupRef.current.getBoundingClientRect()
@@ -163,11 +166,11 @@ const LandingPage: React.FC = () => {
         translateY: 40 * (1 - progress),
         opacity: 0.7 + 0.3 * progress,
       })
-      setIsScrolled(window.scrollY > 20)
+      setIsScrolled(container.scrollTop > 20)
     }
-    window.addEventListener("scroll", handleScroll, { passive: true })
+    container.addEventListener("scroll", handleScroll, { passive: true })
     handleScroll() // run once on mount
-    return () => window.removeEventListener("scroll", handleScroll)
+    return () => container.removeEventListener("scroll", handleScroll)
   }, [])
 
   // Auto-swipe testimonials every 5 seconds (resets timer on manual click)
@@ -190,7 +193,7 @@ const LandingPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-surface-light dark:bg-[#000000] text-gray-900 dark:text-gray-100 transition-colors duration-300 overflow-x-hidden w-full">
+    <div ref={scrollContainerRef} className="h-screen overflow-y-auto overflow-x-hidden bg-surface-light dark:bg-[#000000] text-gray-900 dark:text-gray-100 transition-colors duration-300 w-full" style={{ overscrollBehaviorY: 'none' }}>
       {/* Decorative Orbs — dark mode only */}
       <div className="absolute top-0 left-1/4 w-[300px] md:w-[500px] h-[300px] md:h-[500px] bg-transparent dark:bg-blue-500/10 rounded-full blur-3xl pointer-events-none z-0" />
       <div className="absolute top-1/3 right-1/4 w-[250px] md:w-[400px] h-[250px] md:h-[400px] bg-transparent dark:bg-blue-500/5 rounded-full blur-3xl pointer-events-none z-0" />
