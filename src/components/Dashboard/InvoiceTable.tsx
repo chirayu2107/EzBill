@@ -11,6 +11,22 @@ import Button from "../UI/Button"
 import Card from "../UI/Card"
 import InvoicePreview from "../Invoice/InvoicePreview"
 import { useToast } from "../../hooks/useToast"
+import { getInitials, getAvatarGradient } from "../../utils/avatarUtils"
+
+
+
+const RenderCurrency = ({ amount, isTotal = false }: { amount: number; isTotal?: boolean }) => {
+  const formatted = formatCurrency(amount)
+  const symbol = formatted.charAt(0)
+  const rest = formatted.slice(1)
+  
+  return (
+    <span className={`ez-mono tracking-tight ${isTotal ? 'text-gray-900 dark:text-white font-bold text-xs md:text-sm' : 'text-gray-600 dark:text-gray-300 text-xs font-medium'}`}>
+      <span className="text-gray-400 dark:text-gray-500 mr-0.5 font-normal">{symbol}</span>
+      {rest}
+    </span>
+  )
+}
 
 interface InvoiceTableProps {
   invoices: Invoice[]
@@ -26,16 +42,16 @@ const InvoiceTable: React.FC<InvoiceTableProps> = ({ invoices, onViewInvoice, on
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null)
   const { toast } = useToast()
 
-  const getStatusPillClass = (status: Invoice["status"]) => {
+  const getStatusTextClass = (status: Invoice["status"]) => {
     switch (status) {
       case "paid":
-        return "ez-status-pill ez-status-pill--paid"
+        return "text-emerald-600 dark:text-emerald-400"
       case "unpaid":
-        return "ez-status-pill ez-status-pill--unpaid"
+        return "text-amber-600 dark:text-amber-400"
       case "overdue":
-        return "ez-status-pill ez-status-pill--overdue"
+        return "text-red-600 dark:text-red-400"
       default:
-        return "ez-status-pill"
+        return "text-gray-500 dark:text-gray-400"
     }
   }
 
@@ -142,16 +158,20 @@ const InvoiceTable: React.FC<InvoiceTableProps> = ({ invoices, onViewInvoice, on
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: 10 }}
                   transition={{ delay: index * 0.04 }}
-                  className="ez-card !rounded-lg p-3.5 relative"
+                  className="ez-card !rounded-xl p-4 relative"
                 >
-                  <div className="flex justify-between items-start mb-2.5">
-                    <div>
-                      <h4 className="text-gray-900 dark:text-white font-semibold text-sm ez-mono">{invoice.invoiceNumber}</h4>
-                      <p className="text-gray-500 dark:text-gray-400 text-xs mt-0.5">{invoice.customerName}</p>
+                  <div className="flex justify-between items-start mb-3">
+                    <div className="flex items-center gap-2.5">
+                      <div className={`w-8 h-8 rounded-full ${getAvatarGradient(invoice.customerName)} flex items-center justify-center text-white font-semibold text-xs shrink-0 shadow-sm`}>
+                        {getInitials(invoice.customerName)}
+                      </div>
+                      <div>
+                        <h4 className="text-gray-900 dark:text-white font-bold text-xs ez-mono bg-gray-100 dark:bg-white/[0.04] px-1.5 py-0.5 rounded border border-gray-200/50 dark:border-white/[0.04] inline-block mb-0.5">{invoice.invoiceNumber}</h4>
+                        <p className="text-gray-900 dark:text-white font-semibold text-sm leading-tight">{invoice.customerName}</p>
+                      </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className={getStatusPillClass(invoice.status)}>
-                        <span className="ez-status-dot" />
+                      <span className={`text-xs font-semibold capitalize tracking-wide ${getStatusTextClass(invoice.status)}`}>
                         {invoice.status}
                       </span>
                       <div className="relative">
@@ -242,20 +262,20 @@ const InvoiceTable: React.FC<InvoiceTableProps> = ({ invoices, onViewInvoice, on
 
           {/* Desktop Table View */}
           <div className="hidden md:block overflow-x-auto">
-            <table className="w-full">
+            <table className="w-full border-collapse table-fixed">
               <thead>
-                <tr className="border-b border-gray-100 dark:border-white/[0.04]">
-                  <th className="text-left py-3 px-4 text-[11px] font-semibold text-gray-400 dark:text-[#55555E] uppercase tracking-wider">Invoice #</th>
-                  <th className="text-left py-3 px-4 text-[11px] font-semibold text-gray-400 dark:text-[#55555E] uppercase tracking-wider">Customer</th>
-                  <th className="text-left py-3 px-4 text-[11px] font-semibold text-gray-400 dark:text-[#55555E] uppercase tracking-wider">Date</th>
-                  <th className="text-left py-3 px-4 text-[11px] font-semibold text-gray-400 dark:text-[#55555E] uppercase tracking-wider">Amount</th>
-                  <th className="text-left py-3 px-4 text-[11px] font-semibold text-gray-400 dark:text-[#55555E] uppercase tracking-wider">GST</th>
-                  <th className="text-left py-3 px-4 text-[11px] font-semibold text-gray-400 dark:text-[#55555E] uppercase tracking-wider">Total</th>
-                  <th className="text-left py-3 px-4 text-[11px] font-semibold text-gray-400 dark:text-[#55555E] uppercase tracking-wider">Status</th>
-                  <th className="text-left py-3 px-4 text-[11px] font-semibold text-gray-400 dark:text-[#55555E] uppercase tracking-wider">Actions</th>
+                <tr className="border-b border-gray-100 dark:border-white/[0.04] bg-gray-50/50 dark:bg-white/[0.01]">
+                  <th className="w-[13%] text-left py-3 px-4 text-[10px] font-bold text-gray-400 dark:text-[#55555E] uppercase tracking-widest">Invoice #</th>
+                  <th className="w-[18%] text-left py-3 px-4 text-[10px] font-bold text-gray-400 dark:text-[#55555E] uppercase tracking-widest">Customer</th>
+                  <th className="w-[12%] text-left py-3 px-4 text-[10px] font-bold text-gray-400 dark:text-[#55555E] uppercase tracking-widest">Date</th>
+                  <th className="w-[11%] text-right py-3 px-4 text-[10px] font-bold text-gray-400 dark:text-[#55555E] uppercase tracking-widest">Amount</th>
+                  <th className="w-[9%] text-right py-3 px-4 text-[10px] font-bold text-gray-400 dark:text-[#55555E] uppercase tracking-widest">GST</th>
+                  <th className="w-[11%] text-right py-3 px-4 text-[10px] font-bold text-gray-400 dark:text-[#55555E] uppercase tracking-widest">Total</th>
+                  <th className="w-[9%] text-center py-3 px-4 text-[10px] font-bold text-gray-400 dark:text-[#55555E] uppercase tracking-widest">Status</th>
+                  <th className="w-[17%] text-right py-3 px-4 text-[10px] font-bold text-gray-400 dark:text-[#55555E] uppercase tracking-widest">Actions</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="divide-y divide-gray-50 dark:divide-white/[0.02]">
                 <AnimatePresence>
                   {invoices.map((invoice, index) => (
                     <motion.tr
@@ -264,80 +284,96 @@ const InvoiceTable: React.FC<InvoiceTableProps> = ({ invoices, onViewInvoice, on
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -4 }}
                       transition={{ delay: index * 0.04 }}
-                      className="border-b border-gray-50 dark:border-white/[0.04] hover:bg-gray-50/80 dark:hover:bg-[#212124]/50 transition-colors duration-150 group"
+                      className="hover:bg-gray-50/60 dark:hover:bg-white/[0.01] transition-colors duration-150 group"
                     >
-                      <td className="py-3.5 px-4 text-gray-900 dark:text-white font-semibold text-sm ez-mono">{invoice.invoiceNumber}</td>
-                      <td className="py-3.5 px-4 text-gray-700 dark:text-gray-300 text-sm">{invoice.customerName}</td>
-                      <td className="py-3.5 px-4 text-gray-500 dark:text-gray-400 text-sm">{formatDate(invoice.date)}</td>
-                      <td className="py-3.5 px-4 text-gray-700 dark:text-gray-300 text-sm ez-number">{formatCurrency(invoice.subtotal)}</td>
-                      <td className="py-3.5 px-4 text-gray-500 dark:text-gray-400 text-sm ez-number">
-                        {invoice.gstBreakdown.isInterState ? (
-                          <span>{formatCurrency(invoice.gstBreakdown.igst)}</span>
-                        ) : (
-                          <span>{formatCurrency(invoice.gstBreakdown.cgst + invoice.gstBreakdown.sgst)}</span>
-                        )}
-                      </td>
-                      <td className="py-3.5 px-4 text-gray-900 dark:text-white font-semibold text-sm ez-number">{formatCurrency(invoice.total)}</td>
-                      <td className="py-3.5 px-4">
-                        <span className={getStatusPillClass(invoice.status)}>
-                          <span className="ez-status-dot" />
-                          {invoice.status}
+                      <td className="py-3.5 px-4 text-left">
+                        <span className="font-semibold text-[11px] ez-mono text-gray-900 dark:text-white bg-gray-100 dark:bg-white/[0.04] px-2.5 py-1 rounded border border-gray-200/50 dark:border-white/[0.04] tracking-tight">
+                          {invoice.invoiceNumber}
                         </span>
                       </td>
                       <td className="py-3.5 px-4">
-                        <div className="flex items-center gap-0.5">
+                        <div className="flex items-center gap-2.5">
+                          <div className={`w-7 h-7 rounded-full ${getAvatarGradient(invoice.customerName)} flex items-center justify-center text-white font-semibold text-[10px] shrink-0 shadow-sm`}>
+                            {getInitials(invoice.customerName)}
+                          </div>
+                          <span className="text-gray-900 dark:text-white font-medium text-xs tracking-tight">{invoice.customerName}</span>
+                        </div>
+                      </td>
+                      <td className="py-3.5 px-4 text-gray-500 dark:text-gray-400 text-xs tracking-tight truncate">{formatDate(invoice.date)}</td>
+                      <td className="py-3.5 px-4 text-right">
+                        <RenderCurrency amount={invoice.subtotal} />
+                      </td>
+                      <td className="py-3.5 px-4 text-right">
+                        <RenderCurrency
+                          amount={
+                            invoice.gstBreakdown.isInterState
+                              ? invoice.gstBreakdown.igst
+                              : invoice.gstBreakdown.cgst + invoice.gstBreakdown.sgst
+                          }
+                        />
+                      </td>
+                      <td className="py-3.5 px-4 text-right">
+                        <RenderCurrency amount={invoice.total} isTotal={true} />
+                      </td>
+                      <td className="py-3.5 px-4 text-center">
+                        <span className={`text-xs font-semibold capitalize tracking-wide ${getStatusTextClass(invoice.status)}`}>
+                          {invoice.status}
+                        </span>
+                      </td>
+                      <td className="py-3.5 px-4 text-right">
+                        <div className="flex items-center justify-end gap-0.5">
                           <motion.button
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.9 }}
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
                             onClick={() => onViewInvoice(invoice)}
-                            className="p-1.5 text-blue-500 hover:bg-blue-500/8 rounded-lg transition-colors"
+                            className="p-1.5 text-gray-400 dark:text-gray-500 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-500/10 dark:hover:bg-blue-500/10 rounded-lg transition-colors"
                             title="View Invoice"
                           >
-                            <Eye className="w-4 h-4" />
+                            <Eye className="w-3.5 h-3.5" />
                           </motion.button>
                           <motion.button
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.9 }}
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
                             onClick={() => handleDownload(invoice)}
-                            className="p-1.5 text-blue-500 hover:bg-blue-500/8 rounded-lg transition-colors"
+                            className="p-1.5 text-gray-400 dark:text-gray-500 hover:text-emerald-600 dark:hover:text-emerald-400 hover:bg-emerald-500/10 dark:hover:bg-emerald-500/10 rounded-lg transition-colors"
                             title="Download PDF"
                           >
-                            <Download className="w-4 h-4" />
+                            <Download className="w-3.5 h-3.5" />
                           </motion.button>
                           <motion.button
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.9 }}
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
                             onClick={() => onEditInvoice(invoice)}
-                            className="p-1.5 text-gray-400 hover:bg-gray-500/8 rounded-lg transition-colors"
+                            className="p-1.5 text-gray-400 dark:text-gray-500 hover:text-amber-600 dark:hover:text-amber-400 hover:bg-amber-500/10 dark:hover:bg-amber-500/10 rounded-lg transition-colors"
                             title="Edit Invoice"
                           >
-                            <Edit className="w-4 h-4" />
+                            <Edit className="w-3.5 h-3.5" />
                           </motion.button>
                           <motion.button
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.9 }}
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
                             onClick={() => toggleInvoiceStatus(invoice)}
                             className={`p-1.5 rounded-lg transition-colors ${
                               invoice.status === "paid"
-                                ? "text-amber-500 hover:bg-amber-500/8"
-                                : "text-blue-500 hover:bg-blue-500/8"
+                                ? "text-gray-400 dark:text-gray-500 hover:text-orange-600 dark:hover:text-orange-400 hover:bg-orange-500/10 dark:hover:bg-orange-500/10"
+                                : "text-gray-400 dark:text-gray-500 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-500/10 dark:hover:bg-blue-500/10"
                             }`}
                             title={invoice.status === "paid" ? "Mark as Unpaid" : "Mark as Paid"}
                           >
                             {invoice.status === "paid" ? (
-                              <XCircle className="w-4 h-4" />
+                              <XCircle className="w-3.5 h-3.5" />
                             ) : (
-                              <CheckCircle className="w-4 h-4" />
+                              <CheckCircle className="w-3.5 h-3.5" />
                             )}
                           </motion.button>
                           <motion.button
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.9 }}
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
                             onClick={() => handleDeleteClick(invoice)}
-                            className="p-1.5 text-red-500 hover:bg-red-500/8 rounded-lg transition-colors"
+                            className="p-1.5 text-gray-400 dark:text-gray-500 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-500/10 dark:hover:bg-red-500/10 rounded-lg transition-colors"
                             title="Delete Invoice"
                           >
-                            <Trash2 className="w-4 h-4" />
+                            <Trash2 className="w-3.5 h-3.5" />
                           </motion.button>
                         </div>
                       </td>

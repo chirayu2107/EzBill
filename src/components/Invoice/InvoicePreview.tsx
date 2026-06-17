@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef, useCallback } from "react"
 import type { Invoice } from "../../types"
 import { useAuth } from "../../context/AuthContext"
 import { formatCurrency, formatDate } from "../../utils/calculations"
@@ -21,6 +21,44 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({ invoice, onClose, autoD
   const { toast } = useToast()
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false)
   const [signatureError, setSignatureError] = useState(false)
+
+  // ── Mobile scaling logic ──
+  const INVOICE_WIDTH = 680
+  const wrapperRef = useRef<HTMLDivElement>(null)
+  const contentRef = useRef<HTMLDivElement>(null)
+  const [scale, setScale] = useState(1)
+  const [wrapperHeight, setWrapperHeight] = useState<number | undefined>(undefined)
+
+  const updateScale = useCallback(() => {
+    if (!wrapperRef.current || !contentRef.current) return
+    const containerWidth = wrapperRef.current.offsetWidth
+    if (containerWidth < INVOICE_WIDTH) {
+      const s = containerWidth / INVOICE_WIDTH
+      setScale(s)
+      setWrapperHeight(contentRef.current.scrollHeight * s)
+    } else {
+      setScale(1)
+      setWrapperHeight(undefined)
+    }
+  }, [])
+
+  useEffect(() => {
+    updateScale()
+    window.addEventListener("resize", updateScale)
+    // Also update after a short delay to catch render completion
+    const timer = setTimeout(updateScale, 100)
+    return () => {
+      window.removeEventListener("resize", updateScale)
+      clearTimeout(timer)
+    }
+  }, [updateScale])
+
+  // Delay backdrop-close so the tap that opened the modal doesn't instantly close it
+  const [backdropReady, setBackdropReady] = useState(false)
+  useEffect(() => {
+    const t = setTimeout(() => setBackdropReady(true), 300)
+    return () => clearTimeout(t)
+  }, [])
 
   // Auto-download functionality
   useEffect(() => {
@@ -171,31 +209,37 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({ invoice, onClose, autoD
 
   return (
     <div
-      className={`fixed inset-0 bg-black/50 flex items-start justify-center overflow-y-auto z-50 ${autoDownload ? "pointer-events-none" : ""}`}
+      className={`fixed inset-0 bg-black/50 flex items-center justify-center p-2 sm:p-4 overflow-y-auto z-50 ${autoDownload ? "pointer-events-none" : ""}`}
+      onClick={!autoDownload && backdropReady ? onClose : undefined}
     >
-      <div className={`w-full max-w-4xl mx-auto my-4 px-4 ${autoDownload ? "opacity-0" : ""}`}>
-
+      <div 
+        className={`w-full max-w-4xl bg-white dark:bg-[#1a1a1d] rounded-xl shadow-2xl overflow-hidden border border-gray-200/80 dark:border-white/[0.06] transition-colors ${autoDownload ? "opacity-0" : ""}`} 
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* ── Top action bar (no-print) ── */}
         {!autoDownload && (
-          <div className="no-print sticky top-0 z-10 flex items-center justify-between px-4 py-3 mb-4 bg-white dark:bg-[#1a1a1d] rounded-xl border border-gray-200 dark:border-white/[0.06] shadow-md">
+          <div className="no-print flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-0 px-4 py-3 bg-gray-50 dark:bg-[#141416] border-b border-gray-200 dark:border-white/[0.06] transition-colors">
             <h2 className="text-sm font-semibold text-gray-800 dark:text-white">Invoice Preview</h2>
-            <div className="flex items-center gap-2">
-              <Button onClick={handleDownloadPDF} icon={Download} variant="primary" size="sm" disabled={isGeneratingPDF} className={isGeneratingPDF ? "opacity-75" : ""}>
+            <div className="flex items-center gap-2 w-full sm:w-auto">
+              <Button onClick={handleDownloadPDF} icon={Download} variant="primary" size="sm" disabled={isGeneratingPDF} className={`flex-1 sm:flex-none ${isGeneratingPDF ? "opacity-75" : ""}`}>
                 {isGeneratingPDF ? "Generating..." : "Download"}
               </Button>
-              <Button onClick={handlePrint} icon={Printer} variant="secondary" size="sm">Print</Button>
-              <Button onClick={onClose} icon={X} variant="secondary" size="sm">Close</Button>
+              <Button onClick={handlePrint} icon={Printer} variant="secondary" size="sm" className="flex-1 sm:flex-none">Print</Button>
+              <Button onClick={onClose} icon={X} variant="secondary" size="sm" className="flex-1 sm:flex-none">Close</Button>
             </div>
           </div>
         )}
 
-        {/* ── Invoice Paper ── */}
-        <div
-          className="invoice-print-content"
-          id={`invoice-preview-${invoice.id}`}
-          style={{ fontFamily: "system-ui, -apple-system, sans-serif", fontSize: "14px", lineHeight: "1.5", color: "#111827", backgroundColor: "#fff" }}
-        >
-          <div style={{ padding: "28px 32px" }}>
+        {/* ── Invoice Paper Scroll Container ── */}
+        <div className="p-4 overflow-y-auto max-h-[calc(90vh-80px)] bg-gray-50/50 dark:bg-[#121214]">
+          <div ref={wrapperRef} style={{ width: "100%", overflow: scale < 1 ? "hidden" : undefined, height: wrapperHeight }}>
+            <div
+              ref={contentRef}
+              className="invoice-print-content"
+              id={`invoice-preview-${invoice.id}`}
+              style={{ fontFamily: "system-ui, -apple-system, sans-serif", fontSize: "14px", lineHeight: "1.5", color: "#111827", backgroundColor: "#fff", ...(scale < 1 ? { width: "680px", maxWidth: "none", transformOrigin: "top left", transform: `scale(${scale})` } : {}) }}
+            >
+              <div style={{ padding: "28px 32px" }}>
             <div style={{ border: "1px solid #1f2937", padding: "16px" }}>
 
               {/* Header: TAX INVOICE + ORIGINAL FOR RECIPIENT */}
@@ -452,6 +496,8 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({ invoice, onClose, autoD
             </div>
           </div>
         </div>
+        </div>
+      </div>
       </div>
     </div>
   )

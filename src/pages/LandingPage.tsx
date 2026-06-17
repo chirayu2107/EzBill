@@ -726,7 +726,7 @@ const LandingPage: React.FC = () => {
                         {[
                           { id: 'slate', color: 'bg-slate-500', ring: 'ring-slate-500' },
                           { id: 'mint', color: 'bg-blue-500', ring: 'ring-blue-500' },
-                          { id: 'coral', color: 'bg-rose-500', ring: 'ring-rose-500' },
+                          { id: 'coral', color: 'bg-rose-300', ring: 'ring-rose-300' },
                         ].map((btn) => (
                           <button
                             key={btn.id}
@@ -747,14 +747,14 @@ const LandingPage: React.FC = () => {
                         <div className="flex flex-col gap-1">
                           <div className="flex items-center gap-1.5">
                             <div className={`w-4 h-4 rounded flex items-center justify-center transition-colors duration-500 ${
-                              previewTheme === 'slate' ? 'bg-slate-500/10 text-slate-500' : previewTheme === 'mint' ? 'bg-blue-500/10 text-blue-500' : 'bg-rose-500/10 text-rose-500'
+                              previewTheme === 'slate' ? 'bg-slate-500/10 text-slate-500' : previewTheme === 'mint' ? 'bg-blue-500/10 text-blue-500' : 'bg-rose-400/10 text-rose-400'
                             }`}><Cloud className="w-2.5 h-2.5"/></div>
                             <span className="font-bold text-[10px] text-gray-800 dark:text-white uppercase tracking-tight">Bloom Agency</span>
                           </div>
                           <span className="text-[7px] text-gray-400 w-24">123 Design Street, Creative District, NY 10001</span>
                         </div>
                         <span className={`font-bold font-mono text-[9px] px-1.5 py-0.5 rounded transition-all duration-300 ${
-                          previewTheme === 'slate' ? 'bg-slate-500/10 text-slate-500' : previewTheme === 'mint' ? 'bg-blue-500/10 text-blue-500' : 'bg-rose-500/10 text-rose-500'
+                          previewTheme === 'slate' ? 'bg-slate-500/10 text-slate-500' : previewTheme === 'mint' ? 'bg-blue-500/10 text-blue-500' : 'bg-rose-400/10 text-rose-400'
                         }`}>#082</span>
                       </div>
                       
@@ -779,7 +779,7 @@ const LandingPage: React.FC = () => {
                         <div className="text-right">
                           <span className="text-[7px] text-gray-400 uppercase tracking-widest font-bold block mb-0.5">Total Due</span>
                           <span className={`font-bold font-mono text-xs transition-colors duration-500 ${
-                            previewTheme === 'slate' ? 'text-slate-500 dark:text-slate-400' : previewTheme === 'mint' ? 'text-blue-500 dark:text-blue-400' : 'text-rose-500 dark:text-rose-400'
+                            previewTheme === 'slate' ? 'text-slate-500 dark:text-slate-400' : previewTheme === 'mint' ? 'text-blue-500 dark:text-blue-400' : 'text-rose-400 dark:text-rose-400'
                           }`}>₹1,200.00</span>
                         </div>
                       </div>

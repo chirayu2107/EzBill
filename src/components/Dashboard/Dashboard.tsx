@@ -84,12 +84,28 @@ const AnimatedNumber: React.FC<{
 }
 
 const Dashboard: React.FC = () => {
-  const { invoices, loading, error, refreshInvoices, getDashboardSummary } = useApp()
+  const { invoices, purchaseBills, loading, error, refreshInvoices, getDashboardSummary } = useApp()
   const { user } = useAuth()
   const navigate = useNavigate()
   const [statusFilter, setStatusFilter] = useState<"all" | "paid" | "unpaid" | "overdue">("all")
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null)
   const [refreshing, setRefreshing] = useState(false)
+  const [hoveredBar, setHoveredBar] = useState<number | null>(null)
+
+  const getGreeting = () => {
+    const hour = new Date().getHours()
+    if (hour < 12) return "Good morning"
+    if (hour < 17) return "Good afternoon"
+    return "Good evening"
+  }
+
+  const formattedDate = useMemo(() => {
+    return new Date().toLocaleDateString("en-US", {
+      weekday: "long",
+      month: "long",
+      day: "numeric",
+    })
+  }, [])
 
   const summary = getDashboardSummary()
 
@@ -100,6 +116,48 @@ const Dashboard: React.FC = () => {
     let running = 0
     return last8.map(inv => { running += inv.total; return running })
   }, [invoices])
+
+  const miniChartData = useMemo(() => {
+    const sorted = [...invoices]
+      .filter(inv => inv.status !== 'overdue')
+      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+    const last5 = sorted.slice(-5)
+    if (last5.length === 0) {
+      return [
+        { label: "INV-01", value: 12000, height: 40 },
+        { label: "INV-02", value: 18000, height: 65 },
+        { label: "INV-03", value: 9000, height: 30 },
+        { label: "INV-04", value: 24000, height: 85 },
+        { label: "INV-05", value: 15000, height: 50 },
+      ]
+    }
+    const maxVal = Math.max(...last5.map((inv) => inv.total), 1)
+    return last5.map((inv) => ({
+      label: inv.invoiceNumber,
+      value: inv.total,
+      height: Math.max((inv.total / maxVal) * 80, 15),
+      invoice: inv,
+    }))
+  }, [invoices])
+
+  const feedItems = useMemo(() => {
+    if (purchaseBills && purchaseBills.length > 0) {
+      const sorted = [...purchaseBills].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+      return sorted.slice(0, 3).map((bill) => ({
+        id: bill.id,
+        name: bill.vendorName,
+        amount: bill.total,
+        date: new Date(bill.date).toLocaleDateString("en-IN", { month: "short", day: "numeric" }),
+        status: bill.status,
+        logo: bill.vendorName.substring(0, 2).toUpperCase(),
+      }))
+    }
+    return [
+      { id: "mock-aws", name: "AWS Cloud Services", amount: 4820.00, date: "Jun 15", status: "paid", logo: "AW" },
+      { id: "mock-google", name: "Google Workspace Admin", amount: 1250.00, date: "Jun 14", status: "paid", logo: "GW" },
+      { id: "mock-github", name: "GitHub Copilot Enterprise", amount: 3200.00, date: "Jun 10", status: "unpaid", logo: "GH" },
+    ]
+  }, [purchaseBills])
 
   const filteredInvoices = invoices.filter((invoice) => {
     if (statusFilter === "all") return true
@@ -171,29 +229,31 @@ const Dashboard: React.FC = () => {
 
   return (
     <motion.div
-      className="space-y-6 pt-20 lg:pt-0"
+      className="space-y-6 pt-20 lg:pt-0 relative overflow-hidden min-h-screen"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
     >
       {/* ═══ HEADER ═══ */}
-      <motion.div variants={itemVariants} className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+      <motion.div variants={itemVariants} className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 relative z-10">
         <div>
           <h1 className="text-2xl md:text-[28px] font-bold tracking-tight text-gray-900 dark:text-white leading-tight">
-            Welcome back,{" "}
+            {getGreeting()},{" "}
             <span className="bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent">
               {user?.fullName?.split(" ")[0] || "User"}
             </span>{" "}
             👋
           </h1>
-          <p className="text-gray-500 dark:text-[#71717A] text-sm mt-1">
-            Here's what's happening with your business today
+          <p className="text-gray-500 dark:text-[#71717A] text-sm mt-1 flex items-center gap-2 flex-wrap">
+            <span>Here's what's happening with your business today</span>
+            <span className="hidden sm:inline text-gray-300 dark:text-white/10">•</span>
+            <span className="hidden sm:inline font-semibold opacity-85" style={{ color: "rgb(var(--color-accent))" }}>{formattedDate}</span>
           </p>
         </div>
         <div className="flex items-center gap-2 w-full md:w-auto">
           <button
             onClick={() => navigate("/dashboard/create-invoice")}
-            className="inline-flex items-center justify-center gap-2 px-4 py-2 text-xs font-semibold rounded-xl bg-blue-600 text-white hover:bg-blue-700 active:scale-[0.97] transition-all duration-200 shadow-lg shadow-blue-600/20 flex-1 md:flex-none"
+            className="inline-flex items-center justify-center gap-2 px-4 py-2 text-xs font-semibold rounded-xl bg-blue-600 text-white hover:bg-blue-700 active:scale-[0.97] transition-all duration-200 shadow-lg shadow-blue-600/20 flex-1 md:flex-none btn-shine"
           >
             <Plus className="w-4 h-4" />
             New Invoice
@@ -210,11 +270,11 @@ const Dashboard: React.FC = () => {
       </motion.div>
 
       {/* ═══ BENTO GRID ═══ */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 relative z-10">
 
         {/* Revenue Hero Card — spans 2 cols */}
         <motion.div variants={itemVariants} className="col-span-2">
-          <div className="ez-hero-card p-5 md:p-6 h-full">
+          <div className="ez-hero-card ez-diagonal-gloss p-5 md:p-6 h-full">
             <div className="relative z-10">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
@@ -285,99 +345,205 @@ const Dashboard: React.FC = () => {
           </div>
         </motion.div>
 
-        {/* Paid — with progress bar */}
-        <motion.div variants={itemVariants}>
-          <div className="ez-card ez-bento-blue h-full p-5">
-            <div className="flex items-center gap-2 mb-3">
-              <div className="p-1.5 rounded-lg bg-blue-500/10">
-                <IndianRupee className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+        {/* Paid and Analytics nested container — matches height of each other */}
+        <div className="col-span-2 grid grid-cols-2 gap-3 md:gap-4 h-full">
+          {/* Paid — with progress bar */}
+          <motion.div variants={itemVariants} className="h-full">
+            <div className="ez-card ez-bento-blue h-full p-5 flex flex-col justify-between">
+              <div>
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="p-1.5 rounded-lg bg-blue-500/10">
+                    <IndianRupee className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+                  </div>
+                  <span className="text-xs font-medium text-gray-500 dark:text-[#71717A]">Paid</span>
+                </div>
+                <p className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white ez-number tracking-tight">
+                  <AnimatedNumber value={summary.paidAmount} format={(n) => formatCurrency(Math.round(n))} />
+                </p>
               </div>
-              <span className="text-xs font-medium text-gray-500 dark:text-[#71717A]">Paid</span>
-            </div>
-            <p className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white ez-number tracking-tight">
-              <AnimatedNumber value={summary.paidAmount} format={(n) => formatCurrency(Math.round(n))} />
-            </p>
-            <div className="flex items-center gap-2 mt-3">
-              <div className="flex-1 h-1 bg-gray-200/60 dark:bg-white/[0.06] rounded-full overflow-hidden">
-                <motion.div
-                  className="h-full bg-gradient-to-r from-blue-500 to-blue-400 rounded-full"
-                  initial={{ width: 0 }}
-                  animate={{ width: `${paidPercent}%` }}
-                  transition={{ delay: 0.5, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-                />
+              <div className="flex items-center gap-2 mt-3">
+                <div className="flex-1 h-1 bg-gray-200/60 dark:bg-white/[0.06] rounded-full overflow-hidden">
+                  <motion.div
+                    className="h-full bg-gradient-to-r from-blue-500 to-blue-400 rounded-full"
+                    initial={{ width: 0 }}
+                    animate={{ width: `${paidPercent}%` }}
+                    transition={{ delay: 0.5, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+                  />
+                </div>
+                <span className="text-[10px] font-semibold text-blue-600 dark:text-blue-400 tabular-nums">{paidPercent}%</span>
               </div>
-              <span className="text-[10px] font-semibold text-blue-600 dark:text-blue-400 tabular-nums">{paidPercent}%</span>
             </div>
-          </div>
-        </motion.div>
+          </motion.div>
 
-        {/* Analytics */}
-        <motion.div variants={itemVariants}>
-          <div className="ez-card ez-bento-blue h-full p-5">
-            <div className="flex items-center gap-2 mb-3">
-              <div className="p-1.5 rounded-lg bg-blue-500/10">
-                <BarChart3 className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+          {/* Analytics — Interactive Chart Card */}
+          <motion.div variants={itemVariants} className="h-full">
+            <div className="ez-card ez-bento-blue h-full p-5 flex flex-col justify-between">
+              <div>
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="p-1.5 rounded-lg bg-blue-500/10">
+                    <BarChart3 className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+                  </div>
+                  <span className="text-xs font-medium text-gray-500 dark:text-[#71717A]">Analytics</span>
+                </div>
               </div>
-              <span className="text-xs font-medium text-gray-500 dark:text-[#71717A]">Analytics</span>
-            </div>
-            <p className="text-xl md:text-2xl font-bold text-gray-900 dark:text-white ez-number tracking-tight">
-              <AnimatedNumber value={invoices.length} format={(n) => Math.round(n).toString()} />
-            </p>
-            <button
-              onClick={() => navigate("/dashboard/analytics")}
-              className="flex items-center gap-1 text-xs font-medium text-blue-600 dark:text-blue-400 mt-3 hover:gap-2 transition-all duration-200 group"
-            >
-              View insights
-              <ArrowRight className="w-3 h-3 transition-transform group-hover:translate-x-0.5" />
-            </button>
-          </div>
-        </motion.div>
 
-        {/* Quick Links Row — spans 2 cols */}
+              {/* Vertical SVG Chart Bars */}
+              <div className="h-20 flex items-end justify-between gap-1.5 mt-2 relative">
+                {miniChartData.map((item, idx) => {
+                  const isHovered = hoveredBar === idx
+                  return (
+                    <div
+                      key={idx}
+                      className="flex-1 flex flex-col items-center group cursor-pointer relative"
+                      onMouseEnter={() => setHoveredBar(idx)}
+                      onMouseLeave={() => setHoveredBar(null)}
+                    >
+                      {/* Outer Bar slot */}
+                      <div className="w-full bg-gray-100/40 dark:bg-white/[0.01] rounded-t-lg h-16 flex items-end relative transition-all duration-200">
+                        <motion.div
+                          className="w-full rounded-t-md bg-gradient-to-t from-blue-600 to-blue-400 transition-all duration-200"
+                          initial={{ height: 0 }}
+                          animate={{ height: `${item.height}%` }}
+                          transition={{ type: "spring", stiffness: 180, damping: 18, delay: idx * 0.04 }}
+                          style={isHovered ? {
+                            boxShadow: `0 0 10px rgba(var(--color-accent), 0.35)`,
+                          } : undefined}
+                        />
+                      </div>
+
+                      {/* Tooltip Overlay */}
+                      {hoveredBar === idx && (
+                        <div className="absolute bottom-full mb-2 z-50 p-2 bg-gray-950 dark:bg-[#18181b] text-white text-[10px] rounded-lg shadow-xl border border-white/[0.08] pointer-events-none whitespace-nowrap">
+                          <p className="font-semibold text-[9px] truncate max-w-[80px]">{item.label}</p>
+                          <p className="text-blue-400 font-bold font-mono mt-0.5">{formatCurrency(item.value)}</p>
+                        </div>
+                      )}
+                    </div>
+                  )
+                })}
+              </div>
+
+              <button
+                onClick={() => navigate("/dashboard/analytics")}
+                className="flex items-center gap-1 text-[11px] font-medium text-blue-600 dark:text-blue-400 mt-3 hover:gap-2 transition-all duration-200 group"
+              >
+                View insights
+                <ArrowRight className="w-3 h-3 transition-transform group-hover:translate-x-0.5" />
+              </button>
+            </div>
+          </motion.div>
+        </div>
+
+        {/* Quick Links Split Card — spans 2 cols */}
         <motion.div variants={itemVariants} className="col-span-2">
-          <div className="ez-card h-full">
-            <div className="grid grid-cols-3 divide-x divide-gray-100 dark:divide-white/[0.04]">
-              <button
-                onClick={() => navigate("/dashboard/create-invoice")}
-                className="flex flex-col items-center gap-2 py-4 hover:bg-gray-50 dark:hover:bg-white/[0.02] rounded-l-xl transition-colors group"
-              >
-                <div className="p-2.5 rounded-xl bg-blue-50 dark:bg-blue-500/10 group-hover:bg-blue-100 dark:group-hover:bg-blue-500/15 transition-colors">
-                  <Plus className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+          <div className="ez-card h-full overflow-hidden">
+            <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-gray-100 dark:divide-white/[0.04] h-full">
+              
+              {/* Left Column: Quick Actions */}
+              <div className="p-5 flex flex-col justify-between">
+                <div>
+                  <h3 className="text-xs font-bold text-gray-950 dark:text-white mb-3 tracking-tight">Quick Actions</h3>
                 </div>
-                <span className="text-xs font-medium text-gray-700 dark:text-[#A1A1AA]">New Invoice</span>
-              </button>
-              <button
-                onClick={() => navigate("/dashboard/invoices")}
-                className="flex flex-col items-center gap-2 py-4 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors group"
-              >
-                <div className="p-2.5 rounded-xl bg-violet-50 dark:bg-violet-500/10 group-hover:bg-violet-100 dark:group-hover:bg-violet-500/15 transition-colors">
-                  <FileText className="w-4 h-4 text-violet-600 dark:text-violet-400" />
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    onClick={() => navigate("/dashboard/create-invoice")}
+                    className="flex items-center gap-2.5 p-2 bg-gray-50 dark:bg-white/[0.02] hover:bg-blue-500/[0.02] dark:hover:bg-blue-500/[0.02] border border-gray-100 dark:border-white/[0.03] hover:border-blue-500/25 rounded-xl transition-all duration-200 group text-left hover:shadow-[0_0_12px_rgba(var(--color-accent),0.06)]"
+                  >
+                    <div className="p-2 rounded-lg bg-blue-50 dark:bg-blue-500/10 group-hover:bg-blue-100 dark:group-hover:bg-blue-500/15">
+                      <Plus className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+                    </div>
+                    <div>
+                      <div className="text-[11px] font-semibold text-gray-900 dark:text-white">New Invoice</div>
+                      <div className="text-[9px] text-gray-400 dark:text-[#52525b]">Draft & print</div>
+                    </div>
+                  </button>
+                  
+                  <button
+                    onClick={() => navigate("/dashboard/invoices")}
+                    className="flex items-center gap-2.5 p-2 bg-gray-50 dark:bg-white/[0.02] hover:bg-violet-500/[0.02] dark:hover:bg-violet-500/[0.02] border border-gray-100 dark:border-white/[0.03] hover:border-violet-500/25 rounded-xl transition-all duration-200 group text-left hover:shadow-[0_0_12px_rgba(139,92,246,0.06)]"
+                  >
+                    <div className="p-2 rounded-lg bg-violet-50 dark:bg-violet-500/10 group-hover:bg-violet-100 dark:group-hover:bg-violet-500/15">
+                      <FileText className="w-3.5 h-3.5 text-violet-600 dark:text-violet-400" />
+                    </div>
+                    <div>
+                      <div className="text-[11px] font-semibold text-gray-900 dark:text-white">All Invoices</div>
+                      <div className="text-[9px] text-gray-400 dark:text-[#52525b]">History log</div>
+                    </div>
+                  </button>
+
+                  <button
+                    onClick={() => navigate("/dashboard/gst-reports")}
+                    className="flex items-center gap-2.5 p-2 bg-gray-50 dark:bg-white/[0.02] hover:bg-amber-500/[0.02] dark:hover:bg-amber-500/[0.02] border border-gray-100 dark:border-white/[0.03] hover:border-amber-500/25 rounded-xl transition-all duration-200 group text-left hover:shadow-[0_0_12px_rgba(245,158,11,0.06)]"
+                  >
+                    <div className="p-2 rounded-lg bg-amber-50 dark:bg-amber-500/10 group-hover:bg-amber-100 dark:group-hover:bg-amber-500/15">
+                      <BarChart3 className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+                    </div>
+                    <div>
+                      <div className="text-[11px] font-semibold text-gray-900 dark:text-white">GST Reports</div>
+                      <div className="text-[9px] text-gray-400 dark:text-[#52525b]">Tax compute</div>
+                    </div>
+                  </button>
+
+                  <button
+                    onClick={() => navigate("/dashboard/purchase-bills")}
+                    className="flex items-center gap-2.5 p-2 bg-gray-50 dark:bg-white/[0.02] hover:bg-emerald-500/[0.02] dark:hover:bg-emerald-500/[0.02] border border-gray-100 dark:border-white/[0.03] hover:border-emerald-500/25 rounded-xl transition-all duration-200 group text-left hover:shadow-[0_0_12px_rgba(16,185,129,0.06)]"
+                  >
+                    <div className="p-2 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 group-hover:bg-emerald-100 dark:group-hover:bg-emerald-500/15">
+                      <ShoppingBag className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+                    </div>
+                    <div>
+                      <div className="text-[11px] font-semibold text-gray-900 dark:text-white">Purchases</div>
+                      <div className="text-[9px] text-gray-400 dark:text-[#52525b]">Log expense</div>
+                    </div>
+                  </button>
                 </div>
-                <span className="text-xs font-medium text-gray-700 dark:text-[#A1A1AA]">All Invoices</span>
-              </button>
-              <button
-                onClick={() => navigate("/dashboard/gst-reports")}
-                className="flex flex-col items-center gap-2 py-4 hover:bg-gray-50 dark:hover:bg-white/[0.02] rounded-r-xl transition-colors group"
-              >
-                <div className="p-2.5 rounded-xl bg-amber-50 dark:bg-amber-500/10 group-hover:bg-amber-100 dark:group-hover:bg-amber-500/15 transition-colors">
-                  <BarChart3 className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+              </div>
+
+              {/* Right Column: Supplier Expense Feed */}
+              <div className="p-5 flex flex-col justify-between">
+                <div>
+                  <div className="flex justify-between items-center mb-3">
+                    <div className="inline-flex items-center gap-1.5">
+                      <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                      <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest">Live Feed</span>
+                    </div>
+                    <span className="text-[9px] text-gray-400 dark:text-[#52525b] font-medium">Supplier expenses</span>
+                  </div>
                 </div>
-                <span className="text-xs font-medium text-gray-700 dark:text-[#A1A1AA]">GST Reports</span>
-              </button>
+                
+                <div className="space-y-2">
+                  {feedItems.map((item) => (
+                    <div key={item.id} className="flex items-center justify-between p-2 bg-gray-50/50 dark:bg-white/[0.01] hover:bg-gray-100 dark:hover:bg-white/[0.02] border border-gray-100/50 dark:border-white/[0.02] rounded-xl transition-all duration-150">
+                      <div className="flex items-center gap-2">
+                        <div className="w-7 h-7 rounded-lg bg-gray-100 dark:bg-white/[0.05] border border-gray-200/50 dark:border-white/[0.04] flex items-center justify-center text-[10px] font-bold text-gray-600 dark:text-gray-400 shrink-0">
+                          {item.logo}
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-[11px] font-semibold text-gray-800 dark:text-gray-200 truncate leading-tight">{item.name}</p>
+                          <p className="text-[9px] text-gray-400 dark:text-[#52525b]">{item.date}</p>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-[11px] font-bold text-gray-900 dark:text-white ez-number leading-tight">{formatCurrency(item.amount)}</p>
+                        <div className="flex items-center justify-end gap-1 mt-0.5">
+                          <span className={`w-1 h-1 rounded-full ${item.status === 'paid' ? 'bg-emerald-500 animate-pulse-glow text-emerald-500' : 'bg-amber-500 text-amber-500'}`} />
+                          <span className="text-[8px] font-bold uppercase tracking-wider text-gray-400 dark:text-[#52525b]">{item.status}</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
             </div>
           </div>
         </motion.div>
       </div>
 
       {/* ═══ RECENT INVOICES ═══ */}
-      <motion.div className="space-y-4" variants={itemVariants}>
+      <motion.div className="space-y-4 relative z-10" variants={itemVariants}>
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
           <div>
-            {/* Landing page-style section label */}
-            <div className="inline-flex items-center gap-1.5 mb-1">
-              <div className="w-1 h-1 rounded-full bg-blue-500" />
-              <span className="text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest">Recent</span>
-            </div>
             <h2 className="text-lg font-bold text-gray-900 dark:text-white tracking-tight">Invoices</h2>
           </div>
           {/* Filter tabs */}
@@ -415,9 +581,10 @@ const Dashboard: React.FC = () => {
             <Button
               onClick={() => navigate("/dashboard/invoices")}
               variant="secondary"
-              className="px-8"
+              className="px-8 group"
             >
-              View All Invoices ({invoices.length})
+              <span>View All Invoices ({invoices.length})</span>
+              <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1 duration-200" />
             </Button>
           </motion.div>
         )}

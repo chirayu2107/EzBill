@@ -3,11 +3,12 @@
 import type React from "react"
 import { useState, useEffect, useRef } from "react"
 import { useAuth } from "../../context/AuthContext"
+import { useTheme } from "../../context/ThemeContext"
 import { useToast } from "../../hooks/useToast"
 import {
   User, Mail, Phone, CreditCard, MapPin, Building, Hash,
   Save, AlertCircle, LogOut, Pen, Shield,
-  Check, ChevronRight, Briefcase, RefreshCw,
+  Check, ChevronRight, Briefcase, RefreshCw, Sun, Moon, Palette,
 } from "lucide-react"
 import SignatureUpload from "./SignatureUpload"
 import LogoUpload from "./LogoUpload"
@@ -140,6 +141,7 @@ function FormTextarea({
 
 const Profile: React.FC = () => {
   const { user, updateProfile, logout } = useAuth()
+  const { theme, toggleTheme } = useTheme()
   const { toast } = useToast()
   const [isEditing, setIsEditing] = useState(false)
   const [saving, setSaving] = useState(false)
@@ -147,6 +149,58 @@ const Profile: React.FC = () => {
   const [activeTab, setActiveTab] = useState<TabId>("profile")
   const tabsRef = useRef<HTMLDivElement>(null)
   const [indicatorStyle, setIndicatorStyle] = useState<{ left: number; width: number }>({ left: 0, width: 0 })
+
+  /* ── Accent state ── */
+  const [accent, setAccent] = useState(() => {
+    return localStorage.getItem("ezbill-accent") || "blue"
+  })
+
+  const changeAccent = (newAccent: string) => {
+    setAccent(newAccent)
+    localStorage.setItem("ezbill-accent", newAccent)
+    if (newAccent === "blue") {
+      document.documentElement.removeAttribute("data-theme-accent")
+    } else {
+      document.documentElement.setAttribute("data-theme-accent", newAccent)
+    }
+  }
+
+  /* ── Accent palette map ── */
+  const ACCENT_PALETTES: Record<string, {
+    banner: string; orb1: string; orb2: string;
+    avatar: string; avatarShadow: string;
+  }> = {
+    blue: {
+      banner: "linear-gradient(135deg, #1d4ed8 0%, #2563eb 30%, #60a5fa 65%, #2563eb 100%)",
+      orb1: "radial-gradient(circle, rgba(147,197,253,0.4), transparent 70%)",
+      orb2: "radial-gradient(circle, rgba(96,165,250,0.3), transparent 70%)",
+      avatar: "linear-gradient(135deg, #2563eb 0%, #1d4ed8 60%, #1e40af 100%)",
+      avatarShadow: "0 4px 20px rgba(37,99,235,0.35), 0 2px 8px rgba(0,0,0,0.12)",
+    },
+    mint: {
+      banner: "linear-gradient(135deg, #047857 0%, #059669 30%, #34d399 65%, #059669 100%)",
+      orb1: "radial-gradient(circle, rgba(110,231,183,0.4), transparent 70%)",
+      orb2: "radial-gradient(circle, rgba(52,211,153,0.3), transparent 70%)",
+      avatar: "linear-gradient(135deg, #059669 0%, #047857 60%, #065f46 100%)",
+      avatarShadow: "0 4px 20px rgba(5,150,105,0.35), 0 2px 8px rgba(0,0,0,0.12)",
+    },
+    coral: {
+      banner: "linear-gradient(135deg, #cb687a 0%, #f291a3 30%, #ffd0d8 65%, #f291a3 100%)",
+      orb1: "radial-gradient(circle, rgba(255,208,216,0.4), transparent 70%)",
+      orb2: "radial-gradient(circle, rgba(242,145,163,0.3), transparent 70%)",
+      avatar: "linear-gradient(135deg, #f291a3 0%, #e37a8e 60%, #b55163 100%)",
+      avatarShadow: "0 4px 20px rgba(242,145,163,0.35), 0 2px 8px rgba(0,0,0,0.12)",
+    },
+    slate: {
+      banner: "linear-gradient(135deg, #334155 0%, #475569 30%, #94a3b8 65%, #475569 100%)",
+      orb1: "radial-gradient(circle, rgba(148,163,184,0.4), transparent 70%)",
+      orb2: "radial-gradient(circle, rgba(100,116,139,0.3), transparent 70%)",
+      avatar: "linear-gradient(135deg, #475569 0%, #334155 60%, #1e293b 100%)",
+      avatarShadow: "0 4px 20px rgba(71,85,105,0.35), 0 2px 8px rgba(0,0,0,0.12)",
+    },
+  }
+
+  const palette = ACCENT_PALETTES[accent] || ACCENT_PALETTES.blue
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -336,9 +390,9 @@ const Profile: React.FC = () => {
       <div className="relative mb-20">
         {/* Gradient banner */}
         <div
-          className="h-36 sm:h-44 rounded-2xl overflow-hidden relative"
+          className="h-36 sm:h-44 rounded-2xl overflow-hidden relative transition-all duration-500"
           style={{
-            background: "linear-gradient(135deg, #1d4ed8 0%, #2563eb 30%, #60a5fa 65%, #2563eb 100%)",
+            background: palette.banner,
           }}
         >
           {/* Dot pattern — subtle */}
@@ -351,12 +405,12 @@ const Profile: React.FC = () => {
           />
           {/* Soft gradient orbs */}
           <div
-            className="absolute -top-16 right-20 w-[350px] h-[350px] rounded-full opacity-30"
-            style={{ background: "radial-gradient(circle, rgba(147,197,253,0.4), transparent 70%)" }}
+            className="absolute -top-16 right-20 w-[350px] h-[350px] rounded-full opacity-30 transition-all duration-500"
+            style={{ background: palette.orb1 }}
           />
           <div
-            className="absolute bottom-[-30%] left-[10%] w-[250px] h-[250px] rounded-full opacity-25"
-            style={{ background: "radial-gradient(circle, rgba(96,165,250,0.3), transparent 70%)" }}
+            className="absolute bottom-[-30%] left-[10%] w-[250px] h-[250px] rounded-full opacity-25 transition-all duration-500"
+            style={{ background: palette.orb2 }}
           />
           {/* Specular top edge */}
           <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/25 to-transparent" />
@@ -365,10 +419,10 @@ const Profile: React.FC = () => {
         {/* Avatar — overlapping the banner */}
         <div className="absolute -bottom-14 left-6 sm:left-8">
           <div
-            className="size-[88px] rounded-full flex items-center justify-center text-white font-bold text-2xl ring-4 ring-white dark:ring-gray-900"
+            className="size-[88px] rounded-full flex items-center justify-center text-white font-bold text-2xl ring-4 ring-white dark:ring-gray-900 transition-all duration-500"
             style={{
-              background: "linear-gradient(135deg, #2563eb 0%, #1d4ed8 60%, #1e40af 100%)",
-              boxShadow: "0 4px 20px rgba(37,99,235,0.35), 0 2px 8px rgba(0,0,0,0.12)",
+              background: palette.avatar,
+              boxShadow: palette.avatarShadow,
             }}
           >
             {initials}
@@ -425,8 +479,8 @@ const Profile: React.FC = () => {
                            text-[13px] font-semibold text-white
                            transition-all duration-200 disabled:opacity-60"
                 style={{
-                  background: "linear-gradient(135deg, #2563eb 0%, #1d4ed8 50%, #1e40af 100%)",
-                  boxShadow: "0 0 16px rgba(37,99,235,0.3), 0 4px 12px rgba(0,0,0,0.1)",
+                  background: "linear-gradient(135deg, rgb(var(--color-accent)) 0%, rgb(var(--color-accent-hover)) 50%, rgb(var(--color-accent-dark)) 100%)",
+                  boxShadow: "0 0 16px rgba(var(--color-accent),0.3), 0 4px 12px rgba(0,0,0,0.1)",
                 }}
               >
                 {saving ? (
@@ -457,6 +511,7 @@ const Profile: React.FC = () => {
           )}
         </div>
       </div>
+
 
       {/* ═══════════ TABS ═══════════ */}
       <div className="relative px-2 mb-8">
@@ -493,7 +548,7 @@ const Profile: React.FC = () => {
             style={{
               left: indicatorStyle.left,
               width: indicatorStyle.width,
-              background: "linear-gradient(90deg, #2563eb, #1d4ed8)",
+              background: "linear-gradient(90deg, rgb(var(--color-accent)), rgb(var(--color-accent-hover)))",
             }}
           />
         </div>
@@ -771,7 +826,7 @@ const Profile: React.FC = () => {
                     className="h-full rounded-full transition-all duration-700 ease-out"
                     style={{
                       width: `${(completionCount / completionTotal) * 100}%`,
-                      background: "linear-gradient(90deg, #2563eb, #1d4ed8)",
+                      background: "linear-gradient(90deg, rgb(var(--color-accent)), rgb(var(--color-accent-hover)))",
                     }}
                   />
                 </div>
@@ -851,13 +906,13 @@ const Profile: React.FC = () => {
             <div
               className="rounded-2xl overflow-hidden"
               style={{
-                background: "linear-gradient(135deg, rgba(37,99,235,0.04) 0%, rgba(29,78,216,0.06) 100%)",
-                border: "1px solid rgba(37,99,235,0.12)",
+                background: "linear-gradient(135deg, rgba(var(--color-accent),0.04) 0%, rgba(var(--color-accent-hover),0.06) 100%)",
+                border: "1px solid rgba(var(--color-accent),0.12)",
               }}
             >
               <div className="p-5 flex items-start gap-4">
                 <div className="size-9 rounded-xl flex items-center justify-center shrink-0"
-                  style={{ background: "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)" }}
+                  style={{ background: "linear-gradient(135deg, rgb(var(--color-accent)) 0%, rgb(var(--color-accent-hover)) 100%)" }}
                 >
                   <Shield size={16} className="text-white" />
                 </div>
@@ -871,6 +926,74 @@ const Profile: React.FC = () => {
             </div>
           </div>
         )}
+      </div>
+
+      {/* ═══════════ APPEARANCE ═══════════ */}
+      <div className="px-2 mt-8">
+        <div
+          className="rounded-2xl border border-gray-200/80 dark:border-white/[0.04] overflow-hidden
+                     bg-white dark:bg-[#161618]"
+          style={{ boxShadow: "0 1px 3px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.02)" }}
+        >
+          <div className="p-6">
+            <div className="mb-6">
+              <h2 className="text-[15px] font-semibold text-gray-900 dark:text-white tracking-tight">Appearance</h2>
+              <p className="text-[13px] text-gray-500 dark:text-gray-400 mt-0.5">Customize the look and feel of your dashboard.</p>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-4">
+              {/* Theme toggle */}
+              <button
+                type="button"
+                onClick={toggleTheme}
+                className="inline-flex items-center gap-2.5 h-10 px-5 rounded-xl
+                           border border-gray-200/80 dark:border-white/[0.06]
+                           bg-gray-50/80 dark:bg-white/[0.03]
+                           text-[13px] font-medium text-gray-600 dark:text-gray-300
+                           hover:bg-gray-100 dark:hover:bg-white/[0.06]
+                           transition-all duration-200"
+              >
+                {theme === "light" ? (
+                  <Moon size={15} className="text-gray-500" />
+                ) : (
+                  <Sun size={15} className="text-gray-400" />
+                )}
+                {theme === "light" ? "Dark mode" : "Light mode"}
+              </button>
+
+              {/* Divider */}
+              <div className="w-px h-6 bg-gray-200 dark:bg-white/[0.06] hidden sm:block" />
+
+              {/* Accent picker */}
+              <div className="flex items-center gap-3">
+                <span className="flex items-center gap-1.5 text-[13px] font-medium text-gray-500 dark:text-gray-400">
+                  <Palette size={14} />
+                  Accent
+                </span>
+                <div className="flex gap-2.5">
+                  {[
+                    { id: 'blue',  bg: '#2563eb', ring: '#2563eb' },
+                    { id: 'mint',  bg: '#10b981', ring: '#10b981' },
+                    { id: 'coral', bg: '#f291a3', ring: '#f291a3' },
+                    { id: 'slate', bg: '#64748b', ring: '#64748b' },
+                  ].map((btn) => (
+                    <button
+                      key={btn.id}
+                      type="button"
+                      onClick={() => changeAccent(btn.id)}
+                      className="w-5 h-5 rounded-full transition-all duration-200 hover:scale-125"
+                      style={{
+                        background: btn.bg,
+                        opacity: accent === btn.id ? 1 : 0.4,
+                      }}
+                      title={`Accent: ${btn.id}`}
+                    />
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   )

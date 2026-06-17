@@ -71,7 +71,13 @@ const MonthlyChart: React.FC<MonthlyChartProps> = ({ data, metric = "sales" }) =
 
   const isSales = metric === "sales"
   const isDark = theme === "dark"
-  const currentColor = isSales ? "#8b5cf6" : "#2563eb"
+  const getAccentHex = () => {
+    const raw = getComputedStyle(document.documentElement).getPropertyValue('--color-accent').trim()
+    if (!raw) return '#2563eb'
+    const [r, g, b] = raw.split(',').map(s => parseInt(s.trim()))
+    return `#${r.toString(16).padStart(2,'0')}${g.toString(16).padStart(2,'0')}${b.toString(16).padStart(2,'0')}`
+  }
+  const currentColor = isSales ? "#8b5cf6" : getAccentHex()
   const prevColor = isDark ? "rgba(255,255,255,0.25)" : "rgba(0,0,0,0.25)"
   const currentGradId = `current-${metric}-grad`
   const gridColor = isDark ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.05)"

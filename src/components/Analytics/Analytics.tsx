@@ -15,7 +15,15 @@ import FinancialYearChart from "./FinancialYearChart"
 type ReportType = "monthly" | "financial-year"
 type ViewType = "chart" | "table"
 
-const Sparkline: React.FC<{ data: number[]; color?: string; gradientId: string }> = ({ data, color = "#2563eb", gradientId }) => {
+const getAccentHex = () => {
+  const raw = getComputedStyle(document.documentElement).getPropertyValue('--color-accent').trim()
+  if (!raw) return '#2563eb'
+  const [r, g, b] = raw.split(',').map(s => parseInt(s.trim()))
+  return `#${r.toString(16).padStart(2,'0')}${g.toString(16).padStart(2,'0')}${b.toString(16).padStart(2,'0')}`
+}
+
+const Sparkline: React.FC<{ data: number[]; color?: string; gradientId: string }> = ({ data, color, gradientId }) => {
+  const resolvedColor = color || getAccentHex()
   const { strokePath, fillPath, lastPt } = useMemo(() => {
     if (!data || data.length < 2) return { strokePath: "", fillPath: "", lastPt: undefined }
     const max = Math.max(...data, 1)
@@ -64,21 +72,21 @@ const Sparkline: React.FC<{ data: number[]; color?: string; gradientId: string }
     <svg width="96" height="32" className="overflow-visible opacity-90 group-hover:opacity-100 transition-opacity">
       <defs>
         <linearGradient id={gradientId} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor={color} stopOpacity={0.35} />
-          <stop offset="100%" stopColor={color} stopOpacity={0.0} />
+          <stop offset="0%" stopColor={resolvedColor} stopOpacity={0.35} />
+          <stop offset="100%" stopColor={resolvedColor} stopOpacity={0.0} />
         </linearGradient>
         <filter id={glowFilterId} x="-10%" y="-10%" width="120%" height="120%">
-          <feDropShadow dx="0" dy="1.5" stdDeviation="1.2" floodColor={color} floodOpacity="0.2" />
+          <feDropShadow dx="0" dy="1.5" stdDeviation="1.2" floodColor={resolvedColor} floodOpacity="0.2" />
         </filter>
       </defs>
       <path d={fillPath} fill={`url(#${gradientId})`} />
-      <path d={strokePath} fill="none" stroke={color} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" filter={`url(#${glowFilterId})`} />
+      <path d={strokePath} fill="none" stroke={resolvedColor} strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" filter={`url(#${glowFilterId})`} />
       {lastPt && (
         <circle
           cx={lastPt.x}
           cy={lastPt.y}
           r="3"
-          fill={color}
+          fill={resolvedColor}
           stroke="#fff"
           strokeWidth="1.2"
         />
@@ -1080,7 +1088,7 @@ const Analytics: React.FC = () => {
                 </div>
               </div>
               <div className="h-10 flex items-center relative z-10 pl-2">
-                <Sparkline data={salesSparklineData} color="#2563eb" gradientId="sparkline-sales" />
+                <Sparkline data={salesSparklineData} gradientId="sparkline-sales" />
               </div>
             </div>
 

@@ -1,9 +1,8 @@
 import type { GSTBreakdown } from "../types"
 
-export const calculateGSTBreakdown = (amount: number, businessState: string, customerState: string): GSTBreakdown => {
+export const calculateGSTBreakdown = (amount: number, businessState: string, customerState: string, gstRate = 18): GSTBreakdown => {
   // IGST when states are different, CGST+SGST when states are same
   const isSameState = businessState.toLowerCase().trim() === customerState.toLowerCase().trim()
-  const gstRate = 18
   const totalGst = (amount * gstRate) / 100
 
   if (isSameState) {

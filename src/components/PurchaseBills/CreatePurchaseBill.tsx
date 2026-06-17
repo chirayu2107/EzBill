@@ -8,7 +8,7 @@ import { useApp } from "../../context/AppContext"
 import { useAuth } from "../../context/AuthContext"
 import type { PurchaseBillItem } from "../../types"
 import { calculateSubtotal, calculateGSTBreakdown, formatCurrency } from "../../utils/calculations"
-import { Plus, Save, ShoppingBag, Trash2 } from "lucide-react"
+import { Plus, Save, Trash2 } from "lucide-react"
 import Button from "../UI/Button"
 import Card from "../UI/Card"
 
@@ -188,15 +188,12 @@ const CreatePurchaseBill: React.FC = () => {
         initial="hidden"
         animate="visible"
       >
-        <motion.div className="flex items-center gap-3 md:gap-4" variants={itemVariants}>
-          <div className="p-2 md:p-3 bg-blue-500/10 rounded-lg">
-            <ShoppingBag className="w-5 h-5 md:w-6 md:h-6 text-blue-500" />
-          </div>
+        <motion.div className="mb-8" variants={itemVariants}>
           <div>
             <h1 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white transition-colors">
               {isEditing ? "Edit Purchase Bill" : "Enter Purchase Bill"}
             </h1>
-            <p className="text-gray-500 dark:text-gray-400 mt-1 text-sm md:text-base transition-colors">
+            <p className="text-gray-500 dark:text-gray-400 mt-1 text-sm transition-colors">
               {isEditing ? "Update bill details" : "Record a new purchase bill from vendor"}
             </p>
           </div>

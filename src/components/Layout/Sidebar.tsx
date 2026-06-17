@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState, useRef, useCallback } from "react"
+import { useState, useRef, useCallback, useEffect } from "react"
 import { Link, useLocation, useNavigate } from "react-router-dom"
 import { motion, AnimatePresence } from "framer-motion"
 import { useAuth } from "../../context/AuthContext"
@@ -21,6 +21,14 @@ const Sidebar: React.FC = () => {
   const { theme, toggleTheme } = useTheme()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isCollapsed, setIsCollapsed] = useState(true)
+
+  /* ── Accent: read from localStorage on mount so the attribute is set early ── */
+  useEffect(() => {
+    const saved = localStorage.getItem("ezbill-accent")
+    if (saved && saved !== "blue") {
+      document.documentElement.setAttribute("data-theme-accent", saved)
+    }
+  }, [])
 
   /* ── Hold-and-slide state ── */
   const [isDragging, setIsDragging] = useState(false)
@@ -86,7 +94,7 @@ const Sidebar: React.FC = () => {
   return (
     <>
       {/* ═══ MOBILE TOP BAR ═══ */}
-      <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-white/95 dark:bg-black/95 backdrop-blur-md border-b border-gray-200/60 dark:border-white/[0.04]">
+      <div className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-black/70 backdrop-blur-xl border-b border-gray-200/60 dark:border-white/[0.04]">
         <div className="flex items-center justify-between px-4 py-3">
           <button
             onClick={toggleMobileMenu}
@@ -95,7 +103,7 @@ const Sidebar: React.FC = () => {
             {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
           <a href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-            <img src="/EzBill.png?v=3" alt="EzBill" className="w-7 h-7 shadow-md shadow-blue-600/25 shrink-0" />
+            <img src="/EzBill.png?v=3" alt="EzBill" className="w-7 h-7 shrink-0" />
             <h1 className="text-base font-semibold text-gray-900 dark:text-white">EzBill</h1>
           </a>
           <button
@@ -156,11 +164,11 @@ const Sidebar: React.FC = () => {
                     layoutId="mobile-nav-pill"
                     className="absolute -inset-x-1 -top-1 -bottom-1 rounded-[16px]"
                     style={theme === "dark" ? {
-                      background: "rgba(59, 130, 246, 0.12)",
+                      background: "rgba(var(--color-accent), 0.12)",
                       backdropFilter: "blur(20px) saturate(150%)",
                       WebkitBackdropFilter: "blur(20px) saturate(150%)",
-                      border: "0.5px solid rgba(59, 130, 246, 0.25)",
-                      boxShadow: "0 1px 8px rgba(59, 130, 246, 0.1), inset 0 1px 0 rgba(255,255,255,0.05)",
+                      border: "0.5px solid rgba(var(--color-accent), 0.25)",
+                      boxShadow: "0 1px 8px rgba(var(--color-accent), 0.1), inset 0 1px 0 rgba(255,255,255,0.05)",
                     } : {
                       background: "rgba(255,255,255,0.50)",
                       backdropFilter: "blur(20px) saturate(180%)",
@@ -198,7 +206,7 @@ const Sidebar: React.FC = () => {
       {/* ═══ DESKTOP SIDEBAR ═══ */}
       <motion.div
         className="hidden lg:flex flex-col shrink-0 overflow-hidden cursor-pointer
-                   bg-white dark:bg-[#000000] border-r border-gray-100/80 dark:border-white/[0.04]"
+                   bg-white/85 dark:bg-black/75 backdrop-blur-xl border-r border-gray-100/80 dark:border-white/[0.04]"
         animate={{ width: isCollapsed ? COLLAPSED_W : EXPANDED_W }}
         transition={{ type: "spring", stiffness: 320, damping: 32 }}
         onClick={(e: React.MouseEvent) => {
@@ -212,7 +220,7 @@ const Sidebar: React.FC = () => {
         <div className="flex-1 flex flex-col pt-5 pb-3 overflow-hidden">
           {/* Logo — blue grid mark + wordmark */}
           <a href="/" className={`flex items-center shrink-0 mb-5 hover:opacity-90 transition-opacity ${isCollapsed ? "justify-center px-0" : "gap-2.5 px-5"}`}>
-            <img src="/EzBill.png?v=3" alt="EzBill" className="w-[34px] h-[34px] shadow-lg shadow-blue-600/25 shrink-0" />
+            <img src="/EzBill.png?v=3" alt="EzBill" className="w-[34px] h-[34px] shrink-0" />
             {!isCollapsed && (
               <motion.span
                 initial={false}
@@ -256,8 +264,8 @@ const Sidebar: React.FC = () => {
                         layoutId="sidebar-active"
                         className="absolute inset-0 rounded-xl"
                         style={{
-                          background: "rgba(37,99,235,0.08)",
-                          border: "1px solid rgba(59,130,246,0.15)",
+                          background: "rgba(var(--color-accent), 0.08)",
+                          border: "1px solid rgba(var(--color-accent), 0.15)",
                         }}
                         transition={{ type: "spring", stiffness: 380, damping: 32 }}
                       />
@@ -293,6 +301,7 @@ const Sidebar: React.FC = () => {
         {/* ── Bottom: User ── */}
         <div className={`shrink-0 border-t border-gray-100 dark:border-white/[0.04] ${isCollapsed ? "px-2" : "px-3"} py-3 space-y-2`}>
 
+
           {/* User — links to profile */}
           <Link
             to="/dashboard/profile"
@@ -308,15 +317,15 @@ const Sidebar: React.FC = () => {
                 layoutId="sidebar-active"
                 className="absolute inset-0 rounded-xl"
                 style={{
-                  background: "rgba(37,99,235,0.08)",
-                  border: "1px solid rgba(59,130,246,0.15)",
+                  background: "rgba(var(--color-accent), 0.08)",
+                  border: "1px solid rgba(var(--color-accent), 0.15)",
                 }}
                 transition={{ type: "spring", stiffness: 380, damping: 32 }}
               />
             )}
             <div
               className="w-8 h-8 rounded-full flex items-center justify-center text-white font-semibold text-xs shrink-0"
-              style={{ background: "linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)" }}
+              style={{ background: "linear-gradient(135deg, rgb(var(--color-accent-light)), rgb(var(--color-accent)))" }}
             >
               {initial}
             </div>
@@ -332,15 +341,7 @@ const Sidebar: React.FC = () => {
                 </p>
               </div>
             )}
-            {!isCollapsed && (
-              <button
-                onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleTheme(); }}
-                className="p-1.5 text-gray-400 dark:text-[#55555E] hover:text-gray-600 dark:hover:text-[#9E9EA7] hover:bg-gray-100 dark:hover:bg-[#212124] rounded-lg transition-colors shrink-0"
-                title={theme === "light" ? "Dark mode" : "Light mode"}
-              >
-                {theme === "light" ? <Moon className="w-3.5 h-3.5" /> : <Sun className="w-3.5 h-3.5" />}
-              </button>
-            )}
+
             {/* Tooltip — collapsed */}
             {isCollapsed && (
               <span className="absolute left-full ml-3 px-2.5 py-1.5 rounded-lg bg-gray-900 dark:bg-[#28282C] text-white text-[11px] font-medium whitespace-nowrap opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity duration-150 z-50 shadow-xl">
@@ -356,8 +357,8 @@ const Sidebar: React.FC = () => {
             className={`group flex items-center rounded-xl h-9 w-full
                        border border-gray-200 dark:border-white/[0.04]
                        text-gray-500 dark:text-[#8B8B96]
-                       hover:bg-red-50 dark:hover:bg-red-500/8 hover:text-red-600 dark:hover:text-red-400
-                       hover:border-red-200 dark:hover:border-red-500/25
+                       hover:bg-red-500/[0.06] dark:hover:bg-red-500/8 hover:text-red-600 dark:hover:text-red-400
+                       hover:border-red-300/40 dark:hover:border-red-500/25
                        transition-all duration-200 text-[12px] font-medium
                        ${isCollapsed ? "justify-center" : "gap-2 px-3"}`}
             title={isCollapsed ? "Sign Out" : undefined}
@@ -386,7 +387,7 @@ const Sidebar: React.FC = () => {
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
-            className="lg:hidden fixed left-0 top-0 h-full w-72 bg-white dark:bg-[#000000] border-r border-gray-100/80 dark:border-white/[0.04] flex flex-col z-50"
+            className="lg:hidden fixed left-0 top-0 h-full w-72 bg-white/90 dark:bg-black/85 backdrop-blur-2xl border-r border-gray-100/80 dark:border-white/[0.04] flex flex-col z-50"
             variants={sidebarVariants}
             initial="closed"
             animate="open"
@@ -394,7 +395,7 @@ const Sidebar: React.FC = () => {
           >
             <div className="p-6 flex-1 overflow-y-auto">
               <a href="/" className="flex items-center gap-2.5 mb-6 mt-14 hover:opacity-80 transition-opacity">
-                <img src="/EzBill.png?v=3" alt="EzBill" className="w-8 h-8 shadow-md shadow-blue-600/25 shrink-0" />
+                <img src="/EzBill.png?v=3" alt="EzBill" className="w-8 h-8 shrink-0" />
                 <h1 className="text-base font-semibold text-gray-900 dark:text-white">EzBill</h1>
               </a>
 
@@ -427,14 +428,15 @@ const Sidebar: React.FC = () => {
             </div>
 
             <motion.div
-              className="p-5 border-t border-gray-100 dark:border-white/[0.04]"
+              className="p-5 border-t border-gray-100 dark:border-white/[0.04] space-y-3"
               variants={menuItemVariants}
               transition={{ delay: 0.4 }}
             >
+
               <div className="mb-3 flex items-center gap-3">
                 <div
                   className="w-8 h-8 rounded-full flex items-center justify-center text-white font-medium text-sm shrink-0"
-                  style={{ background: "linear-gradient(135deg, #3b82f6, #2563eb)" }}
+                  style={{ background: "linear-gradient(135deg, rgb(var(--color-accent-light)), rgb(var(--color-accent)))" }}
                 >
                   {initial}
                 </div>
