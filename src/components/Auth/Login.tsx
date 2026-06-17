@@ -163,8 +163,8 @@ const Login: React.FC = () => {
           <img
               src={
                 theme === "dark"
-                  ? "https://res.cloudinary.com/dkoiyuyhj/image/upload/v1781382931/b4sbmxypebypu6dgqbru.png"
-                  : "https://res.cloudinary.com/dkoiyuyhj/image/upload/v1781378408/hpzq3yvz0mxuegdv9phv.png"
+                  ? "https://res.cloudinary.com/dkoiyuyhj/image/upload/v1781712768/jittj9spjjwyzro9llux.png"
+                  : "https://res.cloudinary.com/dkoiyuyhj/image/upload/v1781712711/qbsodhdpbhpk5wjvv6jv.png"
               }
               alt="Dashboard Preview"
               className="object-contain w-full h-full"
