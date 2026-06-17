@@ -194,9 +194,6 @@ const LandingPage: React.FC = () => {
 
   return (
     <div ref={scrollContainerRef} className="h-screen overflow-y-auto overflow-x-hidden bg-surface-light dark:bg-[#000000] text-gray-900 dark:text-gray-100 transition-colors duration-300 w-full" style={{ overscrollBehaviorY: 'none' }}>
-      {/* Decorative Orbs — dark mode only */}
-      <div className="absolute top-0 left-1/4 w-[300px] md:w-[500px] h-[300px] md:h-[500px] bg-transparent dark:bg-blue-500/10 rounded-full blur-3xl pointer-events-none z-0" />
-      <div className="absolute top-1/3 right-1/4 w-[250px] md:w-[400px] h-[250px] md:h-[400px] bg-transparent dark:bg-blue-500/5 rounded-full blur-3xl pointer-events-none z-0" />
 
       {/* Header */}
       <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
@@ -250,6 +247,10 @@ const LandingPage: React.FC = () => {
 
       {/* Hero Section */}
       <section className="relative pt-32 pb-16 sm:pt-40 sm:pb-24 md:pt-48 md:pb-32 px-4 sm:px-6 z-10 text-center overflow-hidden">
+        {/* Decorative Orbs — dark mode only, scoped to hero */}
+        <div className="absolute top-0 left-1/4 w-[300px] md:w-[500px] h-[300px] md:h-[500px] bg-transparent dark:bg-blue-500/10 rounded-full blur-3xl pointer-events-none z-0" />
+        <div className="absolute top-[15%] right-1/4 w-[250px] md:w-[400px] h-[250px] md:h-[400px] bg-transparent dark:bg-blue-500/5 rounded-full blur-3xl pointer-events-none z-0" />
+
         {/* Grid Background with fade-out mask starting around the mockup */}
         <div className="absolute inset-x-0 top-0 h-[650px] ez-grid-bg pointer-events-none z-0" style={{
           maskImage: 'linear-gradient(to bottom, black 55%, transparent 100%)',
@@ -965,7 +966,7 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Interactive Pricing Toggle */}
+      <div className="bg-white dark:bg-[#000000] relative z-10">
       <section id="pricing" className="py-16 sm:py-24 max-w-7xl mx-auto px-4 sm:px-6">
         <motion.div
           className="text-left mb-12"
@@ -1106,9 +1107,10 @@ const LandingPage: React.FC = () => {
           </motion.div>
         </motion.div>
       </section>
+      </div>
 
       {/* Testimonials */}
-      <section className="py-16 sm:py-24 border-t border-gray-200/50 dark:border-white/[0.04]">
+      <section className="py-16 sm:py-24 border-t border-gray-200/50 dark:border-white/[0.04] bg-white dark:bg-[#000000] relative z-10">
         <div className="max-w-6xl mx-auto px-4 sm:px-6">
 
           {/* Section heading */}
@@ -1243,7 +1245,7 @@ const LandingPage: React.FC = () => {
 
 
       {/* Accordion FAQs */}
-      <section id="faq" className="py-16 sm:py-24 border-t border-gray-200/50 dark:border-white/[0.04]">
+      <section id="faq" className="py-16 sm:py-24 border-t border-gray-200/50 dark:border-white/[0.04] bg-white dark:bg-[#000000] relative z-10">
         <div className="max-w-3xl mx-auto px-4 sm:px-6">
           <motion.div
             className="text-left mb-16"
