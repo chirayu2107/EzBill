@@ -99,6 +99,22 @@ const stagger = {
   visible: { transition: { staggerChildren: 0.1, delayChildren: 0.08 } },
 }
 
+// Dedicated variant for large bento feature cards — each animates independently on scroll
+const bentoCardUp = {
+  hidden: { opacity: 0, y: 48 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      type: "spring",
+      stiffness: 60,
+      damping: 18,
+      mass: 1,
+      opacity: { duration: 0.5, ease: "easeOut" },
+    },
+  },
+}
+
 const LandingPage: React.FC = () => {
   const { isAuthenticated } = useAuth()
   const { theme, resetToSystem } = useTheme()
@@ -430,7 +446,7 @@ const LandingPage: React.FC = () => {
               variants={stagger}
               initial="hidden"
               whileInView="visible"
-              viewport={{ once: true, amount: 0.3 }}
+              viewport={{ once: false, amount: 0.3 }}
             >
               <motion.h2 variants={fadeUp} style={{ fontFamily: "'Inter', sans-serif" }} className="text-3xl sm:text-4xl lg:text-[2.75rem] font-bold tracking-[-0.03em] leading-[1.1] pb-2 text-gray-900 dark:text-white">
                 Who said billing has to<br />
@@ -441,7 +457,7 @@ const LandingPage: React.FC = () => {
               variants={fadeUp}
               initial="hidden"
               whileInView="visible"
-              viewport={{ once: true, amount: 0.3 }}
+              viewport={{ once: false, amount: 0.3 }}
               className="text-gray-500 dark:text-zinc-400 text-sm sm:text-base leading-relaxed max-w-xl"
             >
               <p>
@@ -462,7 +478,7 @@ const LandingPage: React.FC = () => {
             variants={stagger}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, amount: 0.3 }}
+            viewport={{ once: false, amount: 0.3 }}
           >
             <motion.h2 variants={fadeUp} style={{ fontFamily: "'Inter', sans-serif" }} className="text-3xl sm:text-4xl lg:text-[2.75rem] font-bold tracking-[-0.03em] leading-[1.1] pb-2 mb-6 text-gray-900 dark:text-white">
               Everything you need.<br />
@@ -476,15 +492,11 @@ const LandingPage: React.FC = () => {
           </motion.div>
 
           {/* Asymmetrical Bento Grid - Immersive Product Storytelling Scenes */}
-          <motion.div
+          <div
             className="grid grid-cols-1 lg:grid-cols-3 gap-8 sm:gap-10 items-stretch"
-            variants={stagger}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.1 }}
           >
             {/* ROW 1: Card 1 - Smart Invoicing (Wide - 2 cols) */}
-            <motion.div variants={fadeUp} className="lg:col-span-2 bg-gradient-to-b from-[#ffffff] to-[#fcfcfd] dark:bg-gradient-to-b dark:from-[#09090b] dark:to-[#030304] border border-gray-200/50 dark:border-white/[0.06] rounded-3xl p-6 sm:p-8 relative min-h-[480px] flex items-center shadow-lg dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_12px_45px_rgba(0,0,0,0.7)] hover:border-gray-300 dark:hover:border-white/[0.12] transition-all duration-500 group overflow-hidden">
+            <motion.div variants={bentoCardUp} initial="hidden" whileInView="visible" viewport={{ once: false, amount: 0.15 }} className="lg:col-span-2 bg-gradient-to-b from-[#ffffff] to-[#fcfcfd] dark:bg-gradient-to-b dark:from-[#09090b] dark:to-[#030304] border border-gray-200/50 dark:border-white/[0.06] rounded-3xl p-6 sm:p-8 relative min-h-[480px] flex items-center shadow-lg dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_12px_45px_rgba(0,0,0,0.7)] hover:border-gray-300 dark:hover:border-white/[0.12] transition-all duration-500 group overflow-hidden">
               <div className="absolute inset-0 rounded-3xl overflow-hidden pointer-events-none">
               </div>
               
@@ -589,7 +601,7 @@ const LandingPage: React.FC = () => {
             </motion.div>
 
             {/* ROW 1: Card 2 - GST Reports (Narrow - 1 col) */}
-            <motion.div variants={fadeUp} className="bg-gradient-to-b from-[#ffffff] to-[#fcfcfd] dark:bg-gradient-to-b dark:from-[#09090b] dark:to-[#030304] border border-gray-200/50 dark:border-white/[0.06] rounded-3xl overflow-hidden min-h-[480px] relative flex flex-col justify-between shadow-lg dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_12px_45px_rgba(0,0,0,0.7)] hover:border-gray-300 dark:hover:border-white/[0.12] transition-all duration-500 group">
+            <motion.div variants={bentoCardUp} initial="hidden" whileInView="visible" viewport={{ once: false, amount: 0.15 }} className="bg-gradient-to-b from-[#ffffff] to-[#fcfcfd] dark:bg-gradient-to-b dark:from-[#09090b] dark:to-[#030304] border border-gray-200/50 dark:border-white/[0.06] rounded-3xl overflow-hidden min-h-[480px] relative flex flex-col justify-between shadow-lg dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_12px_45px_rgba(0,0,0,0.7)] hover:border-gray-300 dark:hover:border-white/[0.12] transition-all duration-500 group">
               
               {/* Immersive visual area at the top */}
               <div className="relative w-full h-[250px] flex items-center justify-center pt-5 overflow-hidden">
@@ -643,7 +655,7 @@ const LandingPage: React.FC = () => {
             </motion.div>
 
             {/* ROW 2: Card 3 - Client Ledgers (Narrow - 1 col) */}
-            <motion.div variants={fadeUp} className="bg-gradient-to-b from-[#ffffff] to-[#fcfcfd] dark:bg-gradient-to-b dark:from-[#09090b] dark:to-[#030304] border border-gray-200/50 dark:border-white/[0.06] rounded-3xl min-h-[480px] relative flex flex-col justify-between shadow-lg dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_12px_45px_rgba(0,0,0,0.7)] hover:border-gray-300 dark:hover:border-white/[0.12] transition-all duration-500 group overflow-hidden">
+            <motion.div variants={bentoCardUp} initial="hidden" whileInView="visible" viewport={{ once: false, amount: 0.15 }} className="bg-gradient-to-b from-[#ffffff] to-[#fcfcfd] dark:bg-gradient-to-b dark:from-[#09090b] dark:to-[#030304] border border-gray-200/50 dark:border-white/[0.06] rounded-3xl min-h-[480px] relative flex flex-col justify-between shadow-lg dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_12px_45px_rgba(0,0,0,0.7)] hover:border-gray-300 dark:hover:border-white/[0.12] transition-all duration-500 group overflow-hidden">
               {/* Background elements wrapped with overflow-hidden to prevent layout breaking */}
               <div className="absolute inset-0 rounded-3xl overflow-hidden pointer-events-none">
                 <div className="absolute inset-x-0 top-0 h-[240px]">
@@ -713,7 +725,7 @@ const LandingPage: React.FC = () => {
             </motion.div>
 
             {/* ROW 2: Card 4 - Brand Customizer (Wide - 2 cols) */}
-            <motion.div variants={fadeUp} className="lg:col-span-2 bg-gradient-to-b from-[#ffffff] to-[#fcfcfd] dark:bg-gradient-to-b dark:from-[#09090b] dark:to-[#030304] border border-gray-200/50 dark:border-white/[0.06] rounded-3xl p-6 sm:p-8 relative min-h-[480px] flex items-center shadow-lg dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_12px_45px_rgba(0,0,0,0.7)] hover:border-gray-300 dark:hover:border-white/[0.12] transition-all duration-500 group overflow-hidden">
+            <motion.div variants={bentoCardUp} initial="hidden" whileInView="visible" viewport={{ once: false, amount: 0.15 }} className="lg:col-span-2 bg-gradient-to-b from-[#ffffff] to-[#fcfcfd] dark:bg-gradient-to-b dark:from-[#09090b] dark:to-[#030304] border border-gray-200/50 dark:border-white/[0.06] rounded-3xl p-6 sm:p-8 relative min-h-[480px] flex items-center shadow-lg dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_12px_45px_rgba(0,0,0,0.7)] hover:border-gray-300 dark:hover:border-white/[0.12] transition-all duration-500 group overflow-hidden">
               {/* Background elements wrapped with overflow-hidden to prevent layout breaking */}
               <div className="absolute inset-0 rounded-3xl overflow-hidden pointer-events-none">
               </div>
@@ -811,7 +823,7 @@ const LandingPage: React.FC = () => {
             </motion.div>
 
             {/* ROW 3: Card 5 - Expense & Purchase Bills (Narrow - 1 col) */}
-            <motion.div variants={fadeUp} className="lg:col-span-1 bg-gradient-to-b from-[#ffffff] to-[#fcfcfd] dark:bg-gradient-to-b dark:from-[#09090b] dark:to-[#030304] border border-gray-200/50 dark:border-white/[0.06] rounded-3xl min-h-[480px] relative flex flex-col justify-between shadow-lg dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_12px_45px_rgba(0,0,0,0.7)] hover:border-gray-300 dark:hover:border-white/[0.12] transition-all duration-500 group overflow-hidden">
+            <motion.div variants={bentoCardUp} initial="hidden" whileInView="visible" viewport={{ once: false, amount: 0.15 }} className="lg:col-span-1 bg-gradient-to-b from-[#ffffff] to-[#fcfcfd] dark:bg-gradient-to-b dark:from-[#09090b] dark:to-[#030304] border border-gray-200/50 dark:border-white/[0.06] rounded-3xl min-h-[480px] relative flex flex-col justify-between shadow-lg dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_12px_45px_rgba(0,0,0,0.7)] hover:border-gray-300 dark:hover:border-white/[0.12] transition-all duration-500 group overflow-hidden">
               {/* Background elements wrapped with overflow-hidden to prevent layout breaking */}
               <div className="absolute inset-0 rounded-3xl overflow-hidden pointer-events-none">
                 <div className="absolute inset-y-0 left-1/4 w-[2px] border-l border-dashed border-gray-200 dark:border-white/[0.05] z-0" />
@@ -871,7 +883,7 @@ const LandingPage: React.FC = () => {
             </motion.div>
 
             {/* ROW 3: Card 6 - Instant PDF & Sharing (Wide - 2 cols) */}
-            <motion.div variants={fadeUp} className="lg:col-span-2 bg-gradient-to-b from-[#ffffff] to-[#fcfcfd] dark:bg-gradient-to-b dark:from-[#09090b] dark:to-[#030304] border border-gray-200/50 dark:border-white/[0.06] rounded-3xl p-6 sm:p-8 relative min-h-[480px] flex items-center shadow-lg dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_12px_45px_rgba(0,0,0,0.7)] hover:border-gray-300 dark:hover:border-white/[0.12] transition-all duration-500 group overflow-hidden">
+            <motion.div variants={bentoCardUp} initial="hidden" whileInView="visible" viewport={{ once: false, amount: 0.15 }} className="lg:col-span-2 bg-gradient-to-b from-[#ffffff] to-[#fcfcfd] dark:bg-gradient-to-b dark:from-[#09090b] dark:to-[#030304] border border-gray-200/50 dark:border-white/[0.06] rounded-3xl p-6 sm:p-8 relative min-h-[480px] flex items-center shadow-lg dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_12px_45px_rgba(0,0,0,0.7)] hover:border-gray-300 dark:hover:border-white/[0.12] transition-all duration-500 group overflow-hidden">
               {/* Background elements wrapped with overflow-hidden to prevent layout breaking */}
               <div className="absolute inset-0 rounded-3xl overflow-hidden pointer-events-none">
               </div>
@@ -981,7 +993,7 @@ const LandingPage: React.FC = () => {
               </div>
             </motion.div>
 
-          </motion.div>
+          </div>
         </div>
       </section>
 
@@ -992,7 +1004,7 @@ const LandingPage: React.FC = () => {
           variants={stagger}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, amount: 0.3 }}
+          viewport={{ once: false, amount: 0.3 }}
         >
           <motion.h2 variants={fadeUp} style={{ fontFamily: "'Inter', sans-serif" }} className="text-3xl sm:text-4xl lg:text-[2.75rem] font-bold tracking-[-0.03em] leading-[1.1] pb-2 mb-4 text-gray-900 dark:text-white">
             Transparent pricing,<br />
@@ -1042,7 +1054,7 @@ const LandingPage: React.FC = () => {
           variants={stagger}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, amount: 0.15 }}
+          viewport={{ once: false, amount: 0.15 }}
         >
           {/* Free Tier */}
           <motion.div variants={fadeUp} className="p-6 sm:p-8 rounded-2xl sm:rounded-3xl border border-gray-200 dark:border-white/[0.04] bg-white/80 dark:bg-[#1A1A1D] flex flex-col justify-between">
@@ -1138,7 +1150,7 @@ const LandingPage: React.FC = () => {
             variants={stagger}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
+            viewport={{ once: false, amount: 0.2 }}
           >
             <motion.h2
               variants={fadeUp}
@@ -1168,7 +1180,7 @@ const LandingPage: React.FC = () => {
               variants={fadeUp}
               initial="hidden"
               whileInView="visible"
-              viewport={{ once: true, amount: 0.2 }}
+              viewport={{ once: false, amount: 0.2 }}
             >
               <div className="relative min-h-[260px]">
                 <AnimatePresence initial={false} custom={direction} mode="wait">
@@ -1221,7 +1233,7 @@ const LandingPage: React.FC = () => {
               variants={stagger}
               initial="hidden"
               whileInView="visible"
-              viewport={{ once: true, amount: 0.15 }}
+              viewport={{ once: false, amount: 0.15 }}
             >
               {/* Row 1: Top images */}
               <motion.img
@@ -1271,7 +1283,7 @@ const LandingPage: React.FC = () => {
             variants={stagger}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, amount: 0.3 }}
+            viewport={{ once: false, amount: 0.3 }}
           >
             <motion.h2 variants={fadeUp} style={{ fontFamily: "'Inter', sans-serif" }} className="text-3xl sm:text-4xl lg:text-[2.75rem] font-bold tracking-[-0.03em] leading-[1.1] pb-2 mb-5 text-gray-900 dark:text-white">
               Frequently asked<br />
@@ -1287,7 +1299,7 @@ const LandingPage: React.FC = () => {
             variants={stagger}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, amount: 0.1 }}
+            viewport={{ once: false, amount: 0.1 }}
           >
             {faqs.map((faq, i) => (
               <motion.div key={i} variants={fadeUp}>
@@ -1349,7 +1361,7 @@ const LandingPage: React.FC = () => {
               variants={stagger}
               initial="hidden"
               whileInView="visible"
-              viewport={{ once: true, amount: 0.3 }}
+              viewport={{ once: false, amount: 0.3 }}
             >
               <motion.h2 variants={fadeUp} style={{ fontFamily: "'Inter', sans-serif" }} className="text-3xl sm:text-4xl lg:text-[2.75rem] font-bold tracking-[-0.03em] leading-[1.1] mb-3 text-gray-900 dark:text-white">
                 Join over <span className="text-blue-600 dark:text-blue-400">500+</span> businesses<br />
