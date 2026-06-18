@@ -71,7 +71,7 @@ const testimonials = [
 
 const slideVariants = {
   enter: (direction: number) => ({
-    x: direction > 0 ? 120 : -120,
+    x: direction > 0 ? 80 : -80,
     opacity: 0,
   }),
   center: {
@@ -79,25 +79,24 @@ const slideVariants = {
     opacity: 1,
   },
   exit: (direction: number) => ({
-    x: direction < 0 ? 120 : -120,
+    x: direction < 0 ? 80 : -80,
     opacity: 0,
   }),
 }
 
-// Scroll-triggered "come forward" animation
+// Scroll-triggered "come forward" animation — buttery smooth
 const fadeUp = {
-  hidden: { opacity: 0, y: 24, scale: 0.97 },
+  hidden: { opacity: 0, y: 32 },
   visible: {
     opacity: 1,
     y: 0,
-    scale: 1,
-    transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] },
+    transition: { duration: 0.7, ease: [0.25, 0.46, 0.45, 0.94] },
   },
 }
 
 const stagger = {
   hidden: {},
-  visible: { transition: { staggerChildren: 0.12, delayChildren: 0.05 } },
+  visible: { transition: { staggerChildren: 0.1, delayChildren: 0.08 } },
 }
 
 const LandingPage: React.FC = () => {
@@ -142,35 +141,54 @@ const LandingPage: React.FC = () => {
     resetToSystem()
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Scroll-driven 3D perspective animation
+  // Scroll-driven 3D perspective animation — direct DOM manipulation for buttery 60fps
   const mockupRef = useRef<HTMLDivElement>(null)
-  const [mockupStyle, setMockupStyle] = useState({
-    rotateX: 18,
-    scale: 0.88,
-    translateY: 40,
-    opacity: 0.7,
-  })
+  const mockupInnerRef = useRef<HTMLDivElement>(null)
+  const glowRef = useRef<HTMLDivElement>(null)
+  const rafId = useRef<number>(0)
+  const lastProgress = useRef<number>(-1)
 
   useEffect(() => {
     const container = scrollContainerRef.current
     if (!container) return
     const handleScroll = () => {
-      if (!mockupRef.current) return
-      const rect = mockupRef.current.getBoundingClientRect()
-      const windowHeight = window.innerHeight
-      // How far the element has come into view (0 = just entered, 1 = center of screen)
-      const progress = Math.min(Math.max((windowHeight - rect.top) / (windowHeight * 0.8), 0), 1)
-      setMockupStyle({
-        rotateX: 18 * (1 - progress),
-        scale: 0.88 + 0.12 * progress,
-        translateY: 40 * (1 - progress),
-        opacity: 0.7 + 0.3 * progress,
+      cancelAnimationFrame(rafId.current)
+      rafId.current = requestAnimationFrame(() => {
+        if (!mockupRef.current) return
+        const rect = mockupRef.current.getBoundingClientRect()
+        const windowHeight = window.innerHeight
+        // How far the element has come into view (0 = just entered, 1 = center of screen)
+        const rawProgress = (windowHeight - rect.top) / (windowHeight * 0.8)
+        const progress = Math.min(Math.max(rawProgress, 0), 1)
+
+        // Skip if progress hasn't changed meaningfully (avoid redundant paints)
+        if (Math.abs(progress - lastProgress.current) < 0.001) return
+        lastProgress.current = progress
+
+        const rotateX = 18 * (1 - progress)
+        const scale = 0.88 + 0.12 * progress
+        const translateY = 40 * (1 - progress)
+        const opacity = 0.7 + 0.3 * progress
+
+        // Apply directly to DOM — no React re-render
+        if (mockupInnerRef.current) {
+          mockupInnerRef.current.style.transform = `rotateX(${rotateX}deg) scale(${scale}) translateY(${translateY}px)`
+          mockupInnerRef.current.style.opacity = `${opacity}`
+        }
+        if (glowRef.current) {
+          glowRef.current.style.transform = `translateY(${translateY * 0.5}px)`
+          glowRef.current.style.opacity = `${opacity}`
+        }
+
+        setIsScrolled(container.scrollTop > 20)
       })
-      setIsScrolled(container.scrollTop > 20)
     }
     container.addEventListener("scroll", handleScroll, { passive: true })
     handleScroll() // run once on mount
-    return () => container.removeEventListener("scroll", handleScroll)
+    return () => {
+      container.removeEventListener("scroll", handleScroll)
+      cancelAnimationFrame(rafId.current)
+    }
   }, [])
 
   // Auto-swipe testimonials every 5 seconds (resets timer on manual click)
@@ -307,20 +325,21 @@ const LandingPage: React.FC = () => {
           >
             {/* Glow base — dark mode only */}
             <div
+              ref={glowRef}
               className="absolute -inset-6 rounded-3xl blur-3xl pointer-events-none hidden dark:block"
               style={{
                 background: "radial-gradient(ellipse at 50% 80%, rgba(37,99,235,0.18) 0%, rgba(37,99,235,0.05) 50%, transparent 75%)",
-                transform: `translateY(${mockupStyle.translateY * 0.5}px)`,
-                opacity: mockupStyle.opacity,
-                transition: "transform 0.05s linear, opacity 0.05s linear",
+                transform: `translateY(20px)`,
+                opacity: 0.7,
+                willChange: "transform, opacity",
               }}
             />
 
             <div
+              ref={mockupInnerRef}
               style={{
-                transform: `rotateX(${mockupStyle.rotateX}deg) scale(${mockupStyle.scale}) translateY(${mockupStyle.translateY}px)`,
-                opacity: mockupStyle.opacity,
-                transition: "transform 0.05s linear, opacity 0.05s linear",
+                transform: `rotateX(18deg) scale(0.88) translateY(40px)`,
+                opacity: 0.7,
                 transformOrigin: "50% 0%",
                 willChange: "transform, opacity",
               }}
@@ -411,7 +430,7 @@ const LandingPage: React.FC = () => {
               variants={stagger}
               initial="hidden"
               whileInView="visible"
-              viewport={{ once: false, amount: 0.3 }}
+              viewport={{ once: true, amount: 0.3 }}
             >
               <motion.h2 variants={fadeUp} style={{ fontFamily: "'Inter', sans-serif" }} className="text-3xl sm:text-4xl lg:text-[2.75rem] font-bold tracking-[-0.03em] leading-[1.1] pb-2 text-gray-900 dark:text-white">
                 Who said billing has to<br />
@@ -422,7 +441,7 @@ const LandingPage: React.FC = () => {
               variants={fadeUp}
               initial="hidden"
               whileInView="visible"
-              viewport={{ once: false, amount: 0.3 }}
+              viewport={{ once: true, amount: 0.3 }}
               className="text-gray-500 dark:text-zinc-400 text-sm sm:text-base leading-relaxed max-w-xl"
             >
               <p>
@@ -443,7 +462,7 @@ const LandingPage: React.FC = () => {
             variants={stagger}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: false, amount: 0.3 }}
+            viewport={{ once: true, amount: 0.3 }}
           >
             <motion.h2 variants={fadeUp} style={{ fontFamily: "'Inter', sans-serif" }} className="text-3xl sm:text-4xl lg:text-[2.75rem] font-bold tracking-[-0.03em] leading-[1.1] pb-2 mb-6 text-gray-900 dark:text-white">
               Everything you need.<br />
@@ -462,7 +481,7 @@ const LandingPage: React.FC = () => {
             variants={stagger}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: false, amount: 0.1 }}
+            viewport={{ once: true, amount: 0.1 }}
           >
             {/* ROW 1: Card 1 - Smart Invoicing (Wide - 2 cols) */}
             <motion.div variants={fadeUp} className="lg:col-span-2 bg-gradient-to-b from-[#ffffff] to-[#fcfcfd] dark:bg-gradient-to-b dark:from-[#09090b] dark:to-[#030304] border border-gray-200/50 dark:border-white/[0.06] rounded-3xl p-6 sm:p-8 relative min-h-[480px] flex items-center shadow-lg dark:shadow-[inset_0_1px_0_rgba(255,255,255,0.05),0_12px_45px_rgba(0,0,0,0.7)] hover:border-gray-300 dark:hover:border-white/[0.12] transition-all duration-500 group overflow-hidden">
@@ -973,7 +992,7 @@ const LandingPage: React.FC = () => {
           variants={stagger}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: false, amount: 0.3 }}
+          viewport={{ once: true, amount: 0.3 }}
         >
           <motion.h2 variants={fadeUp} style={{ fontFamily: "'Inter', sans-serif" }} className="text-3xl sm:text-4xl lg:text-[2.75rem] font-bold tracking-[-0.03em] leading-[1.1] pb-2 mb-4 text-gray-900 dark:text-white">
             Transparent pricing,<br />
@@ -1023,7 +1042,7 @@ const LandingPage: React.FC = () => {
           variants={stagger}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: false, amount: 0.15 }}
+          viewport={{ once: true, amount: 0.15 }}
         >
           {/* Free Tier */}
           <motion.div variants={fadeUp} className="p-6 sm:p-8 rounded-2xl sm:rounded-3xl border border-gray-200 dark:border-white/[0.04] bg-white/80 dark:bg-[#1A1A1D] flex flex-col justify-between">
@@ -1119,7 +1138,7 @@ const LandingPage: React.FC = () => {
             variants={stagger}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: false, amount: 0.2 }}
+            viewport={{ once: true, amount: 0.2 }}
           >
             <motion.h2
               variants={fadeUp}
@@ -1149,7 +1168,7 @@ const LandingPage: React.FC = () => {
               variants={fadeUp}
               initial="hidden"
               whileInView="visible"
-              viewport={{ once: false, amount: 0.2 }}
+              viewport={{ once: true, amount: 0.2 }}
             >
               <div className="relative min-h-[260px]">
                 <AnimatePresence initial={false} custom={direction} mode="wait">
@@ -1161,8 +1180,8 @@ const LandingPage: React.FC = () => {
                     animate="center"
                     exit="exit"
                     transition={{
-                      x: { type: "spring", stiffness: 300, damping: 30 },
-                      opacity: { duration: 0.25 }
+                      x: { type: "spring", stiffness: 200, damping: 28, mass: 0.8 },
+                      opacity: { duration: 0.35, ease: "easeInOut" }
                     }}
                     className="relative w-full flex flex-col justify-between pb-2"
                   >
@@ -1202,7 +1221,7 @@ const LandingPage: React.FC = () => {
               variants={stagger}
               initial="hidden"
               whileInView="visible"
-              viewport={{ once: false, amount: 0.15 }}
+              viewport={{ once: true, amount: 0.15 }}
             >
               {/* Row 1: Top images */}
               <motion.img
@@ -1252,7 +1271,7 @@ const LandingPage: React.FC = () => {
             variants={stagger}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: false, amount: 0.3 }}
+            viewport={{ once: true, amount: 0.3 }}
           >
             <motion.h2 variants={fadeUp} style={{ fontFamily: "'Inter', sans-serif" }} className="text-3xl sm:text-4xl lg:text-[2.75rem] font-bold tracking-[-0.03em] leading-[1.1] pb-2 mb-5 text-gray-900 dark:text-white">
               Frequently asked<br />
@@ -1268,7 +1287,7 @@ const LandingPage: React.FC = () => {
             variants={stagger}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: false, amount: 0.1 }}
+            viewport={{ once: true, amount: 0.1 }}
           >
             {faqs.map((faq, i) => (
               <motion.div key={i} variants={fadeUp}>
@@ -1286,11 +1305,22 @@ const LandingPage: React.FC = () => {
                     </span>
                   </span>
                 </button>
-                {activeFaq === i && (
-                  <div className="pb-6 text-sm sm:text-base text-gray-500 dark:text-zinc-400 leading-relaxed">
-                    {faq.a}
-                  </div>
-                )}
+                <AnimatePresence initial={false}>
+                  {activeFaq === i && (
+                    <motion.div
+                      key={`faq-${i}`}
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.35, ease: [0.25, 0.46, 0.45, 0.94] }}
+                      className="overflow-hidden"
+                    >
+                      <div className="pb-6 text-sm sm:text-base text-gray-500 dark:text-zinc-400 leading-relaxed">
+                        {faq.a}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </motion.div>
             ))}
           </motion.div>
@@ -1319,7 +1349,7 @@ const LandingPage: React.FC = () => {
               variants={stagger}
               initial="hidden"
               whileInView="visible"
-              viewport={{ once: false, amount: 0.3 }}
+              viewport={{ once: true, amount: 0.3 }}
             >
               <motion.h2 variants={fadeUp} style={{ fontFamily: "'Inter', sans-serif" }} className="text-3xl sm:text-4xl lg:text-[2.75rem] font-bold tracking-[-0.03em] leading-[1.1] mb-3 text-gray-900 dark:text-white">
                 Join over <span className="text-blue-600 dark:text-blue-400">500+</span> businesses<br />
