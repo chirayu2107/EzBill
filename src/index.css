@@ -829,3 +829,37 @@ input, textarea, [contenteditable="true"] {
     display: none !important;
   }
 }
+
+/* ─── Performance optimisations ────────────────────────────────────────────── */
+
+/* Skip rendering off-screen landing-page sections until they scroll into view */
+.landing-section {
+  content-visibility: auto;
+  contain-intrinsic-size: 0 600px; /* estimated height so scroll-bar stays accurate */
+}
+
+/* Promote animated/interactive cards to their own compositor layer */
+.bento-card,
+.feature-card,
+[class*="motion-"] {
+  will-change: transform, opacity;
+  transform: translateZ(0);         /* force GPU compositing */
+  backface-visibility: hidden;
+}
+
+/* Remove will-change after animation completes to free GPU memory */
+.bento-card:not(:hover),
+.feature-card:not(:hover) {
+  will-change: auto;
+}
+
+/* Smooth hardware-accelerated scrolling everywhere */
+* {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Prevent layout thrashing from font swaps */
+html {
+  font-display: optional;
+  text-rendering: optimizeSpeed;
+}

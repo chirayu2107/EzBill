@@ -85,8 +85,6 @@ const MonthlyChart: React.FC<MonthlyChartProps> = ({ data, metric = "sales" }) =
 
   const CustomTooltip: React.FC<TooltipProps> = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
-      // payload[0] is typically the first area declared, payload[1] is the second.
-      // Let's identify the current and previous values based on their dataKey.
       const currentKey = isSales ? "sales" : "invoices"
       const prevKey = isSales ? "prevSales" : "prevInvoices"
 
@@ -97,6 +95,12 @@ const MonthlyChart: React.FC<MonthlyChartProps> = ({ data, metric = "sales" }) =
       const prevVal = prevItem ? prevItem.value : 0
       const change = prevVal > 0 ? ((currentVal - prevVal) / prevVal) * 100 : 0
       const dateText = currentItem?.payload.date || ""
+
+      // Determine if this day is in the future (beyond today)
+      const now = new Date()
+      const today = now.getDate()
+      const dayNum = typeof label === "number" ? label : Number(label)
+      const isFuture = dayNum > today
 
       return (
         <div
@@ -114,7 +118,7 @@ const MonthlyChart: React.FC<MonthlyChartProps> = ({ data, metric = "sales" }) =
               <span className="w-2 h-2 rounded-full" style={{ backgroundColor: currentColor }} />
               <span className="text-gray-600 dark:text-gray-400">Current:</span>
               <span className="font-semibold text-gray-900 dark:text-white ml-auto">
-                {isSales ? formatCurrency(currentVal) : currentVal}
+                {isFuture ? <span className="text-gray-400">—</span> : (isSales ? formatCurrency(currentVal) : currentVal)}
               </span>
             </div>
             <div className="flex items-center gap-2">
@@ -124,7 +128,7 @@ const MonthlyChart: React.FC<MonthlyChartProps> = ({ data, metric = "sales" }) =
                 {isSales ? formatCurrency(prevVal) : prevVal}
               </span>
             </div>
-            {prevVal > 0 && (
+            {!isFuture && prevVal > 0 && (
               <div className="border-t border-gray-100 dark:border-white/[0.04] pt-1.5 mt-1.5 flex items-center gap-2">
                 <span className="text-gray-500 dark:text-gray-500">Change:</span>
                 <span className={`font-bold ml-auto ${change >= 0 ? "text-blue-600" : "text-rose-600"}`}>

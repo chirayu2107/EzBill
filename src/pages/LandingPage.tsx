@@ -101,16 +101,13 @@ const stagger = {
 
 // Dedicated variant for large bento feature cards — each animates independently on scroll
 const bentoCardUp = {
-  hidden: { opacity: 0, y: 48 },
+  hidden: { opacity: 0, y: 24 },
   visible: {
     opacity: 1,
     y: 0,
     transition: {
-      type: "spring",
-      stiffness: 60,
-      damping: 18,
-      mass: 1,
-      opacity: { duration: 0.5, ease: "easeOut" },
+      duration: 0.55,
+      ease: [0.22, 1, 0.36, 1],
     },
   },
 }

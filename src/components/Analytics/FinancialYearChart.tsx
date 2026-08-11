@@ -95,6 +95,16 @@ const FinancialYearChart: React.FC<FinancialYearChartProps> = ({ data, metric = 
       const change = prevVal > 0 ? ((currentVal - prevVal) / prevVal) * 100 : 0
       const dateText = currentItem?.payload.fullDate || ""
 
+      // Determine if this month is in the future (beyond current month)
+      const now = new Date()
+      const payloadDateRaw = currentItem?.payload.fullDate
+      let isFuture = false
+      if (payloadDateRaw) {
+        const d = new Date(payloadDateRaw)
+        isFuture = d.getFullYear() > now.getFullYear() ||
+          (d.getFullYear() === now.getFullYear() && d.getMonth() > now.getMonth())
+      }
+
       return (
         <div
           className="rounded-xl p-3 text-xs border border-gray-200/60 dark:border-white/[0.04] transition-colors"
@@ -111,7 +121,7 @@ const FinancialYearChart: React.FC<FinancialYearChartProps> = ({ data, metric = 
               <span className="w-2 h-2 rounded-full" style={{ backgroundColor: currentColor }} />
               <span className="text-gray-600 dark:text-gray-400">Current FY:</span>
               <span className="font-semibold text-gray-900 dark:text-white ml-auto">
-                {isSales ? formatCurrency(currentVal) : currentVal}
+                {isFuture ? <span className="text-gray-400">—</span> : (isSales ? formatCurrency(currentVal) : currentVal)}
               </span>
             </div>
             <div className="flex items-center gap-2">
@@ -121,7 +131,7 @@ const FinancialYearChart: React.FC<FinancialYearChartProps> = ({ data, metric = 
                 {isSales ? formatCurrency(prevVal) : prevVal}
               </span>
             </div>
-            {prevVal > 0 && (
+            {!isFuture && prevVal > 0 && (
               <div className="border-t border-gray-100 dark:border-white/[0.04] pt-1.5 mt-1.5 flex items-center gap-2">
                 <span className="text-gray-500 dark:text-gray-500">Change:</span>
                 <span className={`font-bold ml-auto ${change >= 0 ? "text-blue-600" : "text-rose-600"}`}>
