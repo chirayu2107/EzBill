@@ -707,11 +707,19 @@ input, textarea, [contenteditable="true"] {
   /* Make html/body scrollable and white */
   html, body {
     height: auto !important;
-    min-height: auto !important;
+    min-height: 0 !important;
     max-height: none !important;
     overflow: visible !important;
     background-color: #ffffff !important;
     color: #000000 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Unconstrain containers so content flows across multiple pages */
+  div {
+    max-height: none !important;
+    overflow: visible !important;
   }
 
   /* Hide absolutely everything first */
@@ -725,19 +733,16 @@ input, textarea, [contenteditable="true"] {
     visibility: visible !important;
   }
 
-  /*
-   * KEY FIX: anchor the invoice content to the very top-left of the printed page.
-   * Without this, the modal overlay (which is `fixed inset-0`) gets reset to
-   * `position: static` and contributes a full blank page before the invoice.
-   */
+  /* Position printable content at top of page 1 and allow natural multi-page flow */
   .invoice-print-content {
-    position: fixed !important;
+    position: absolute !important;
     top: 0 !important;
     left: 0 !important;
     width: 100% !important;
     max-width: none !important;
     min-width: auto !important;
     height: auto !important;
+    max-height: none !important;
     display: block !important;
     overflow: visible !important;
     transform: none !important;
@@ -745,7 +750,6 @@ input, textarea, [contenteditable="true"] {
     color: #000000 !important;
     padding: 0 !important;
     margin: 0 !important;
-    overflow: visible !important;
     z-index: 9999 !important;
   }
 
@@ -808,6 +812,13 @@ input, textarea, [contenteditable="true"] {
     background-color: #f3f4f6 !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
+  }
+
+  /* Prevent page breaks inside avoid blocks */
+  .pdf-avoid-break,
+  .invoice-footer-section {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
   }
 
   /* Hide UI chrome that must never print */

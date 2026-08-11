@@ -1,10 +1,10 @@
 "use client"
 
-import type React from "react"
-import { useState, useEffect, useRef, useCallback } from "react"
+import React, { useState, useEffect, useRef, useCallback } from "react"
 import type { Invoice } from "../../types"
 import { useAuth } from "../../context/AuthContext"
 import { formatCurrency, formatDate } from "../../utils/calculations"
+import { calculateGlassInvoiceTotals, formatGlassSizeInches, calculateMMtoSqms } from "../../utils/glassCalculations"
 import { convertElementToPDF } from "../../utils/html-to-pdf"
 import { X, Download, Printer } from "lucide-react"
 import Button from "../UI/Button"
@@ -298,149 +298,344 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({ invoice, onClose, autoD
                 </div>
               </div>
 
-              {/* Items table */}
-              <div style={{ marginBottom: "14px" }}>
-                <table style={{ width: "100%", borderCollapse: "collapse" }}>
-                  <thead>
-                    <tr>
-                      <th style={thStyle({ textAlign: "center", width: "5%" })}>S.NO</th>
-                      <th style={thStyle({ textAlign: "left", width: "28%" })}>SERVICES</th>
-                      <th style={thStyle({ textAlign: "center", width: "12%" })}>HSN/SAC</th>
-                      <th style={thStyle({ textAlign: "center", width: "8%" })}>QTY</th>
-                      <th style={thStyle({ textAlign: "center", width: "8%" })}>UNIT</th>
-                      <th style={thStyle({ textAlign: "right", width: "12%" })}>RATE</th>
-                      <th style={thStyle({ textAlign: "right", width: "10%" })}>DISC</th>
-                      <th style={thStyle({ textAlign: "right", width: "17%" })}>AMOUNT</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {invoice.items.map((item, index) => (
-                      <tr key={item.id}>
-                        <td style={tdStyle({ textAlign: "center" })}>{index + 1}</td>
-                        <td style={tdStyle()}>{item.name}</td>
-                        <td style={tdStyle({ textAlign: "center" })}>{item.hsnSac || "–"}</td>
-                        <td style={tdStyle({ textAlign: "center" })}>{item.quantity}</td>
-                        <td style={tdStyle({ textAlign: "center" })}>{item.unit || "pcs"}</td>
-                        <td style={tdStyle({ textAlign: "right" })}>{formatCurrency(item.rate).replace("₹", "")}</td>
-                        <td style={tdStyle({ textAlign: "right" })}>{item.discount ? `${item.discount}%` : "–"}</td>
-                        <td style={tdStyle({ textAlign: "right", fontWeight: 600 })}>{formatCurrency(item.lineTotal).replace("₹", "")}</td>
-                      </tr>
-                    ))}
+              {/* Items Table Section */}
+              {invoice.invoiceType === "glass" && invoice.glassData ? (() => {
+                const glassTotals = calculateGlassInvoiceTotals(invoice.glassData)
+                let itemCounter = 1
+                const bdr = "1px solid #000"
+                const bdrDash = "1px dashed #999"
+                const mono = "'Courier New', Courier, monospace"
+                const gstRate = invoice.gst && invoice.subtotal ? Math.round((invoice.gst / (invoice.subtotal - (invoice.discountAmount || 0))) * 100) || 18 : 18
+                const halfGst = gstRate / 2
 
-                    {/* Subtotal */}
-                    <tr>
-                      <td colSpan={7} style={tdAltStyle({ textAlign: "right", fontWeight: 700 })}>Subtotal</td>
-                      <td style={tdAltStyle({ textAlign: "right", fontWeight: 700 })}>{formatCurrency(invoice.subtotal).replace("₹", "")}</td>
-                    </tr>
+                return (
+                  <div style={{ marginBottom: "16px" }}>
+                    <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "11px", fontFamily: "Arial, sans-serif", tableLayout: "fixed" }}>
+                      <colgroup>
+                        <col style={{ width: "3%" }} />   {/* Sr */}
+                        <col style={{ width: "3%" }} />   {/* ItNo */}
+                        <col style={{ width: "13%" }} />  {/* SIZE (actual) */}
+                        <col style={{ width: "4%" }} />   {/* PCS */}
+                        <col style={{ width: "8%" }} />   {/* SQMS (actual) */}
+                        <col style={{ width: "13%" }} />  {/* SIZE (charged) */}
+                        <col style={{ width: "8%" }} />   {/* SQMS (charged) */}
+                        <col style={{ width: "7%" }} />   {/* RATE/SQMS */}
+                        <col style={{ width: "10%" }} />  {/* GLASS AMOUNT */}
+                        <col style={{ width: "5%" }} />   {/* GRINDING RATE */}
+                        <col style={{ width: "7%" }} />   {/* GRINDING AMOUNT */}
+                        <col style={{ width: "7%" }} />   {/* OTHER CHARGES */}
+                        <col style={{ width: "12%" }} />  {/* TOTAL AMOUNT */}
+                      </colgroup>
+                      <thead>
+                        <tr style={{ borderTop: bdr, borderBottom: bdr }}>
+                          <th colSpan={5} style={{ borderRight: bdr, padding: "5px 4px", fontWeight: 700, textAlign: "center", fontSize: "10px" }}>&lt; --- PARTICULARS OF GLASS  -- &gt;</th>
+                          <th colSpan={2} style={{ borderRight: bdr, padding: "5px 4px", fontWeight: 700, textAlign: "center", fontSize: "10px" }}>&lt; -- CHARGED -- &gt;</th>
+                          <th rowSpan={2} style={{ borderRight: bdr, padding: "5px 2px", fontWeight: 700, textAlign: "center", fontSize: "10px", verticalAlign: "middle" }}>RATE/<br />SQMS</th>
+                          <th rowSpan={2} style={{ borderRight: bdr, padding: "5px 2px", fontWeight: 700, textAlign: "center", fontSize: "10px", verticalAlign: "middle" }}>GLASS<br />AMOUNT</th>
+                          <th colSpan={2} style={{ borderRight: bdr, padding: "5px 4px", fontWeight: 700, textAlign: "center", fontSize: "10px" }}>&lt; GRINDING &gt;</th>
+                          <th rowSpan={2} style={{ borderRight: bdr, padding: "5px 2px", fontWeight: 700, textAlign: "center", fontSize: "10px", verticalAlign: "middle" }}>OTHER<br />CHARGES</th>
+                          <th rowSpan={2} style={{ padding: "5px 2px", fontWeight: 700, textAlign: "center", fontSize: "10px", verticalAlign: "middle" }}>TOTAL<br />AMOUNT</th>
+                        </tr>
+                        <tr style={{ borderBottom: bdr }}>
+                          <th style={{ padding: "3px 2px", fontWeight: 700, textAlign: "center", fontSize: "9px" }}>Sr</th>
+                          <th style={{ padding: "3px 2px", fontWeight: 700, textAlign: "center", fontSize: "9px" }}>ItNo</th>
+                          <th style={{ padding: "3px 2px", fontWeight: 700, textAlign: "center", fontSize: "9px" }}>SIZE</th>
+                          <th style={{ padding: "3px 2px", fontWeight: 700, textAlign: "center", fontSize: "9px" }}>PCS</th>
+                          <th style={{ borderRight: bdr, padding: "3px 2px", fontWeight: 700, textAlign: "center", fontSize: "9px" }}>SQMS</th>
+                          <th style={{ padding: "3px 2px", fontWeight: 700, textAlign: "center", fontSize: "9px" }}>SIZE</th>
+                          <th style={{ borderRight: bdr, padding: "3px 2px", fontWeight: 700, textAlign: "center", fontSize: "9px" }}>SQMS</th>
+                          <th style={{ padding: "3px 2px", fontWeight: 700, textAlign: "center", fontSize: "9px" }}>RATE</th>
+                          <th style={{ borderRight: bdr, padding: "3px 2px", fontWeight: 700, textAlign: "center", fontSize: "9px" }}>AMOUNT</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {invoice.glassData.groups.map((group) => {
+                          const groupTotal = glassTotals.groupTotals.find(gt => gt.groupId === group.id)
+                          return (
+                            <React.Fragment key={group.id}>
+                              {/* Group Header */}
+                              <tr>
+                                <td colSpan={13} style={{ padding: "6px 2px 3px", fontWeight: 800, fontSize: "11.5px", textTransform: "uppercase", borderBottom: bdrDash }}>
+                                  {group.specification}
+                                </td>
+                              </tr>
 
-                    {/* Overall Discount */}
-                    {invoice.discountAmount && invoice.discountAmount > 0 ? (
-                      <tr>
-                        <td colSpan={7} style={tdAltStyle({ textAlign: "right", fontWeight: 700, color: "#1d4ed8" })}>
-                          Overall Discount {invoice.discountType === "percentage" ? `(${invoice.discountValue}%)` : ""}
-                        </td>
-                        <td style={tdAltStyle({ textAlign: "right", fontWeight: 700, color: "#1d4ed8" })}>
-                          -{formatCurrency(invoice.discountAmount).replace("₹", "")}
-                        </td>
-                      </tr>
-                    ) : null}
+                              {/* Items */}
+                              {group.items.map((item) => {
+                                const sr = itemCounter++
+                                const actualSqms = item.actualSqms || calculateMMtoSqms(item.actualWidth, item.actualHeight, item.pcs)
+                                const chargedSqms = item.chargedSqms || calculateMMtoSqms(item.chargedWidth, item.chargedHeight, item.pcs)
+                                const glassAmt = item.glassAmount || Number((chargedSqms * item.ratePerSqm).toFixed(2))
+                                const totalAmt = item.lineTotal || glassAmt
+                                const inchStr = item.actualInches || formatGlassSizeInches(item.actualWidth, item.actualHeight)
 
-                    {/* GST */}
-                    {invoice.gstBreakdown.isInterState ? (
-                      <tr>
-                        <td colSpan={7} style={tdAltStyle({ textAlign: "right", fontWeight: 700 })}>IGST @ 18%</td>
-                        <td style={tdAltStyle({ textAlign: "right", fontWeight: 700 })}>{formatCurrency(invoice.gstBreakdown.igst).replace("₹", "")}</td>
-                      </tr>
-                    ) : (
-                      <>
+                                return (
+                                  <React.Fragment key={item.id}>
+                                    {/* Main data row */}
+                                    <tr>
+                                      <td style={{ padding: "3px 2px", textAlign: "center", verticalAlign: "top" }}>{sr}</td>
+                                      <td style={{ padding: "3px 2px", textAlign: "center", verticalAlign: "top" }}>{sr}</td>
+                                      <td style={{ padding: "3px 2px", verticalAlign: "top", fontFamily: mono, whiteSpace: "nowrap" }}>{item.actualWidth} &nbsp;X&nbsp; {item.actualHeight}</td>
+                                      <td style={{ padding: "3px 2px", textAlign: "center", verticalAlign: "top" }}>{item.pcs}</td>
+                                      <td style={{ padding: "3px 4px", textAlign: "right", verticalAlign: "top", fontFamily: mono, borderRight: bdrDash }}>{actualSqms.toFixed(4)}</td>
+                                      <td style={{ padding: "3px 2px", verticalAlign: "top", fontFamily: mono, whiteSpace: "nowrap" }}>{item.chargedWidth || item.actualWidth} &nbsp;X&nbsp; {item.chargedHeight || item.actualHeight}</td>
+                                      <td style={{ padding: "3px 4px", textAlign: "right", verticalAlign: "top", fontFamily: mono, borderRight: bdrDash }}>{chargedSqms.toFixed(4)}</td>
+                                      <td style={{ padding: "3px 4px", textAlign: "right", verticalAlign: "top", fontFamily: mono }}>{item.ratePerSqm ? item.ratePerSqm.toLocaleString("en-IN", { minimumFractionDigits: 2 }) : ""}</td>
+                                      <td style={{ padding: "3px 6px", textAlign: "right", verticalAlign: "top", fontFamily: mono, borderRight: bdrDash }}>{glassAmt.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
+                                      <td style={{ padding: "3px 2px", verticalAlign: "top" }}></td>
+                                      <td style={{ padding: "3px 2px", verticalAlign: "top" }}></td>
+                                      <td style={{ padding: "3px 2px", verticalAlign: "top" }}></td>
+                                      <td style={{ padding: "3px 6px", textAlign: "right", verticalAlign: "top", fontFamily: mono }}>{totalAmt.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
+                                    </tr>
+                                    {/* Second row: inches + notes */}
+                                    <tr>
+                                      <td></td>
+                                      <td></td>
+                                      <td style={{ padding: "0 2px 4px", fontSize: "9.5px", color: "#333" }}>{inchStr}</td>
+                                      <td></td>
+                                      <td style={{ padding: "0 4px 4px", fontSize: "9.5px", color: "#333", borderRight: bdrDash }}>{item.drgHolesNotes || ""}</td>
+                                      <td colSpan={2} style={{ padding: "0 2px 4px", fontSize: "9.5px", color: "#333", borderRight: bdrDash }}>{item.chargedRefNotes || "Ref.-"}</td>
+                                      <td colSpan={6}></td>
+                                    </tr>
+                                  </React.Fragment>
+                                )
+                              })}
+
+                              {/* Sub Total */}
+                              <tr style={{ borderTop: bdrDash, borderBottom: bdrDash }}>
+                                <td colSpan={2} style={{ padding: "4px 2px", textAlign: "right", fontStyle: "italic", fontWeight: 700 }}>Sub Total</td>
+                                <td></td>
+                                <td style={{ padding: "4px 2px", textAlign: "center", fontWeight: 700 }}>{groupTotal?.pcs || 0}</td>
+                                <td style={{ padding: "4px 4px", textAlign: "right", fontFamily: mono, fontWeight: 700, borderRight: bdrDash }}>{groupTotal?.actualSqms?.toFixed(4) || "0.0000"}</td>
+                                <td></td>
+                                <td style={{ padding: "4px 4px", textAlign: "right", fontFamily: mono, fontWeight: 700, borderRight: bdrDash }}>{groupTotal?.chargedSqms?.toFixed(4) || "0.0000"}</td>
+                                <td></td>
+                                <td style={{ padding: "4px 6px", textAlign: "right", fontFamily: mono, fontWeight: 700, borderRight: bdrDash }}>{groupTotal?.glassAmount?.toLocaleString("en-IN", { minimumFractionDigits: 2 }) || "0.00"}</td>
+                                <td colSpan={3}></td>
+                                <td style={{ padding: "4px 6px", textAlign: "right", fontFamily: mono, fontWeight: 700 }}>{groupTotal?.totalAmount?.toLocaleString("en-IN", { minimumFractionDigits: 2 }) || "0.00"}</td>
+                              </tr>
+                            </React.Fragment>
+                          )
+                        })}
+
+                        {/* GRAND TOTAL */}
+                        <tr style={{ borderTop: bdr, borderBottom: bdr }}>
+                          <td colSpan={3} style={{ padding: "5px 2px", fontWeight: 900, fontSize: "11.5px" }}>TOTAL</td>
+                          <td style={{ padding: "5px 2px", textAlign: "center", fontWeight: 900 }}>{glassTotals.totalPcs}</td>
+                          <td style={{ padding: "5px 4px", textAlign: "right", fontFamily: mono, fontWeight: 900, borderRight: bdrDash }}>{glassTotals.totalActualSqms.toFixed(4)}</td>
+                          <td></td>
+                          <td style={{ padding: "5px 4px", textAlign: "right", fontFamily: mono, fontWeight: 900, borderRight: bdrDash }}>{glassTotals.totalChargedSqms.toFixed(4)}</td>
+                          <td></td>
+                          <td style={{ padding: "5px 6px", textAlign: "right", fontFamily: mono, fontWeight: 900, borderRight: bdrDash }}>{glassTotals.totalGlassAmount.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
+                          <td colSpan={3}></td>
+                          <td style={{ padding: "5px 6px", textAlign: "right", fontFamily: mono, fontWeight: 900, fontSize: "11.5px" }}>{glassTotals.totalGlassAmount.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+
+                    {/* Bottom charges section - right-aligned like the reference */}
+                    <table className="pdf-avoid-break" style={{ width: "100%", borderCollapse: "collapse", fontSize: "11px", fontFamily: "Arial, sans-serif", marginTop: "12px", borderTop: bdr, pageBreakInside: "avoid", breakInside: "avoid" }}>
+                      <tbody>
+                        {invoice.glassData.holeChargesCount ? (
+                          <tr>
+                            <td style={{ padding: "4px 6px", textAlign: "right", fontWeight: 600 }}>HOLE CHARGES {invoice.glassData.holeChargesCount} NOS @</td>
+                            <td style={{ padding: "4px 8px", textAlign: "right", fontFamily: mono, width: "120px" }}>{glassTotals.holeChargesAmount ? glassTotals.holeChargesAmount.toLocaleString("en-IN", { minimumFractionDigits: 2 }) : ""}</td>
+                          </tr>
+                        ) : null}
+                        {invoice.glassData.cutoutChargesCount ? (
+                          <tr>
+                            <td style={{ padding: "4px 6px", textAlign: "right", fontWeight: 600 }}>CUTOUT CHARGES {invoice.glassData.cutoutChargesCount} NOS @</td>
+                            <td style={{ padding: "4px 8px", textAlign: "right", fontFamily: mono, width: "120px" }}>{glassTotals.cutoutChargesAmount ? glassTotals.cutoutChargesAmount.toLocaleString("en-IN", { minimumFractionDigits: 2 }) : ""}</td>
+                          </tr>
+                        ) : null}
+                        {glassTotals.adminCharge > 0 ? (
+                          <tr>
+                            <td style={{ padding: "4px 6px", textAlign: "right", fontWeight: 600 }}>ADMIN CHARGE</td>
+                            <td style={{ padding: "4px 8px", textAlign: "right", fontFamily: mono, width: "120px" }}>{glassTotals.adminCharge.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
+                          </tr>
+                        ) : null}
+                        {glassTotals.assuranceChargeAmount > 0 ? (
+                          <tr>
+                            <td style={{ padding: "4px 6px", textAlign: "right", fontWeight: 600 }}>ASSURANCE CHARGES ON Rs {Math.round(glassTotals.totalGlassAmount)} @{invoice.glassData.assuranceChargeRate || 1.5} %</td>
+                            <td style={{ padding: "4px 8px", textAlign: "right", fontFamily: mono, width: "120px" }}>{glassTotals.assuranceChargeAmount.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
+                          </tr>
+                        ) : null}
+                        <tr style={{ borderTop: bdrDash }}>
+                          <td style={{ padding: "5px 6px", textAlign: "right", fontWeight: 900, fontSize: "11.5px" }}>ASSESSABLE VALUE</td>
+                          <td style={{ padding: "5px 8px", textAlign: "right", fontFamily: mono, fontWeight: 900, fontSize: "11.5px", width: "120px" }}>{glassTotals.assessableValue.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
+                        </tr>
+                        {invoice.gstBreakdown.isInterState ? (
+                          <tr>
+                            <td style={{ padding: "4px 6px", textAlign: "right", fontWeight: 600 }}>ADD IGST @ {gstRate}.00 % of Rs.{glassTotals.assessableValue.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
+                            <td style={{ padding: "4px 8px", textAlign: "right", fontFamily: mono, fontWeight: 600, width: "120px" }}>{invoice.gstBreakdown.igst.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
+                          </tr>
+                        ) : (
+                          <>
+                            <tr>
+                              <td style={{ padding: "4px 6px", textAlign: "right", fontWeight: 600 }}>ADD SGST @ {halfGst}.00 % of Rs.{glassTotals.assessableValue.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
+                              <td style={{ padding: "4px 8px", textAlign: "right", fontFamily: mono, fontWeight: 600, width: "120px" }}>{invoice.gstBreakdown.sgst.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
+                            </tr>
+                            <tr>
+                              <td style={{ padding: "4px 6px", textAlign: "right", fontWeight: 600 }}>ADD CGST @{halfGst}.00 % of Rs.{glassTotals.assessableValue.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
+                              <td style={{ padding: "4px 8px", textAlign: "right", fontFamily: mono, fontWeight: 600, width: "120px" }}>{invoice.gstBreakdown.cgst.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
+                            </tr>
+                          </>
+                        )}
+                        <tr style={{ borderTop: bdr, borderBottom: bdr }}>
+                          <td style={{ padding: "6px 6px", textAlign: "right", fontWeight: 900, fontSize: "12.5px" }}>TOTAL AMOUNT DEBITED (IN RUPEES)</td>
+                          <td style={{ padding: "6px 8px", textAlign: "right", fontFamily: mono, fontWeight: 900, fontSize: "12.5px", width: "120px" }}>{invoice.total.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                )
+              })() : (
+                /* Standard Invoice Items Table */
+                <>
+                  <div style={{ marginBottom: "14px" }}>
+                    <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                      <thead>
                         <tr>
-                          <td colSpan={7} style={tdAltStyle({ textAlign: "right", fontWeight: 700 })}>CGST @ 9%</td>
-                          <td style={tdAltStyle({ textAlign: "right", fontWeight: 700 })}>{formatCurrency(invoice.gstBreakdown.cgst).replace("₹", "")}</td>
+                          <th style={thStyle({ textAlign: "center", width: "5%" })}>S.NO</th>
+                          <th style={thStyle({ textAlign: "left", width: "28%" })}>SERVICES</th>
+                          <th style={thStyle({ textAlign: "center", width: "12%" })}>HSN/SAC</th>
+                          <th style={thStyle({ textAlign: "center", width: "8%" })}>QTY</th>
+                          <th style={thStyle({ textAlign: "center", width: "8%" })}>UNIT</th>
+                          <th style={thStyle({ textAlign: "right", width: "12%" })}>RATE</th>
+                          <th style={thStyle({ textAlign: "right", width: "10%" })}>DISC</th>
+                          <th style={thStyle({ textAlign: "right", width: "17%" })}>AMOUNT</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {invoice.items.map((item, index) => (
+                          <tr key={item.id}>
+                            <td style={tdStyle({ textAlign: "center" })}>{index + 1}</td>
+                            <td style={tdStyle()}>{item.name}</td>
+                            <td style={tdStyle({ textAlign: "center" })}>{item.hsnSac || "–"}</td>
+                            <td style={tdStyle({ textAlign: "center" })}>{item.quantity}</td>
+                            <td style={tdStyle({ textAlign: "center" })}>{item.unit || "pcs"}</td>
+                            <td style={tdStyle({ textAlign: "right" })}>{formatCurrency(item.rate).replace("₹", "")}</td>
+                            <td style={tdStyle({ textAlign: "right" })}>{item.discount ? `${item.discount}%` : "–"}</td>
+                            <td style={tdStyle({ textAlign: "right", fontWeight: 600 })}>{formatCurrency(item.lineTotal).replace("₹", "")}</td>
+                          </tr>
+                        ))}
+
+                        {/* Subtotal */}
+                        <tr>
+                          <td colSpan={7} style={tdAltStyle({ textAlign: "right", fontWeight: 700 })}>Subtotal</td>
+                          <td style={tdAltStyle({ textAlign: "right", fontWeight: 700 })}>{formatCurrency(invoice.subtotal).replace("₹", "")}</td>
+                        </tr>
+
+                        {/* Overall Discount */}
+                        {invoice.discountAmount && invoice.discountAmount > 0 ? (
+                          <tr>
+                            <td colSpan={7} style={tdAltStyle({ textAlign: "right", fontWeight: 700, color: "#1d4ed8" })}>
+                              Overall Discount {invoice.discountType === "percentage" ? `(${invoice.discountValue}%)` : ""}
+                            </td>
+                            <td style={tdAltStyle({ textAlign: "right", fontWeight: 700, color: "#1d4ed8" })}>
+                              -{formatCurrency(invoice.discountAmount).replace("₹", "")}
+                            </td>
+                          </tr>
+                        ) : null}
+
+                        {/* GST */}
+                        {invoice.gstBreakdown.isInterState ? (
+                          <tr>
+                            <td colSpan={7} style={tdAltStyle({ textAlign: "right", fontWeight: 700 })}>IGST @ 18%</td>
+                            <td style={tdAltStyle({ textAlign: "right", fontWeight: 700 })}>{formatCurrency(invoice.gstBreakdown.igst).replace("₹", "")}</td>
+                          </tr>
+                        ) : (
+                          <>
+                            <tr>
+                              <td colSpan={7} style={tdAltStyle({ textAlign: "right", fontWeight: 700 })}>CGST @ 9%</td>
+                              <td style={tdAltStyle({ textAlign: "right", fontWeight: 700 })}>{formatCurrency(invoice.gstBreakdown.cgst).replace("₹", "")}</td>
+                            </tr>
+                            <tr>
+                              <td colSpan={7} style={tdAltStyle({ textAlign: "right", fontWeight: 700 })}>SGST @ 9%</td>
+                              <td style={tdAltStyle({ textAlign: "right", fontWeight: 700 })}>{formatCurrency(invoice.gstBreakdown.sgst).replace("₹", "")}</td>
+                            </tr>
+                          </>
+                        )}
+
+                        {/* Total */}
+                        <tr>
+                          <td colSpan={7} style={{ ...tdAltStyle({ textAlign: "right", fontWeight: 700 }), backgroundColor: "#e5e7eb" }}>TOTAL</td>
+                          <td style={{ ...tdAltStyle({ textAlign: "right", fontWeight: 700 }), backgroundColor: "#e5e7eb" }}>
+                            ₹{formatCurrency(invoice.total).replace("₹", "")}
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+
+                  {/* Tax summary table */}
+                  <div className="pdf-avoid-break" style={{ marginBottom: "14px", pageBreakInside: "avoid", breakInside: "avoid" }}>
+                    <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                      <thead>
+                        <tr>
+                          <th style={thStyle({ textAlign: "center" })}>HSN/SAC</th>
+                          <th style={thStyle({ textAlign: "center" })}>Taxable Value</th>
+                          {invoice.gstBreakdown.isInterState ? (
+                            <>
+                              <th style={thStyle({ textAlign: "center" })}>IGST Rate</th>
+                              <th style={thStyle({ textAlign: "center" })}>IGST Amount</th>
+                            </>
+                          ) : (
+                            <>
+                              <th style={thStyle({ textAlign: "center" })}>CGST Rate</th>
+                              <th style={thStyle({ textAlign: "center" })}>CGST Amount</th>
+                              <th style={thStyle({ textAlign: "center" })}>SGST Rate</th>
+                              <th style={thStyle({ textAlign: "center" })}>SGST Amount</th>
+                            </>
+                          )}
+                          <th style={thStyle({ textAlign: "center" })}>Total Tax</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td style={tdStyle({ textAlign: "center" })}>{invoice.items[0]?.hsnSac || "–"}</td>
+                          <td style={tdStyle({ textAlign: "center" })}>{formatCurrency(invoice.subtotal - (invoice.discountAmount || 0)).replace("₹", "")}</td>
+                          {invoice.gstBreakdown.isInterState ? (
+                            <>
+                              <td style={tdStyle({ textAlign: "center" })}>18%</td>
+                              <td style={tdStyle({ textAlign: "center" })}>{formatCurrency(invoice.gstBreakdown.igst).replace("₹", "")}</td>
+                            </>
+                          ) : (
+                            <>
+                              <td style={tdStyle({ textAlign: "center" })}>9%</td>
+                              <td style={tdStyle({ textAlign: "center" })}>{formatCurrency(invoice.gstBreakdown.cgst).replace("₹", "")}</td>
+                              <td style={tdStyle({ textAlign: "center" })}>9%</td>
+                              <td style={tdStyle({ textAlign: "center" })}>{formatCurrency(invoice.gstBreakdown.sgst).replace("₹", "")}</td>
+                            </>
+                          )}
+                          <td style={tdStyle({ textAlign: "center", fontWeight: 600 })}>{formatCurrency(invoice.gstBreakdown.total).replace("₹", "")}</td>
                         </tr>
                         <tr>
-                          <td colSpan={7} style={tdAltStyle({ textAlign: "right", fontWeight: 700 })}>SGST @ 9%</td>
-                          <td style={tdAltStyle({ textAlign: "right", fontWeight: 700 })}>{formatCurrency(invoice.gstBreakdown.sgst).replace("₹", "")}</td>
+                          <td style={{ ...tdAltStyle({ textAlign: "center", fontWeight: 700 }), backgroundColor: "#f3f4f6" }}>Total</td>
+                          <td style={{ ...tdAltStyle({ textAlign: "center", fontWeight: 700 }), backgroundColor: "#f3f4f6" }}>{formatCurrency(invoice.subtotal - (invoice.discountAmount || 0)).replace("₹", "")}</td>
+                          {invoice.gstBreakdown.isInterState ? (
+                            <>
+                              <td style={{ ...tdAltStyle({ textAlign: "center" }), backgroundColor: "#f3f4f6" }}></td>
+                              <td style={{ ...tdAltStyle({ textAlign: "center", fontWeight: 700 }), backgroundColor: "#f3f4f6" }}>{formatCurrency(invoice.gstBreakdown.igst).replace("₹", "")}</td>
+                            </>
+                          ) : (
+                            <>
+                              <td style={{ ...tdAltStyle({ textAlign: "center" }), backgroundColor: "#f3f4f6" }}></td>
+                              <td style={{ ...tdAltStyle({ textAlign: "center", fontWeight: 700 }), backgroundColor: "#f3f4f6" }}>{formatCurrency(invoice.gstBreakdown.cgst).replace("₹", "")}</td>
+                              <td style={{ ...tdAltStyle({ textAlign: "center" }), backgroundColor: "#f3f4f6" }}></td>
+                              <td style={{ ...tdAltStyle({ textAlign: "center", fontWeight: 700 }), backgroundColor: "#f3f4f6" }}>{formatCurrency(invoice.gstBreakdown.sgst).replace("₹", "")}</td>
+                            </>
+                          )}
+                          <td style={{ ...tdAltStyle({ textAlign: "center", fontWeight: 700 }), backgroundColor: "#f3f4f6" }}>{formatCurrency(invoice.gstBreakdown.total).replace("₹", "")}</td>
                         </tr>
-                      </>
-                    )}
-
-                    {/* Total */}
-                    <tr>
-                      <td colSpan={7} style={{ ...tdAltStyle({ textAlign: "right", fontWeight: 700 }), backgroundColor: "#e5e7eb" }}>TOTAL</td>
-                      <td style={{ ...tdAltStyle({ textAlign: "right", fontWeight: 700 }), backgroundColor: "#e5e7eb" }}>
-                        ₹{formatCurrency(invoice.total).replace("₹", "")}
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-
-              {/* Tax summary table */}
-              <div style={{ marginBottom: "14px" }}>
-                <table style={{ width: "100%", borderCollapse: "collapse" }}>
-                  <thead>
-                    <tr>
-                      <th style={thStyle({ textAlign: "center" })}>HSN/SAC</th>
-                      <th style={thStyle({ textAlign: "center" })}>Taxable Value</th>
-                      {invoice.gstBreakdown.isInterState ? (
-                        <>
-                          <th style={thStyle({ textAlign: "center" })}>IGST Rate</th>
-                          <th style={thStyle({ textAlign: "center" })}>IGST Amount</th>
-                        </>
-                      ) : (
-                        <>
-                          <th style={thStyle({ textAlign: "center" })}>CGST Rate</th>
-                          <th style={thStyle({ textAlign: "center" })}>CGST Amount</th>
-                          <th style={thStyle({ textAlign: "center" })}>SGST Rate</th>
-                          <th style={thStyle({ textAlign: "center" })}>SGST Amount</th>
-                        </>
-                      )}
-                      <th style={thStyle({ textAlign: "center" })}>Total Tax</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td style={tdStyle({ textAlign: "center" })}>{invoice.items[0]?.hsnSac || "–"}</td>
-                      <td style={tdStyle({ textAlign: "center" })}>{formatCurrency(invoice.subtotal - (invoice.discountAmount || 0)).replace("₹", "")}</td>
-                      {invoice.gstBreakdown.isInterState ? (
-                        <>
-                          <td style={tdStyle({ textAlign: "center" })}>18%</td>
-                          <td style={tdStyle({ textAlign: "center" })}>{formatCurrency(invoice.gstBreakdown.igst).replace("₹", "")}</td>
-                        </>
-                      ) : (
-                        <>
-                          <td style={tdStyle({ textAlign: "center" })}>9%</td>
-                          <td style={tdStyle({ textAlign: "center" })}>{formatCurrency(invoice.gstBreakdown.cgst).replace("₹", "")}</td>
-                          <td style={tdStyle({ textAlign: "center" })}>9%</td>
-                          <td style={tdStyle({ textAlign: "center" })}>{formatCurrency(invoice.gstBreakdown.sgst).replace("₹", "")}</td>
-                        </>
-                      )}
-                      <td style={tdStyle({ textAlign: "center", fontWeight: 600 })}>{formatCurrency(invoice.gstBreakdown.total).replace("₹", "")}</td>
-                    </tr>
-                    <tr>
-                      <td style={{ ...tdAltStyle({ textAlign: "center", fontWeight: 700 }), backgroundColor: "#f3f4f6" }}>Total</td>
-                      <td style={{ ...tdAltStyle({ textAlign: "center", fontWeight: 700 }), backgroundColor: "#f3f4f6" }}>{formatCurrency(invoice.subtotal - (invoice.discountAmount || 0)).replace("₹", "")}</td>
-                      {invoice.gstBreakdown.isInterState ? (
-                        <>
-                          <td style={{ ...tdAltStyle({ textAlign: "center" }), backgroundColor: "#f3f4f6" }}></td>
-                          <td style={{ ...tdAltStyle({ textAlign: "center", fontWeight: 700 }), backgroundColor: "#f3f4f6" }}>{formatCurrency(invoice.gstBreakdown.igst).replace("₹", "")}</td>
-                        </>
-                      ) : (
-                        <>
-                          <td style={{ ...tdAltStyle({ textAlign: "center" }), backgroundColor: "#f3f4f6" }}></td>
-                          <td style={{ ...tdAltStyle({ textAlign: "center", fontWeight: 700 }), backgroundColor: "#f3f4f6" }}>{formatCurrency(invoice.gstBreakdown.cgst).replace("₹", "")}</td>
-                          <td style={{ ...tdAltStyle({ textAlign: "center" }), backgroundColor: "#f3f4f6" }}></td>
-                          <td style={{ ...tdAltStyle({ textAlign: "center", fontWeight: 700 }), backgroundColor: "#f3f4f6" }}>{formatCurrency(invoice.gstBreakdown.sgst).replace("₹", "")}</td>
-                        </>
-                      )}
-                      <td style={{ ...tdAltStyle({ textAlign: "center", fontWeight: 700 }), backgroundColor: "#f3f4f6" }}>{formatCurrency(invoice.gstBreakdown.total).replace("₹", "")}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+                      </tbody>
+                    </table>
+                  </div>
+                </>
+              )}
 
               {/* Amount in words */}
-              <div style={{ marginBottom: "14px" }}>
+              <div className="pdf-avoid-break" style={{ marginBottom: "14px", pageBreakInside: "avoid", breakInside: "avoid" }}>
                 <div style={{ border: "1px solid #374151", padding: "10px 14px", backgroundColor: "#f9fafb" }}>
                   <p style={{ fontWeight: 700, fontSize: "13px", marginBottom: "4px", color: "#111827" }}>Total Amount (in words)</p>
                   <p style={{ fontSize: "13px", fontStyle: "italic", color: "#374151", margin: 0 }}>{convertToWords(invoice.total)}</p>
@@ -448,7 +643,7 @@ const InvoicePreview: React.FC<InvoicePreviewProps> = ({ invoice, onClose, autoD
               </div>
 
               {/* Footer: Bank | Terms | Signature */}
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "12px" }}>
+              <div className="pdf-avoid-break invoice-footer-section" style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "12px", pageBreakInside: "avoid", breakInside: "avoid" }}>
                 {/* Bank Details */}
                 <div style={{ border: "1px solid #374151", padding: "10px 12px", backgroundColor: "#f9fafb" }}>
                   <p style={{ fontWeight: 700, fontSize: "13px", marginBottom: "6px", color: "#111827" }}>Bank Details</p>

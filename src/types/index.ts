@@ -17,9 +17,54 @@ export interface GSTBreakdown {
   total: number
 }
 
+export type InvoiceType = "standard" | "glass"
+
+export interface GlassItem {
+  id: string
+  srNo?: number
+  itemNo?: string
+  actualWidth: number // in mm
+  actualHeight: number // in mm
+  actualInches?: string // e.g. "83 2/8 * 42 0/0"
+  pcs: number
+  actualSqms: number
+  drgHolesNotes?: string // e.g. "DRG Holes: 4" or "SZE"
+  chargedWidth: number // in mm
+  chargedHeight: number // in mm
+  chargedSqms: number
+  chargedRefNotes?: string // e.g. "Ref.-" or "Cutout 3 Ref.-"
+  ratePerSqm: number
+  glassAmount: number
+  grindingRate?: number
+  grindingAmount?: number
+  otherCharges?: number
+  lineTotal: number
+}
+
+export interface GlassItemGroup {
+  id: string
+  specification: string // e.g. "12 MM CLEAR FLOAT FLAT, TOUGHENED, POLISH(Flat & Arris), HOLE"
+  items: GlassItem[]
+}
+
+export interface GlassInvoiceData {
+  groups: GlassItemGroup[]
+  holeChargesCount?: number
+  holeChargesRate?: number
+  holeChargesAmount?: number
+  cutoutChargesCount?: number
+  cutoutChargesRate?: number
+  cutoutChargesAmount?: number
+  adminCharge?: number
+  assuranceChargeRate?: number
+  assuranceChargeAmount?: number
+  assessableValue?: number
+}
+
 export interface Invoice {
   id: string
   invoiceNumber: string
+  invoiceType?: InvoiceType
   customerName: string
   customerAddress: string
   customerState: string
@@ -27,10 +72,11 @@ export interface Invoice {
   customerPAN: string
   date: Date
   items: InvoiceItem[]
+  glassData?: GlassInvoiceData | null
   subtotal: number
-  discountType?: "percentage" | "flat"
-  discountValue?: number
-  discountAmount?: number
+  discountType?: "percentage" | "flat" | null
+  discountValue?: number | null
+  discountAmount?: number | null
   gst: number
   gstBreakdown: GSTBreakdown
   total: number

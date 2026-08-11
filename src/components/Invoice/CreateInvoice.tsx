@@ -1,14 +1,14 @@
 "use client"
 
-import type React from "react"
-import { useState, useEffect, useMemo, useRef } from "react"
+import React, { useState, useEffect, useMemo, useRef } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import { motion } from "framer-motion"
 import { useApp } from "../../context/AppContext"
 import { useAuth } from "../../context/AuthContext"
-import type { InvoiceItem } from "../../types"
+import type { InvoiceItem, InvoiceType, GlassInvoiceData, GlassItemGroup, GlassItem } from "../../types"
 import { calculateSubtotal, calculateGSTBreakdown, formatCurrency, formatDate } from "../../utils/calculations"
-import { Plus, Save, Trash2 } from "lucide-react"
+import { calculateGlassInvoiceTotals, formatGlassSizeInches, calculateMMtoSqms } from "../../utils/glassCalculations"
+import { Plus, Save, Trash2, Layers, FileText } from "lucide-react"
 import Button from "../UI/Button"
 import Card from "../UI/Card"
 import { getAvatarGradient } from "../../utils/avatarUtils"
@@ -30,6 +30,9 @@ const CreateInvoice: React.FC = () => {
   const [showSuggestions, setShowSuggestions] = useState(false)
   const nameInputRef = useRef<HTMLInputElement>(null)
   const suggestionsRef = useRef<HTMLDivElement>(null)
+
+  const [overallDiscountType, setOverallDiscountType] = useState<"percentage" | "flat">("percentage")
+  const [overallDiscountValue, setOverallDiscountValue] = useState<number>(0)
 
   const invoiceFY = useMemo(() => {
     if (!invoiceDate) return new Date().getFullYear()
@@ -148,26 +151,66 @@ const CreateInvoice: React.FC = () => {
     { id: "1", name: "", hsnSac: "", quantity: 1, rate: 0, unit: "pcs", discount: 0, lineTotal: 0 },
   ])
 
-  const [overallDiscountType, setOverallDiscountType] = useState<"percentage" | "flat">("percentage")
-  const [overallDiscountValue, setOverallDiscountValue] = useState<number>(0)
+  const [invoiceType, setInvoiceType] = useState<InvoiceType>("standard")
+  const [glassData, setGlassData] = useState<GlassInvoiceData>({
+    groups: [
+      {
+        id: "group-1",
+        specification: "",
+        items: [
+          {
+            id: "glass-1",
+            srNo: 1,
+            itemNo: "1",
+            actualWidth: 0,
+            actualHeight: 0,
+            actualInches: "",
+            pcs: 1,
+            actualSqms: 0,
+            drgHolesNotes: "",
+            chargedWidth: 0,
+            chargedHeight: 0,
+            chargedSqms: 0,
+            chargedRefNotes: "",
+            ratePerSqm: 0,
+            glassAmount: 0,
+            lineTotal: 0,
+          },
+        ],
+      },
+    ],
+    holeChargesCount: 0,
+    holeChargesRate: 0,
+    holeChargesAmount: 0,
+    cutoutChargesCount: 0,
+    cutoutChargesRate: 0,
+    cutoutChargesAmount: 0,
+    adminCharge: 0,
+    assuranceChargeRate: 0,
+    assuranceChargeAmount: 0,
+  })
 
   useEffect(() => {
     if (isEditing && id) {
       const invoice = getInvoiceById(id)
       if (invoice) {
+        if (invoice.invoiceType) setInvoiceType(invoice.invoiceType)
+        if (invoice.glassData) setGlassData(invoice.glassData)
         setCustomerName(invoice.customerName)
         setCustomerAddress(invoice.customerAddress)
         setCustomerState(invoice.customerState)
         setCustomerGSTIN(invoice.customerGSTIN)
         setCustomerPAN(invoice.customerPAN)
-        setInvoiceDate(invoice.date.toISOString().split("T")[0])
-        setItems(invoice.items.map(item => ({
-          ...item,
-          unit: item.unit || "pcs",
-          discount: item.discount || 0
-        })))
+        setInvoiceDate(new Date(invoice.date).toISOString().split("T")[0])
+        if (invoice.items && invoice.items.length > 0) {
+          setItems(invoice.items.map(item => ({
+            ...item,
+            unit: item.unit || "pcs",
+            discount: item.discount || 0
+          })))
+        }
         if (invoice.discountType) setOverallDiscountType(invoice.discountType)
-        if (invoice.discountValue !== undefined) setOverallDiscountValue(invoice.discountValue)
+        if (invoice.discountValue !== undefined) setOverallDiscountValue(invoice.discountValue ?? 0)
         if (invoice.gstBreakdown && invoice.subtotal > 0) {
           const taxable = invoice.subtotal - (invoice.discountAmount || 0)
           if (taxable > 0) {
@@ -228,13 +271,152 @@ const CreateInvoice: React.FC = () => {
     }
   }
 
-  const subtotal = calculateSubtotal(items)
+  // ── Glass Processing Helper Functions ──
+  const addGlassGroup = () => {
+    const newGroup: GlassItemGroup = {
+      id: `group-${Date.now()}`,
+      specification: "",
+      items: [
+        {
+          id: `glass-${Date.now()}`,
+          srNo: 1,
+          itemNo: "1",
+          actualWidth: 0,
+          actualHeight: 0,
+          actualInches: "",
+          pcs: 1,
+          actualSqms: 0,
+          drgHolesNotes: "",
+          chargedWidth: 0,
+          chargedHeight: 0,
+          chargedSqms: 0,
+          chargedRefNotes: "",
+          ratePerSqm: 0,
+          glassAmount: 0,
+          lineTotal: 0,
+        },
+      ],
+    }
+    setGlassData((prev) => ({
+      ...prev,
+      groups: [...prev.groups, newGroup],
+    }))
+  }
+
+  const removeGlassGroup = (groupId: string) => {
+    if (glassData.groups.length > 1) {
+      setGlassData((prev) => ({
+        ...prev,
+        groups: prev.groups.filter((g) => g.id !== groupId),
+      }))
+    }
+  }
+
+  const updateGlassGroupSpec = (groupId: string, specification: string) => {
+    setGlassData((prev) => ({
+      ...prev,
+      groups: prev.groups.map((g) => (g.id === groupId ? { ...g, specification } : g)),
+    }))
+  }
+
+  const addGlassItem = (groupId: string) => {
+    setGlassData((prev) => ({
+      ...prev,
+      groups: prev.groups.map((g) => {
+        if (g.id === groupId) {
+          const nextIdx = g.items.length + 1
+          const newItem: GlassItem = {
+            id: `glass-${Date.now()}`,
+            srNo: nextIdx,
+            itemNo: `${nextIdx}`,
+            actualWidth: 0,
+            actualHeight: 0,
+            actualInches: "",
+            pcs: 1,
+            actualSqms: 0,
+            drgHolesNotes: "",
+            chargedWidth: 0,
+            chargedHeight: 0,
+            chargedSqms: 0,
+            chargedRefNotes: "",
+            ratePerSqm: 0,
+            glassAmount: 0,
+            lineTotal: 0,
+          }
+          return { ...g, items: [...g.items, newItem] }
+        }
+        return g
+      }),
+    }))
+  }
+
+  const removeGlassItem = (groupId: string, itemId: string) => {
+    setGlassData((prev) => ({
+      ...prev,
+      groups: prev.groups.map((g) => {
+        if (g.id === groupId && g.items.length > 1) {
+          return { ...g, items: g.items.filter((i) => i.id !== itemId) }
+        }
+        return g
+      }),
+    }))
+  }
+
+  const updateGlassItem = (groupId: string, itemId: string, field: keyof GlassItem, val: any) => {
+    setGlassData((prev) => ({
+      ...prev,
+      groups: prev.groups.map((g) => {
+        if (g.id === groupId) {
+          const updatedItems = g.items.map((item) => {
+            if (item.id === itemId) {
+              const updated = { ...item, [field]: val }
+              const actualW = Number(updated.actualWidth) || 0
+              const actualH = Number(updated.actualHeight) || 0
+              const pcs = Number(updated.pcs) || 0
+              const chargedW = Number(updated.chargedWidth) || actualW
+              const chargedH = Number(updated.chargedHeight) || actualH
+              const rate = Number(updated.ratePerSqm) || 0
+
+              updated.actualSqms = calculateMMtoSqms(actualW, actualH, pcs)
+              updated.actualInches = formatGlassSizeInches(actualW, actualH)
+              updated.chargedSqms = calculateMMtoSqms(chargedW, chargedH, pcs)
+              updated.glassAmount = Number((updated.chargedSqms * rate).toFixed(2))
+              updated.lineTotal = Number((updated.glassAmount + (Number(updated.grindingAmount) || 0) + (Number(updated.otherCharges) || 0)).toFixed(2))
+
+              return updated
+            }
+            return item
+          })
+          return { ...g, items: updatedItems }
+        }
+        return g
+      }),
+    }))
+  }
+
+  const updateGlassExtra = (field: keyof GlassInvoiceData, val: number) => {
+    setGlassData((prev) => ({
+      ...prev,
+      [field]: val,
+    }))
+  }
+
+  const glassTotals = useMemo(() => calculateGlassInvoiceTotals(glassData), [glassData])
+
+  const subtotal = useMemo(() => {
+    if (invoiceType === "glass") {
+      return glassTotals.assessableValue
+    }
+    return calculateSubtotal(items)
+  }, [invoiceType, glassTotals, items])
+
   const overallDiscountAmount = useMemo(() => {
+    if (invoiceType === "glass") return 0
     if (overallDiscountType === "percentage") {
       return (subtotal * (overallDiscountValue || 0)) / 100
     }
     return overallDiscountValue || 0
-  }, [subtotal, overallDiscountType, overallDiscountValue])
+  }, [invoiceType, subtotal, overallDiscountType, overallDiscountValue])
 
   const taxableAmount = Math.max(0, subtotal - overallDiscountAmount)
   const gstBreakdown = calculateGSTBreakdown(taxableAmount, user?.state || "", customerState, gstRate)
@@ -244,6 +426,20 @@ const CreateInvoice: React.FC = () => {
   const hsnSummaryMap = useMemo(() => {
     const summary: Record<string, { hsn: string; taxableValue: number; igst: number; cgst: number; sgst: number; totalTax: number }> = {}
     
+    if (invoiceType === "glass") {
+      const hsn = "7007"
+      const itemGst = calculateGSTBreakdown(taxableAmount, user?.state || "", customerState, gstRate)
+      summary[hsn] = {
+        hsn,
+        taxableValue: taxableAmount,
+        igst: itemGst.igst,
+        cgst: itemGst.cgst,
+        sgst: itemGst.sgst,
+        totalTax: itemGst.total,
+      }
+      return Object.values(summary)
+    }
+
     const validItems = items.filter(i => i.name && i.rate > 0)
     const totalLineSubtotal = validItems.reduce((acc, curr) => acc + curr.lineTotal, 0) || 1
     
@@ -253,11 +449,9 @@ const CreateInvoice: React.FC = () => {
         summary[hsn] = { hsn, taxableValue: 0, igst: 0, cgst: 0, sgst: 0, totalTax: 0 }
       }
       
-      // Calculate item's portion of overall discount
       const itemRatio = item.lineTotal / totalLineSubtotal
       const itemDiscountPortion = overallDiscountAmount * itemRatio
       const itemTaxable = Math.max(0, item.lineTotal - itemDiscountPortion)
-      
       const itemGst = calculateGSTBreakdown(itemTaxable, user?.state || "", customerState, gstRate)
       
       summary[hsn].taxableValue += itemTaxable
@@ -268,7 +462,7 @@ const CreateInvoice: React.FC = () => {
     })
     
     return Object.values(summary)
-  }, [items, overallDiscountAmount, customerState, user?.state, gstRate])
+  }, [invoiceType, taxableAmount, items, overallDiscountAmount, customerState, user?.state, gstRate])
 
   const hsnTotalTaxable = hsnSummaryMap.reduce((acc, curr) => acc + curr.taxableValue, 0)
   const hsnTotalIgst = hsnSummaryMap.reduce((acc, curr) => acc + curr.igst, 0)
@@ -279,25 +473,52 @@ const CreateInvoice: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
 
-    if (!customerName || !customerAddress || !customerState || items.some((item) => !item.name || item.rate <= 0)) {
-      alert("Please fill in all required fields")
+    if (!customerName || !customerAddress || !customerState) {
+      alert("Please fill in all required customer fields")
       return
     }
 
-    const validItems = items.filter((item) => item.name && item.rate > 0)
+    let finalItems: InvoiceItem[] = []
+
+    if (invoiceType === "glass") {
+      let srCounter = 1
+      glassData.groups.forEach((g) => {
+        g.items.forEach((gi) => {
+          finalItems.push({
+            id: gi.id || `glass-${srCounter}`,
+            name: `${g.specification} (${gi.actualWidth}x${gi.actualHeight}mm)`,
+            hsnSac: "7007",
+            quantity: gi.pcs,
+            rate: gi.pcs > 0 ? Number((gi.glassAmount / gi.pcs).toFixed(2)) : gi.glassAmount,
+            unit: "sqm",
+            discount: 0,
+            lineTotal: gi.lineTotal,
+          })
+          srCounter++
+        })
+      })
+    } else {
+      if (items.some((item) => !item.name || item.rate <= 0)) {
+        alert("Please fill in all required item details")
+        return
+      }
+      finalItems = items.filter((item) => item.name && item.rate > 0)
+    }
 
     const invoiceData = {
+      invoiceType,
       customerName,
       customerAddress,
       customerState,
       customerGSTIN,
       customerPAN,
       date: new Date(invoiceDate),
-      items: validItems,
+      items: finalItems,
+      glassData: invoiceType === "glass" ? glassData : null,
       subtotal,
-      discountType: overallDiscountType,
-      discountValue: overallDiscountValue,
-      discountAmount: overallDiscountAmount,
+      discountType: invoiceType === "standard" ? (overallDiscountType ?? "percentage") : null,
+      discountValue: invoiceType === "standard" ? (overallDiscountValue ?? 0) : 0,
+      discountAmount: invoiceType === "standard" ? overallDiscountAmount : 0,
       gst: gstBreakdown.total,
       gstBreakdown,
       total,
@@ -368,6 +589,42 @@ const CreateInvoice: React.FC = () => {
         >
           {/* ═══ LEFT: Form ═══ */}
           <div className="space-y-5">
+
+            {/* ── Row 0: INVOICE TYPE SELECTION ── */}
+            <motion.div className="bg-white dark:bg-[#111113] border border-gray-200/70 dark:border-white/[0.05] rounded-2xl p-4 shadow-sm" variants={itemVariants}>
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+                <div>
+                  <h3 className="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-wider">Invoice Format / Mode</h3>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">Choose standard billing or detailed glass processing factory bill</p>
+                </div>
+                <div className="flex items-center p-1 bg-gray-100 dark:bg-[#1A1A1D] rounded-xl border border-gray-200/60 dark:border-white/[0.06] w-full sm:w-auto">
+                  <button
+                    type="button"
+                    onClick={() => setInvoiceType("standard")}
+                    className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all ${
+                      invoiceType === "standard"
+                        ? "bg-blue-600 text-white shadow-md shadow-blue-600/20"
+                        : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+                    }`}
+                  >
+                    <FileText className="w-3.5 h-3.5" />
+                    Standard Invoice (Old)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setInvoiceType("glass")}
+                    className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all ${
+                      invoiceType === "glass"
+                        ? "bg-blue-600 text-white shadow-md shadow-blue-600/20"
+                        : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+                    }`}
+                  >
+                    <Layers className="w-3.5 h-3.5" />
+                    Glass Processing Bill
+                  </button>
+                </div>
+              </div>
+            </motion.div>
 
             {/* ── Row 1: Customer Info + Invoice Details ── */}
             <motion.div className="grid grid-cols-1 md:grid-cols-2 gap-5" variants={itemVariants}>
@@ -545,129 +802,450 @@ const CreateInvoice: React.FC = () => {
               </div>
             </motion.div>
 
-            {/* ── Line Items ── */}
-            <motion.div variants={itemVariants}>
-              <div className="bg-white dark:bg-[#111113] border border-gray-200/70 dark:border-white/[0.05] rounded-2xl p-6 shadow-sm">
-                <div className="flex items-center justify-between mb-5 pb-4 border-b border-gray-100 dark:border-white/[0.04]">
-                  <div className="flex items-center gap-2.5">
-                    <span className="w-5 h-5 rounded-full bg-emerald-500/10 text-emerald-500 text-[10px] font-bold flex items-center justify-center flex-shrink-0">3</span>
-                    <div>
-                      <h3 className="text-[11px] font-bold text-gray-900 dark:text-white uppercase tracking-widest">Line Items</h3>
+            {/* ── Line Items / Glass Builder Section ── */}
+            {invoiceType === "glass" ? (
+              <motion.div variants={itemVariants} className="space-y-6">
+                {/* ── GLASS ITEM GROUPS ── */}
+                <div className="bg-white dark:bg-[#111113] border border-gray-200/70 dark:border-white/[0.05] rounded-2xl p-6 shadow-sm space-y-6">
+                  <div className="flex items-center justify-between pb-4 border-b border-gray-100 dark:border-white/[0.04]">
+                    <div className="flex items-center gap-2.5">
+                      <span className="w-5 h-5 rounded-full bg-emerald-500/10 text-emerald-500 text-[10px] font-bold flex items-center justify-center flex-shrink-0">3</span>
+                      <div>
+                        <h3 className="text-[11px] font-bold text-gray-900 dark:text-white uppercase tracking-widest">Glass Specifications & Processing Items</h3>
+                        <p className="text-xs text-gray-500 dark:text-gray-400">Group items by Glass Type, Thickness, Tempering & Edge Finish</p>
+                      </div>
                     </div>
+                    <Button type="button" onClick={addGlassGroup} icon={Plus} size="sm">
+                      Add Glass Category
+                    </Button>
                   </div>
-                  <Button onClick={addItem} icon={Plus} size="sm">Add Item</Button>
+
+                  {glassData.groups.map((group, groupIdx) => {
+                    const groupTotal = glassTotals.groupTotals.find(gt => gt.groupId === group.id)
+                    return (
+                      <div key={group.id} className="border border-gray-200 dark:border-white/[0.08] rounded-xl p-4 bg-gray-50/50 dark:bg-white/[0.01] space-y-4">
+                        {/* Group Header Spec */}
+                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white dark:bg-[#151518] p-3 rounded-lg border border-gray-200 dark:border-white/[0.06]">
+                          <div className="flex-1">
+                            <label className={labelCls}>Glass Specification / Group Header *</label>
+                            <input
+                              type="text"
+                              value={group.specification}
+                              onChange={(e) => updateGlassGroupSpec(group.id, e.target.value)}
+                              className={`${inputCls} font-bold text-blue-600 dark:text-blue-400`}
+                              placeholder="e.g. 12 MM CLEAR FLOAT FLAT, TOUGHENED, POLISH(Flat & Arris), HOLE"
+                              required
+                            />
+                          </div>
+                          <div className="flex items-center gap-2 self-end sm:self-center">
+                            <button
+                              type="button"
+                              onClick={() => addGlassItem(group.id)}
+                              className="px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold flex items-center gap-1.5 transition-colors"
+                            >
+                              <Plus className="w-3.5 h-3.5" /> + Glass Item
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => removeGlassGroup(group.id)}
+                              disabled={glassData.groups.length === 1}
+                              className="p-2 text-gray-400 hover:text-red-500 disabled:opacity-20 rounded-lg hover:bg-red-50 dark:hover:bg-red-500/10 transition-all"
+                              title="Delete Group"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Items Table */}
+                        <div className="overflow-x-auto">
+                          <table className="w-full text-left border-collapse min-w-[750px]" style={{ fontSize: "11px" }}>
+                            <thead>
+                              <tr className="border-b border-gray-200 dark:border-white/[0.08] font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider" style={{ fontSize: "9px" }}>
+                                <th className="py-1.5 px-1 w-[32px] text-center">Sr</th>
+                                <th className="py-1.5 px-1 w-[170px]">Actual Size (mm)</th>
+                                <th className="py-1.5 px-1 w-[48px] text-center">PCS</th>
+                                <th className="py-1.5 px-1 w-[80px]">Act. SQMS</th>
+                                <th className="py-1.5 px-1 w-[110px]">Notes / DRG</th>
+                                <th className="py-1.5 px-1 w-[170px]">Charged Size (mm)</th>
+                                <th className="py-1.5 px-1 w-[80px]">Ch. SQMS</th>
+                                <th className="py-1.5 px-1 w-[90px] text-right">Rate/SQMS</th>
+                                <th className="py-1.5 px-1 w-[95px] text-right">Glass Amt</th>
+                                <th className="py-1.5 px-1 w-[28px] text-center"></th>
+                              </tr>
+                            </thead>
+                            <tbody className="divide-y divide-gray-100 dark:divide-white/[0.04]">
+                              {group.items.map((item, itemIdx) => (
+                                <tr key={item.id} className="hover:bg-white dark:hover:bg-[#151518] transition-colors">
+                                  <td className="py-2 px-1 text-center font-bold text-gray-500">{itemIdx + 1}</td>
+                                  <td className="py-2 px-2">
+                                    <div className="flex items-center gap-1">
+                                      <input
+                                        type="number"
+                                        value={item.actualWidth || ""}
+                                        onChange={(e) => updateGlassItem(group.id, item.id, "actualWidth", Number(e.target.value))}
+                                        className={`${inputCls} text-center font-mono font-semibold`}
+                                        style={{ minWidth: "60px", fontSize: "11px", padding: "4px 6px" }}
+                                        placeholder="W"
+                                        required
+                                      />
+                                      <span className="text-gray-400 font-bold flex-shrink-0 text-xs">×</span>
+                                      <input
+                                        type="number"
+                                        value={item.actualHeight || ""}
+                                        onChange={(e) => updateGlassItem(group.id, item.id, "actualHeight", Number(e.target.value))}
+                                        className={`${inputCls} text-center font-mono font-semibold`}
+                                        style={{ minWidth: "60px", fontSize: "11px", padding: "4px 6px" }}
+                                        placeholder="H"
+                                        required
+                                      />
+                                    </div>
+                                    <div className="text-[10px] text-gray-400 dark:text-gray-500 font-mono mt-0.5 px-0.5">
+                                      {item.actualInches || formatGlassSizeInches(item.actualWidth, item.actualHeight)}
+                                    </div>
+                                  </td>
+                                  <td className="py-2 px-1">
+                                    <input
+                                      type="number"
+                                      value={item.pcs || 1}
+                                      onChange={(e) => updateGlassItem(group.id, item.id, "pcs", Number(e.target.value))}
+                                      className={`${inputCls} text-center font-bold`}
+                                      style={{ fontSize: "11px", padding: "4px 4px" }}
+                                      min="1"
+                                      required
+                                    />
+                                  </td>
+                                  <td className="py-2 px-2 font-mono font-semibold text-gray-700 dark:text-gray-300">
+                                    {item.actualSqms || calculateMMtoSqms(item.actualWidth, item.actualHeight, item.pcs)}
+                                  </td>
+                                  <td className="py-2 px-2">
+                                    <input
+                                      type="text"
+                                      value={item.drgHolesNotes || ""}
+                                      onChange={(e) => updateGlassItem(group.id, item.id, "drgHolesNotes", e.target.value)}
+                                      className={`${inputCls} text-xs`}
+                                      style={{ fontSize: "10px", padding: "4px 6px" }}
+                                      placeholder="e.g. DRG Holes: 4"
+                                    />
+                                  </td>
+                                  <td className="py-2 px-2">
+                                    <div className="flex items-center gap-1">
+                                      <input
+                                        type="number"
+                                        value={item.chargedWidth || item.actualWidth || ""}
+                                        onChange={(e) => updateGlassItem(group.id, item.id, "chargedWidth", Number(e.target.value))}
+                                        className={`${inputCls} text-center font-mono font-semibold bg-blue-50/50 dark:bg-blue-950/20`}
+                                        style={{ minWidth: "60px", fontSize: "11px", padding: "4px 6px" }}
+                                        placeholder="CW"
+                                      />
+                                      <span className="text-gray-400 font-bold flex-shrink-0 text-xs">×</span>
+                                      <input
+                                        type="number"
+                                        value={item.chargedHeight || item.actualHeight || ""}
+                                        onChange={(e) => updateGlassItem(group.id, item.id, "chargedHeight", Number(e.target.value))}
+                                        className={`${inputCls} text-center font-mono font-semibold bg-blue-50/50 dark:bg-blue-950/20`}
+                                        style={{ minWidth: "60px", fontSize: "11px", padding: "4px 6px" }}
+                                        placeholder="CH"
+                                      />
+                                    </div>
+                                    <input
+                                      type="text"
+                                      value={item.chargedRefNotes || ""}
+                                      onChange={(e) => updateGlassItem(group.id, item.id, "chargedRefNotes", e.target.value)}
+                                      className={`${inputCls} mt-0.5`}
+                                      style={{ fontSize: "10px", padding: "3px 6px" }}
+                                      placeholder="Ref.-"
+                                    />
+                                  </td>
+                                  <td className="py-2 px-2 font-mono font-bold text-blue-600 dark:text-blue-400">
+                                    {item.chargedSqms || calculateMMtoSqms(item.chargedWidth, item.chargedHeight, item.pcs)}
+                                  </td>
+                                  <td className="py-2 px-2 text-right">
+                                    <input
+                                      type="number"
+                                      value={item.ratePerSqm || ""}
+                                      onChange={(e) => updateGlassItem(group.id, item.id, "ratePerSqm", Number(e.target.value))}
+                                      className={`${inputCls} text-right font-bold`}
+                                      style={{ fontSize: "11px", padding: "4px 6px" }}
+                                      placeholder="Rate"
+                                      step="0.01"
+                                      required
+                                    />
+                                  </td>
+                                  <td className="py-2 px-2 text-right font-bold ez-mono text-gray-900 dark:text-white">
+                                    {formatCurrency(item.glassAmount || 0)}
+                                  </td>
+                                  <td className="py-2 px-1 text-center">
+                                    <button
+                                      type="button"
+                                      onClick={() => removeGlassItem(group.id, item.id)}
+                                      disabled={group.items.length === 1}
+                                      className="p-1 text-gray-400 hover:text-red-500 disabled:opacity-20 transition-colors"
+                                      title="Remove item"
+                                    >
+                                      <Trash2 className="w-3.5 h-3.5" />
+                                    </button>
+                                  </td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+
+                        {/* Group Sub Total Summary */}
+                        <div className="flex flex-wrap items-center justify-between gap-4 bg-gray-100/70 dark:bg-white/[0.03] p-3 rounded-lg border border-gray-200/50 dark:border-white/[0.04] text-xs font-semibold">
+                          <span className="italic text-gray-500">Sub Total for Category #{groupIdx + 1}</span>
+                          <div className="flex items-center gap-4 text-gray-900 dark:text-white font-mono">
+                            <span>PCS: <strong>{groupTotal?.pcs || 0}</strong></span>
+                            <span>Actual SQMS: <strong>{groupTotal?.actualSqms || 0}</strong></span>
+                            <span>Charged SQMS: <strong className="text-blue-600 dark:text-blue-400">{groupTotal?.chargedSqms || 0}</strong></span>
+                            <span>Glass Amount: <strong className="text-emerald-600 dark:text-emerald-400">{formatCurrency(groupTotal?.glassAmount || 0)}</strong></span>
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  })}
                 </div>
 
-                <div className="space-y-2">
-                  {/* Desktop header */}
-                  <div className="hidden md:grid md:grid-cols-12 gap-3 px-1 pb-2.5 text-[9px] font-bold text-gray-400 dark:text-gray-600 uppercase tracking-widest border-b border-gray-100 dark:border-white/[0.04] mb-2">
-                    <div className="md:col-span-3">Item / Service *</div>
-                    <div className="md:col-span-2 text-center">HSN/SAC</div>
-                    <div className="md:col-span-1 text-center">Qty</div>
-                    <div className="md:col-span-1 text-center">Unit</div>
-                    <div className="md:col-span-2 text-right">Rate *</div>
-                    <div className="md:col-span-1 text-center">Disc%</div>
-                    <div className="md:col-span-1 text-right">Amount</div>
-                    <div className="md:col-span-1" />
+                {/* ── GLASS EXTRA CHARGES & ASSURANCE ── */}
+                <div className="bg-white dark:bg-[#111113] border border-gray-200/70 dark:border-white/[0.05] rounded-2xl p-6 shadow-sm space-y-4">
+                  <div className="flex items-center gap-2.5 pb-3 border-b border-gray-100 dark:border-white/[0.04]">
+                    <span className="w-5 h-5 rounded-full bg-indigo-500/10 text-indigo-500 text-[10px] font-bold flex items-center justify-center flex-shrink-0">4</span>
+                    <h3 className="text-[11px] font-bold text-gray-900 dark:text-white uppercase tracking-widest">Glass Processing Additional Charges</h3>
                   </div>
 
-                  {items.map((item, index) => (
-                    <motion.div
-                      key={item.id}
-                      className="p-3.5 md:p-2 bg-gray-50/60 dark:bg-white/[0.01] border border-gray-100 dark:border-white/[0.03] md:border-b md:border-t-0 md:border-x-0 md:border-white/[0.03] rounded-xl md:rounded-none space-y-4 md:space-y-0 transition-all"
-                      initial={{ opacity: 0, y: 8 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.05 }}
-                    >
-                      {/* Mobile */}
-                      <div className="block md:hidden space-y-3.5">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* Hole Charges */}
+                    <div className="p-3.5 rounded-xl border border-gray-100 dark:border-white/[0.04] bg-gray-50/50 dark:bg-white/[0.02] space-y-2">
+                      <label className={labelCls}>Hole Charges</label>
+                      <div className="grid grid-cols-3 gap-2">
                         <div>
-                          <label className={labelCls}>Item Name *</label>
-                          <input type="text" value={item.name} onChange={(e) => updateItem(item.id, "name", e.target.value)} className={inputCls} placeholder="Enter item name" required />
+                          <span className="text-[9px] text-gray-400 block">Total Holes</span>
+                          <input
+                            type="number"
+                            value={glassData.holeChargesCount || ""}
+                            onChange={(e) => updateGlassExtra("holeChargesCount", Number(e.target.value))}
+                            className={inputCls}
+                            placeholder="Count"
+                          />
                         </div>
-                        <div className="grid grid-cols-3 gap-3">
+                        <div>
+                          <span className="text-[9px] text-gray-400 block">Rate / Hole</span>
+                          <input
+                            type="number"
+                            value={glassData.holeChargesRate || ""}
+                            onChange={(e) => updateGlassExtra("holeChargesRate", Number(e.target.value))}
+                            className={inputCls}
+                            placeholder="Rate"
+                          />
+                        </div>
+                        <div>
+                          <span className="text-[9px] text-gray-400 block">Amount (₹)</span>
+                          <input
+                            type="number"
+                            value={glassData.holeChargesAmount || ""}
+                            onChange={(e) => updateGlassExtra("holeChargesAmount", Number(e.target.value))}
+                            className={`${inputCls} font-bold text-right`}
+                            placeholder="Amount"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Cutout Charges */}
+                    <div className="p-3.5 rounded-xl border border-gray-100 dark:border-white/[0.04] bg-gray-50/50 dark:bg-white/[0.02] space-y-2">
+                      <label className={labelCls}>Cutout Charges</label>
+                      <div className="grid grid-cols-3 gap-2">
+                        <div>
+                          <span className="text-[9px] text-gray-400 block">Total Cutouts</span>
+                          <input
+                            type="number"
+                            value={glassData.cutoutChargesCount || ""}
+                            onChange={(e) => updateGlassExtra("cutoutChargesCount", Number(e.target.value))}
+                            className={inputCls}
+                            placeholder="Count"
+                          />
+                        </div>
+                        <div>
+                          <span className="text-[9px] text-gray-400 block">Rate / Cutout</span>
+                          <input
+                            type="number"
+                            value={glassData.cutoutChargesRate || ""}
+                            onChange={(e) => updateGlassExtra("cutoutChargesRate", Number(e.target.value))}
+                            className={inputCls}
+                            placeholder="Rate"
+                          />
+                        </div>
+                        <div>
+                          <span className="text-[9px] text-gray-400 block">Amount (₹)</span>
+                          <input
+                            type="number"
+                            value={glassData.cutoutChargesAmount || ""}
+                            onChange={(e) => updateGlassExtra("cutoutChargesAmount", Number(e.target.value))}
+                            className={`${inputCls} font-bold text-right`}
+                            placeholder="Amount"
+                          />
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Admin Charge */}
+                    <div className="p-3.5 rounded-xl border border-gray-100 dark:border-white/[0.04] bg-gray-50/50 dark:bg-white/[0.02]">
+                      <label className={labelCls}>Admin Charges (₹)</label>
+                      <input
+                        type="number"
+                        value={glassData.adminCharge || ""}
+                        onChange={(e) => updateGlassExtra("adminCharge", Number(e.target.value))}
+                        className={`${inputCls} font-bold text-right`}
+                        placeholder="Admin Charge"
+                      />
+                    </div>
+
+                    {/* Assurance Charge */}
+                    <div className="p-3.5 rounded-xl border border-gray-100 dark:border-white/[0.04] bg-gray-50/50 dark:bg-white/[0.02] space-y-1.5">
+                      <label className={labelCls}>Assurance Charges (%)</label>
+                      <div className="flex items-center gap-2">
+                        <input
+                          type="number"
+                          value={glassData.assuranceChargeRate || ""}
+                          onChange={(e) => updateGlassExtra("assuranceChargeRate", Number(e.target.value))}
+                          className={inputCls}
+                          placeholder="e.g. 1.5"
+                          step="0.1"
+                        />
+                        <div className="px-3 py-2 bg-gray-100 dark:bg-[#151518] rounded-xl text-xs font-bold ez-mono text-gray-900 dark:text-white">
+                          ₹{glassTotals.assuranceChargeAmount}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
+            ) : (
+              /* Standard Invoice Line Items Builder */
+              <motion.div variants={itemVariants}>
+                <div className="bg-white dark:bg-[#111113] border border-gray-200/70 dark:border-white/[0.05] rounded-2xl p-6 shadow-sm">
+                  <div className="flex items-center justify-between mb-5 pb-4 border-b border-gray-100 dark:border-white/[0.04]">
+                    <div className="flex items-center gap-2.5">
+                      <span className="w-5 h-5 rounded-full bg-emerald-500/10 text-emerald-500 text-[10px] font-bold flex items-center justify-center flex-shrink-0">3</span>
+                      <div>
+                        <h3 className="text-[11px] font-bold text-gray-900 dark:text-white uppercase tracking-widest">Line Items</h3>
+                      </div>
+                    </div>
+                    <Button onClick={addItem} icon={Plus} size="sm">Add Item</Button>
+                  </div>
+
+                  <div className="space-y-2">
+                    {/* Desktop header */}
+                    <div className="hidden md:grid md:grid-cols-12 gap-3 px-1 pb-2.5 text-[9px] font-bold text-gray-400 dark:text-gray-600 uppercase tracking-widest border-b border-gray-100 dark:border-white/[0.04] mb-2">
+                      <div className="md:col-span-3">Item / Service *</div>
+                      <div className="md:col-span-2 text-center">HSN/SAC</div>
+                      <div className="md:col-span-1 text-center">Qty</div>
+                      <div className="md:col-span-1 text-center">Unit</div>
+                      <div className="md:col-span-2 text-right">Rate *</div>
+                      <div className="md:col-span-1 text-center">Disc%</div>
+                      <div className="md:col-span-1 text-right">Amount</div>
+                      <div className="md:col-span-1" />
+                    </div>
+
+                    {items.map((item, index) => (
+                      <motion.div
+                        key={item.id}
+                        className="p-3.5 md:p-2 bg-gray-50/60 dark:bg-white/[0.01] border border-gray-100 dark:border-white/[0.03] md:border-b md:border-t-0 md:border-x-0 md:border-white/[0.03] rounded-xl md:rounded-none space-y-4 md:space-y-0 transition-all"
+                        initial={{ opacity: 0, y: 8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: index * 0.05 }}
+                      >
+                        {/* Mobile */}
+                        <div className="block md:hidden space-y-3.5">
                           <div>
-                            <label className={labelCls}>HSN/SAC</label>
+                            <label className={labelCls}>Item Name *</label>
+                            <input type="text" value={item.name} onChange={(e) => updateItem(item.id, "name", e.target.value)} className={inputCls} placeholder="Enter item name" required />
+                          </div>
+                          <div className="grid grid-cols-3 gap-3">
+                            <div>
+                              <label className={labelCls}>HSN/SAC</label>
+                              <input type="text" value={item.hsnSac} onChange={(e) => updateItem(item.id, "hsnSac", e.target.value)} className={`${inputCls} text-center`} placeholder="HSN" />
+                            </div>
+                            <div>
+                              <label className={labelCls}>Qty *</label>
+                              <input type="number" value={item.quantity} onChange={(e) => updateItem(item.id, "quantity", Number.parseInt(e.target.value) || 0)} className={`${inputCls} text-center`} min="1" required />
+                            </div>
+                            <div>
+                              <label className={labelCls}>Unit</label>
+                              <select value={item.unit || "pcs"} onChange={(e) => handleUnitChange(item.id, e.target.value)} className={`${inputCls} cursor-pointer`}>
+                                {["pcs","kg","nos","ltr","box","mtr","hrs","days","set","pkts","bags","g","tons","sqft","sqm","srv"].map(u => <option key={u} value={u}>{u}</option>)}
+                                {item.unit && !["pcs","kg","nos","ltr","box","mtr","hrs","days","set","pkts","bags","g","tons","sqft","sqm","srv"].includes(item.unit) && <option value={item.unit}>{item.unit}</option>}
+                                <option value="custom">+ Custom...</option>
+                              </select>
+                            </div>
+                          </div>
+                          <div className="grid grid-cols-3 gap-3">
+                            <div>
+                              <label className={labelCls}>Rate *</label>
+                              <input type="number" placeholder="Rate" value={item.rate === 0 ? "" : item.rate} onChange={(e) => updateItem(item.id, "rate", Number.parseFloat(e.target.value) || 0)} className={`${inputCls} text-right`} min="0" step="0.01" required />
+                            </div>
+                            <div>
+                              <label className={labelCls}>Disc (%)</label>
+                              <input type="number" placeholder="0" value={item.discount === 0 ? "" : item.discount} onChange={(e) => updateItem(item.id, "discount", Number.parseFloat(e.target.value) || 0)} className={`${inputCls} text-center`} min="0" max="100" step="0.1" />
+                            </div>
+                            <div>
+                              <label className={labelCls}>Amount</label>
+                              <div className="px-3.5 py-2.5 bg-gray-100 dark:bg-[#151518] border border-gray-200 dark:border-white/[0.06] rounded-xl text-gray-900 dark:text-white text-sm font-bold text-right ez-mono">{formatCurrency(item.lineTotal)}</div>
+                            </div>
+                          </div>
+                          <div className="flex justify-end">
+                            <button type="button" onClick={() => removeItem(item.id)} disabled={items.length === 1} className="text-xs text-red-400 hover:text-red-500 disabled:opacity-20 flex items-center gap-1.5 transition-colors">
+                              <Trash2 className="w-3.5 h-3.5" /> Remove
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Desktop */}
+                        <div className="hidden md:grid md:grid-cols-12 gap-3 items-center">
+                          <div className="md:col-span-3">
+                            <input type="text" value={item.name} onChange={(e) => updateItem(item.id, "name", e.target.value)} className={inputCls} placeholder="Item name" required />
+                          </div>
+                          <div className="md:col-span-2">
                             <input type="text" value={item.hsnSac} onChange={(e) => updateItem(item.id, "hsnSac", e.target.value)} className={`${inputCls} text-center`} placeholder="HSN" />
                           </div>
-                          <div>
-                            <label className={labelCls}>Qty *</label>
+                          <div className="md:col-span-1">
                             <input type="number" value={item.quantity} onChange={(e) => updateItem(item.id, "quantity", Number.parseInt(e.target.value) || 0)} className={`${inputCls} text-center`} min="1" required />
                           </div>
-                          <div>
-                            <label className={labelCls}>Unit</label>
+                          <div className="md:col-span-1">
                             <select value={item.unit || "pcs"} onChange={(e) => handleUnitChange(item.id, e.target.value)} className={`${inputCls} cursor-pointer`}>
                               {["pcs","kg","nos","ltr","box","mtr","hrs","days","set","pkts","bags","g","tons","sqft","sqm","srv"].map(u => <option key={u} value={u}>{u}</option>)}
                               {item.unit && !["pcs","kg","nos","ltr","box","mtr","hrs","days","set","pkts","bags","g","tons","sqft","sqm","srv"].includes(item.unit) && <option value={item.unit}>{item.unit}</option>}
                               <option value="custom">+ Custom...</option>
                             </select>
                           </div>
-                        </div>
-                        <div className="grid grid-cols-3 gap-3">
-                          <div>
-                            <label className={labelCls}>Rate *</label>
+                          <div className="md:col-span-2">
                             <input type="number" placeholder="Rate" value={item.rate === 0 ? "" : item.rate} onChange={(e) => updateItem(item.id, "rate", Number.parseFloat(e.target.value) || 0)} className={`${inputCls} text-right`} min="0" step="0.01" required />
                           </div>
-                          <div>
-                            <label className={labelCls}>Disc (%)</label>
+                          <div className="md:col-span-1">
                             <input type="number" placeholder="0" value={item.discount === 0 ? "" : item.discount} onChange={(e) => updateItem(item.id, "discount", Number.parseFloat(e.target.value) || 0)} className={`${inputCls} text-center`} min="0" max="100" step="0.1" />
                           </div>
-                          <div>
-                            <label className={labelCls}>Amount</label>
-                            <div className="px-3.5 py-2.5 bg-gray-100 dark:bg-[#151518] border border-gray-200 dark:border-white/[0.06] rounded-xl text-gray-900 dark:text-white text-sm font-bold text-right ez-mono">{formatCurrency(item.lineTotal)}</div>
+                          <div className="md:col-span-1 text-right font-bold text-gray-900 dark:text-white text-sm ez-mono px-1">
+                            {formatCurrency(item.lineTotal)}
+                          </div>
+                          <div className="md:col-span-1 flex justify-center">
+                            <button
+                              type="button"
+                              onClick={() => removeItem(item.id)}
+                              disabled={items.length === 1}
+                              className="p-2 text-gray-400 hover:text-red-500 disabled:opacity-20 rounded-xl hover:bg-red-50 dark:hover:bg-red-500/10 transition-all"
+                              title="Remove item"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
                           </div>
                         </div>
-                        <div className="flex justify-end">
-                          <button type="button" onClick={() => removeItem(item.id)} disabled={items.length === 1} className="text-xs text-red-400 hover:text-red-500 disabled:opacity-20 flex items-center gap-1.5 transition-colors">
-                            <Trash2 className="w-3.5 h-3.5" /> Remove
-                          </button>
-                        </div>
-                      </div>
-
-                      {/* Desktop */}
-                      <div className="hidden md:grid md:grid-cols-12 gap-3 items-center">
-                        <div className="md:col-span-3">
-                          <input type="text" value={item.name} onChange={(e) => updateItem(item.id, "name", e.target.value)} className={inputCls} placeholder="Item name" required />
-                        </div>
-                        <div className="md:col-span-2">
-                          <input type="text" value={item.hsnSac} onChange={(e) => updateItem(item.id, "hsnSac", e.target.value)} className={`${inputCls} text-center`} placeholder="HSN" />
-                        </div>
-                        <div className="md:col-span-1">
-                          <input type="number" value={item.quantity} onChange={(e) => updateItem(item.id, "quantity", Number.parseInt(e.target.value) || 0)} className={`${inputCls} text-center`} min="1" required />
-                        </div>
-                        <div className="md:col-span-1">
-                          <select value={item.unit || "pcs"} onChange={(e) => handleUnitChange(item.id, e.target.value)} className={`${inputCls} cursor-pointer`}>
-                            {["pcs","kg","nos","ltr","box","mtr","hrs","days","set","pkts","bags","g","tons","sqft","sqm","srv"].map(u => <option key={u} value={u}>{u}</option>)}
-                            {item.unit && !["pcs","kg","nos","ltr","box","mtr","hrs","days","set","pkts","bags","g","tons","sqft","sqm","srv"].includes(item.unit) && <option value={item.unit}>{item.unit}</option>}
-                            <option value="custom">+ Custom...</option>
-                          </select>
-                        </div>
-                        <div className="md:col-span-2">
-                          <input type="number" placeholder="Rate" value={item.rate === 0 ? "" : item.rate} onChange={(e) => updateItem(item.id, "rate", Number.parseFloat(e.target.value) || 0)} className={`${inputCls} text-right`} min="0" step="0.01" required />
-                        </div>
-                        <div className="md:col-span-1">
-                          <input type="number" placeholder="0" value={item.discount === 0 ? "" : item.discount} onChange={(e) => updateItem(item.id, "discount", Number.parseFloat(e.target.value) || 0)} className={`${inputCls} text-center`} min="0" max="100" step="0.1" />
-                        </div>
-                        <div className="md:col-span-1 text-right font-bold text-gray-900 dark:text-white text-sm ez-mono px-1">
-                          {formatCurrency(item.lineTotal)}
-                        </div>
-                        <div className="md:col-span-1 flex justify-center">
-                          <button
-                            type="button"
-                            onClick={() => removeItem(item.id)}
-                            disabled={items.length === 1}
-                            className="p-2 text-gray-400 hover:text-red-500 disabled:opacity-20 rounded-xl hover:bg-red-50 dark:hover:bg-red-500/10 transition-all"
-                            title="Remove item"
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        </div>
-                      </div>
-                    </motion.div>
-                  ))}
+                      </motion.div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            </motion.div>
+              </motion.div>
+            )}
 
             {/* ── Summary ── */}
             <motion.div variants={itemVariants}>
@@ -769,7 +1347,9 @@ const CreateInvoice: React.FC = () => {
             >
               <div className="bg-gray-50/50 dark:bg-zinc-900/40 px-4 py-3 border-b border-gray-200/50 dark:border-white/[0.04] flex justify-between items-center">
                 <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">Live Preview</span>
-                <span className="text-[10px] font-semibold text-blue-600 bg-blue-500/10 px-2 py-0.5 rounded-full">Classic Template</span>
+                <span className="text-[10px] font-semibold text-blue-600 bg-blue-500/10 px-2 py-0.5 rounded-full">
+                  {invoiceType === "glass" ? "Glass Factory Processing Bill" : "Classic Template"}
+                </span>
               </div>
               <div className="p-6 bg-white text-[#111827] text-left select-none text-[10px]" style={{ fontFamily: "system-ui, -apple-system, sans-serif" }}>
                 <div className="border border-gray-400 p-3 space-y-2.5 bg-white">
@@ -817,134 +1397,265 @@ const CreateInvoice: React.FC = () => {
                       {customerPAN && <span>PAN: {customerPAN}</span>}
                     </p>
                   </div>
-                  {/* Items List */}
-                  <div className="border border-gray-300 rounded-sm overflow-hidden">
-                    <table className="w-full text-left border-collapse">
-                      <thead>
-                        <tr className="bg-gray-50 border-b border-gray-300 text-[6px] font-bold text-gray-700">
-                          <th className="p-1 text-center w-[5%] border-r border-gray-300">S.NO</th>
-                          <th className="p-1 border-r border-gray-300 w-[28%]">SERVICES</th>
-                          <th className="p-1 text-center w-[12%] border-r border-gray-300">HSN/SAC</th>
-                          <th className="p-1 text-center w-[8%] border-r border-gray-300">QTY</th>
-                          <th className="p-1 text-center w-[8%] border-r border-gray-300">UNIT</th>
-                          <th className="p-1 text-right w-[12%] border-r border-gray-300">RATE</th>
-                          <th className="p-1 text-right w-[10%] border-r border-gray-300">DISC</th>
-                          <th className="p-1 text-right w-[17%]">AMOUNT</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {items.map((item, idx) => (
-                          <tr key={item.id} className="border-b border-gray-300 text-[7px] text-gray-800">
-                            <td className="p-1 text-center border-r border-gray-300">{idx + 1}</td>
-                            <td className="p-1 border-r border-gray-300 font-medium truncate max-w-[80px]">{item.name || "Item Name"}</td>
-                            <td className="p-1 text-center border-r border-gray-300">{item.hsnSac || "—"}</td>
-                            <td className="p-1 text-center border-r border-gray-300">{item.quantity}</td>
-                            <td className="p-1 text-center border-r border-gray-300">{item.unit || "pcs"}</td>
-                            <td className="p-1 text-right border-r border-gray-300">{item.rate.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
-                            <td className="p-1 text-right border-r border-gray-300">{item.discount ? `${item.discount}%` : "—"}</td>
-                            <td className="p-1 text-right font-semibold">{item.lineTotal.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
-                          </tr>
-                        ))}
-                        <tr className="bg-gray-50 border-t border-gray-300 font-semibold text-[7px] text-gray-800">
-                          <td colSpan={7} className="p-1 text-right border-r border-gray-300">Subtotal:</td>
-                          <td className="p-1 text-right">{subtotal.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
-                        </tr>
-                        {overallDiscountAmount > 0 && (
-                          <tr className="bg-gray-50 font-semibold text-[7px] text-blue-600">
-                            <td colSpan={7} className="p-1 text-right border-r border-gray-300">Overall Discount {overallDiscountType === "percentage" ? `(${overallDiscountValue}%)` : ""}:</td>
-                            <td className="p-1 text-right">-{overallDiscountAmount.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
-                          </tr>
-                        )}
-                        {gstBreakdown.isInterState ? (
-                          <tr className="bg-gray-50 text-[7px] text-gray-800">
-                            <td colSpan={7} className="p-1 text-right border-r border-gray-300 font-semibold">IGST ({gstRate}%):</td>
-                            <td className="p-1 text-right font-semibold">{gstBreakdown.igst.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
-                          </tr>
-                        ) : (
-                          <>
-                            <tr className="bg-gray-50 text-[7px] text-gray-800">
-                              <td colSpan={7} className="p-1 text-right border-r border-gray-300 font-semibold">CGST ({gstRate / 2}%):</td>
-                              <td className="p-1 text-right font-semibold">{gstBreakdown.cgst.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
-                            </tr>
-                            <tr className="bg-gray-50 text-[7px] text-gray-800">
-                              <td colSpan={7} className="p-1 text-right border-r border-gray-300 font-semibold">SGST ({gstRate / 2}%):</td>
-                              <td className="p-1 text-right font-semibold">{gstBreakdown.sgst.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
-                            </tr>
-                          </>
-                        )}
-                        <tr className="bg-gray-100 border-t border-gray-300 font-bold text-[8px] text-gray-900">
-                          <td colSpan={7} className="p-1 text-right border-r border-gray-300">TOTAL:</td>
-                          <td className="p-1 text-right">₹{Math.round(total).toLocaleString("en-IN")}</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
 
-                  {/* Tax Summary Table */}
-                  <div className="border border-gray-300 rounded-sm overflow-hidden">
-                    <table className="w-full text-[6px] text-left border-collapse">
-                      <thead>
-                        <tr className="bg-gray-50 border-b border-gray-300 text-[5.5px] font-bold text-gray-750 text-center">
-                          <th className="p-1 border-r border-gray-300">HSN/SAC</th>
-                          <th className="p-1 border-r border-gray-300">Taxable Value</th>
+                  {/* Items List or Glass Factory Table */}
+                  {invoiceType === "glass" ? (() => {
+                    let glassSrCounter = 1
+                    return (
+                      <div className="text-[6.5px]">
+                        {/* Simplified glass preview - key columns only */}
+                        <table className="w-full border-collapse" style={{ tableLayout: "fixed" }}>
+                          <thead>
+                            <tr className="border-t border-b border-gray-900 text-center font-bold text-[5.5px] uppercase">
+                              <th style={{ width: "5%" }} className="p-0.5">Sr</th>
+                              <th style={{ width: "18%" }} className="p-0.5 text-left">SIZE</th>
+                              <th style={{ width: "5%" }} className="p-0.5">PCS</th>
+                              <th style={{ width: "12%" }} className="p-0.5 text-right border-r border-dashed border-gray-400">SQMS</th>
+                              <th style={{ width: "12%" }} className="p-0.5 text-right border-r border-dashed border-gray-400">Ch.SQMS</th>
+                              <th style={{ width: "10%" }} className="p-0.5 text-right">RATE</th>
+                              <th style={{ width: "15%" }} className="p-0.5 text-right border-r border-dashed border-gray-400">GLASS AMT</th>
+                              <th style={{ width: "15%" }} className="p-0.5 text-right">TOTAL</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {glassData.groups.map((group) => {
+                              const groupTotal = glassTotals.groupTotals.find(gt => gt.groupId === group.id)
+                              return (
+                                <React.Fragment key={group.id}>
+                                  <tr>
+                                    <td colSpan={8} className="pt-1.5 pb-0.5 font-bold text-[6px] uppercase border-b border-dashed border-gray-400">
+                                      {group.specification}
+                                    </td>
+                                  </tr>
+                                  {group.items.map((item) => {
+                                    const sr = glassSrCounter++
+                                    const actualSqms = item.actualSqms || calculateMMtoSqms(item.actualWidth, item.actualHeight, item.pcs)
+                                    const chargedSqms = item.chargedSqms || calculateMMtoSqms(item.chargedWidth, item.chargedHeight, item.pcs)
+                                    const glassAmt = item.glassAmount || Number((chargedSqms * item.ratePerSqm).toFixed(2))
+
+                                    return (
+                                      <tr key={item.id}>
+                                        <td className="p-0.5 text-center">{sr}</td>
+                                        <td className="p-0.5 font-mono whitespace-nowrap">{item.actualWidth} x {item.actualHeight}</td>
+                                        <td className="p-0.5 text-center">{item.pcs}</td>
+                                        <td className="p-0.5 text-right font-mono border-r border-dashed border-gray-300">{actualSqms.toFixed(4)}</td>
+                                        <td className="p-0.5 text-right font-mono border-r border-dashed border-gray-300">{chargedSqms.toFixed(4)}</td>
+                                        <td className="p-0.5 text-right font-mono">{item.ratePerSqm ? item.ratePerSqm.toLocaleString("en-IN") : ""}</td>
+                                        <td className="p-0.5 text-right font-mono border-r border-dashed border-gray-300">{glassAmt.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
+                                        <td className="p-0.5 text-right font-mono font-bold">{glassAmt.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
+                                      </tr>
+                                    )
+                                  })}
+                                  <tr className="border-t border-b border-dashed border-gray-400 italic font-semibold text-[5.5px]">
+                                    <td colSpan={2} className="p-0.5 text-right">Sub Total</td>
+                                    <td className="p-0.5 text-center">{groupTotal?.pcs || 0}</td>
+                                    <td className="p-0.5 text-right font-mono border-r border-dashed border-gray-300">{groupTotal?.actualSqms?.toFixed(4) || "0.0000"}</td>
+                                    <td className="p-0.5 text-right font-mono border-r border-dashed border-gray-300">{groupTotal?.chargedSqms?.toFixed(4) || "0.0000"}</td>
+                                    <td></td>
+                                    <td className="p-0.5 text-right font-mono border-r border-dashed border-gray-300">{groupTotal?.glassAmount?.toLocaleString("en-IN", { minimumFractionDigits: 2 }) || "0.00"}</td>
+                                    <td className="p-0.5 text-right font-mono">{groupTotal?.totalAmount?.toLocaleString("en-IN", { minimumFractionDigits: 2 }) || "0.00"}</td>
+                                  </tr>
+                                </React.Fragment>
+                              )
+                            })}
+                            <tr className="border-t border-b border-gray-900 font-bold text-[6px]">
+                              <td colSpan={2} className="p-0.5">TOTAL</td>
+                              <td className="p-0.5 text-center">{glassTotals.totalPcs}</td>
+                              <td className="p-0.5 text-right font-mono border-r border-dashed border-gray-300">{glassTotals.totalActualSqms.toFixed(4)}</td>
+                              <td className="p-0.5 text-right font-mono border-r border-dashed border-gray-300">{glassTotals.totalChargedSqms.toFixed(4)}</td>
+                              <td></td>
+                              <td className="p-0.5 text-right font-mono border-r border-dashed border-gray-300">{glassTotals.totalGlassAmount.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
+                              <td className="p-0.5 text-right font-mono">{glassTotals.totalGlassAmount.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
+                            </tr>
+                          </tbody>
+                        </table>
+
+                        {/* Charges summary - right aligned */}
+                        <div className="text-[6px] mt-1.5 border-t border-gray-900 pt-1 space-y-0.5">
+                          {glassData.holeChargesCount ? (
+                            <div className="flex justify-end gap-4">
+                              <span>HOLE CHARGES {glassData.holeChargesCount} NOS @</span>
+                              <span className="font-mono w-16 text-right">{glassTotals.holeChargesAmount || ""}</span>
+                            </div>
+                          ) : null}
+                          {glassData.cutoutChargesCount ? (
+                            <div className="flex justify-end gap-4">
+                              <span>CUTOUT CHARGES {glassData.cutoutChargesCount} NOS @</span>
+                              <span className="font-mono w-16 text-right">{glassTotals.cutoutChargesAmount || ""}</span>
+                            </div>
+                          ) : null}
+                          {glassTotals.adminCharge > 0 && (
+                            <div className="flex justify-end gap-4">
+                              <span>ADMIN CHARGE</span>
+                              <span className="font-mono w-16 text-right">{glassTotals.adminCharge.toFixed(2)}</span>
+                            </div>
+                          )}
+                          {glassTotals.assuranceChargeAmount > 0 && (
+                            <div className="flex justify-end gap-4">
+                              <span>ASSURANCE CHARGES @{glassData.assuranceChargeRate || 1.5}%</span>
+                              <span className="font-mono w-16 text-right">{glassTotals.assuranceChargeAmount.toFixed(2)}</span>
+                            </div>
+                          )}
+                          <div className="flex justify-end gap-4 font-bold border-t border-dashed border-gray-400 pt-0.5">
+                            <span>ASSESSABLE VALUE</span>
+                            <span className="font-mono w-16 text-right">{glassTotals.assessableValue.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</span>
+                          </div>
                           {gstBreakdown.isInterState ? (
-                            <>
-                              <th className="p-1 border-r border-gray-300">IGST Rate</th>
-                              <th className="p-1 border-r border-gray-300">IGST Amt</th>
-                            </>
+                            <div className="flex justify-end gap-4 font-semibold">
+                              <span>ADD IGST @ {gstRate}%</span>
+                              <span className="font-mono w-16 text-right">{gstBreakdown.igst.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</span>
+                            </div>
                           ) : (
                             <>
-                              <th className="p-1 border-r border-gray-300">CGST Rate</th>
-                              <th className="p-1 border-r border-gray-300">CGST Amt</th>
-                              <th className="p-1 border-r border-gray-300">SGST Rate</th>
-                              <th className="p-1 border-r border-gray-300">SGST Amt</th>
+                              <div className="flex justify-end gap-4 font-semibold">
+                                <span>ADD SGST @ {gstRate / 2}%</span>
+                                <span className="font-mono w-16 text-right">{gstBreakdown.sgst.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</span>
+                              </div>
+                              <div className="flex justify-end gap-4 font-semibold">
+                                <span>ADD CGST @ {gstRate / 2}%</span>
+                                <span className="font-mono w-16 text-right">{gstBreakdown.cgst.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</span>
+                              </div>
                             </>
                           )}
-                          <th className="p-1">Total Tax</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {hsnSummaryMap.map((row, idx) => (
-                          <tr key={idx} className="border-b border-gray-300 text-center text-[6px] text-gray-700">
-                            <td className="p-1 border-r border-gray-300 font-bold">{row.hsn}</td>
-                            <td className="p-1 border-r border-gray-300 text-right">{row.taxableValue.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
+                          <div className="flex justify-end gap-4 font-bold text-[7px] border-t border-b border-gray-900 py-0.5">
+                            <span>TOTAL AMOUNT (IN RUPEES)</span>
+                            <span className="font-mono w-16 text-right">₹{Math.round(total).toLocaleString("en-IN")}</span>
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  })() : (
+                    /* Standard Items Table */
+                    <div className="border border-gray-300 rounded-sm overflow-hidden">
+                      <table className="w-full text-left border-collapse">
+                        <thead>
+                          <tr className="bg-gray-50 border-b border-gray-300 text-[6px] font-bold text-gray-700">
+                            <th className="p-1 text-center w-[5%] border-r border-gray-300">S.NO</th>
+                            <th className="p-1 border-r border-gray-300 w-[28%]">SERVICES</th>
+                            <th className="p-1 text-center w-[12%] border-r border-gray-300">HSN/SAC</th>
+                            <th className="p-1 text-center w-[8%] border-r border-gray-300">QTY</th>
+                            <th className="p-1 text-center w-[8%] border-r border-gray-300">UNIT</th>
+                            <th className="p-1 text-right w-[12%] border-r border-gray-300">RATE</th>
+                            <th className="p-1 text-right w-[10%] border-r border-gray-300">DISC</th>
+                            <th className="p-1 text-right w-[17%]">AMOUNT</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {items.map((item, idx) => (
+                            <tr key={item.id} className="border-b border-gray-300 text-[7px] text-gray-800">
+                              <td className="p-1 text-center border-r border-gray-300">{idx + 1}</td>
+                              <td className="p-1 border-r border-gray-300 font-medium truncate max-w-[80px]">{item.name || "Item Name"}</td>
+                              <td className="p-1 text-center border-r border-gray-300">{item.hsnSac || "—"}</td>
+                              <td className="p-1 text-center border-r border-gray-300">{item.quantity}</td>
+                              <td className="p-1 text-center border-r border-gray-300">{item.unit || "pcs"}</td>
+                              <td className="p-1 text-right border-r border-gray-300">{item.rate.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
+                              <td className="p-1 text-right border-r border-gray-300">{item.discount ? `${item.discount}%` : "—"}</td>
+                              <td className="p-1 text-right font-semibold">{item.lineTotal.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
+                            </tr>
+                          ))}
+                          <tr className="bg-gray-50 border-t border-gray-300 font-semibold text-[7px] text-gray-800">
+                            <td colSpan={7} className="p-1 text-right border-r border-gray-300">Subtotal:</td>
+                            <td className="p-1 text-right">{subtotal.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
+                          </tr>
+                          {overallDiscountAmount > 0 && (
+                            <tr className="bg-gray-50 font-semibold text-[7px] text-blue-600">
+                              <td colSpan={7} className="p-1 text-right border-r border-gray-300">Overall Discount {overallDiscountType === "percentage" ? `(${overallDiscountValue}%)` : ""}:</td>
+                              <td className="p-1 text-right">-{overallDiscountAmount.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
+                            </tr>
+                          )}
+                          {gstBreakdown.isInterState ? (
+                            <tr className="bg-gray-50 text-[7px] text-gray-800">
+                              <td colSpan={7} className="p-1 text-right border-r border-gray-300 font-semibold">IGST ({gstRate}%):</td>
+                              <td className="p-1 text-right font-semibold">{gstBreakdown.igst.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
+                            </tr>
+                          ) : (
+                            <>
+                              <tr className="bg-gray-50 text-[7px] text-gray-800">
+                                <td colSpan={7} className="p-1 text-right border-r border-gray-300 font-semibold">CGST ({gstRate / 2}%):</td>
+                                <td className="p-1 text-right font-semibold">{gstBreakdown.cgst.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
+                              </tr>
+                              <tr className="bg-gray-50 text-[7px] text-gray-800">
+                                <td colSpan={7} className="p-1 text-right border-r border-gray-300 font-semibold">SGST ({gstRate / 2}%):</td>
+                                <td className="p-1 text-right font-semibold">{gstBreakdown.sgst.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
+                              </tr>
+                            </>
+                          )}
+                          <tr className="bg-gray-100 border-t border-gray-300 font-bold text-[8px] text-gray-900">
+                            <td colSpan={7} className="p-1 text-right border-r border-gray-300">TOTAL:</td>
+                            <td className="p-1 text-right">₹{Math.round(total).toLocaleString("en-IN")}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+
+                  {/* Tax Summary Table (for standard invoice) */}
+                  {invoiceType === "standard" && (
+                    <div className="border border-gray-300 rounded-sm overflow-hidden">
+                      <table className="w-full text-[6px] text-left border-collapse">
+                        <thead>
+                          <tr className="bg-gray-50 border-b border-gray-300 text-[5.5px] font-bold text-gray-750 text-center">
+                            <th className="p-1 border-r border-gray-300">HSN/SAC</th>
+                            <th className="p-1 border-r border-gray-300">Taxable Value</th>
                             {gstBreakdown.isInterState ? (
                               <>
-                                <td className="p-1 border-r border-gray-300">{gstRate}%</td>
-                                <td className="p-1 border-r border-gray-300 text-right">{row.igst.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
+                                <th className="p-1 border-r border-gray-300">IGST Rate</th>
+                                <th className="p-1 border-r border-gray-300">IGST Amt</th>
                               </>
                             ) : (
                               <>
-                                <td className="p-1 border-r border-gray-300">{(gstRate / 2)}%</td>
-                                <td className="p-1 border-r border-gray-300 text-right">{row.cgst.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
-                                <td className="p-1 border-r border-gray-300">{(gstRate / 2)}%</td>
-                                <td className="p-1 border-r border-gray-300 text-right">{row.sgst.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
+                                <th className="p-1 border-r border-gray-300">CGST Rate</th>
+                                <th className="p-1 border-r border-gray-300">CGST Amt</th>
+                                <th className="p-1 border-r border-gray-300">SGST Rate</th>
+                                <th className="p-1 border-r border-gray-300">SGST Amt</th>
                               </>
                             )}
-                            <td className="p-1 text-right font-bold">{row.totalTax.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
+                            <th className="p-1">Total Tax</th>
                           </tr>
-                        ))}
-                        <tr className="bg-gray-50 font-bold text-center text-[6px] text-gray-800">
-                          <td className="p-1 border-r border-gray-300">Total</td>
-                          <td className="p-1 border-r border-gray-300 text-right">{hsnTotalTaxable.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
-                          {gstBreakdown.isInterState ? (
-                            <>
-                              <td className="p-1 border-r border-gray-300"></td>
-                              <td className="p-1 border-r border-gray-300 text-right">{hsnTotalIgst.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
-                            </>
-                          ) : (
-                            <>
-                              <td className="p-1 border-r border-gray-300"></td>
-                              <td className="p-1 border-r border-gray-300 text-right">{hsnTotalCgst.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
-                              <td className="p-1 border-r border-gray-300"></td>
-                              <td className="p-1 border-r border-gray-300 text-right">{hsnTotalSgst.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
-                            </>
-                          )}
-                          <td className="p-1 text-right">{hsnTotalTax.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
+                        </thead>
+                        <tbody>
+                          {hsnSummaryMap.map((row, idx) => (
+                            <tr key={idx} className="border-b border-gray-300 text-center text-[6px] text-gray-700">
+                              <td className="p-1 border-r border-gray-300 font-bold">{row.hsn}</td>
+                              <td className="p-1 border-r border-gray-300 text-right">{row.taxableValue.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
+                              {gstBreakdown.isInterState ? (
+                                <>
+                                  <td className="p-1 border-r border-gray-300">{gstRate}%</td>
+                                  <td className="p-1 border-r border-gray-300 text-right">{row.igst.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
+                                </>
+                              ) : (
+                                <>
+                                  <td className="p-1 border-r border-gray-300">{(gstRate / 2)}%</td>
+                                  <td className="p-1 border-r border-gray-300 text-right">{row.cgst.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
+                                  <td className="p-1 border-r border-gray-300">{(gstRate / 2)}%</td>
+                                  <td className="p-1 border-r border-gray-300 text-right">{row.sgst.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
+                                </>
+                              )}
+                              <td className="p-1 text-right font-bold">{row.totalTax.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
+                            </tr>
+                          ))}
+                          <tr className="bg-gray-50 font-bold text-center text-[6px] text-gray-800">
+                            <td className="p-1 border-r border-gray-300">Total</td>
+                            <td className="p-1 border-r border-gray-300 text-right">{hsnTotalTaxable.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
+                            {gstBreakdown.isInterState ? (
+                              <>
+                                <td className="p-1 border-r border-gray-300"></td>
+                                <td className="p-1 border-r border-gray-300 text-right">{hsnTotalIgst.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
+                              </>
+                            ) : (
+                              <>
+                                <td className="p-1 border-r border-gray-300"></td>
+                                <td className="p-1 border-r border-gray-300 text-right">{hsnTotalCgst.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
+                                <td className="p-1 border-r border-gray-300"></td>
+                                <td className="p-1 border-r border-gray-300 text-right">{hsnTotalSgst.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
+                              </>
+                            )}
+                            <td className="p-1 text-right">{hsnTotalTax.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
 
                   {/* Amount in words */}
                   <div className="border border-gray-200 p-1.5 bg-gray-50/30">
